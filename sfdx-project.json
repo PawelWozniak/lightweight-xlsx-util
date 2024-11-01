@@ -1,0 +1,36 @@
+{
+  "packageDirectories": [
+    {
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "path": "force-app/package",
+      "default": true,
+      "package": "Lightweight - XLSX Util",
+      "versionDescription": "A lightweight library to build and parse Excel(XLSX) files"
+    },
+    {
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "path": "force-app/package",
+      "default": false,
+      "package": "Lightweight - XLSX Util (Unlocked)",
+      "versionDescription": "A lightweight library to build and parse Excel(XLSX) files"
+    },
+    {
+        "versionName": "ver 0.1",
+        "versionNumber": "0.1.0.NEXT",
+        "path": "examples/",
+        "default": false,
+        "package": "Lightweight - XLSX Util Example Support Classes",
+        "versionDescription": "A path for easy deployment of the example support classes"
+      }
+  ],
+  "name": "lightweight-xlsx-util",
+  "namespace": "xlsx",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "62.0",
+  "packageAliases": {
+    "Lightweight - XLSX Util": "0HoP300000000jBKAQ",
+    "Lightweight - XLSX Util (Unlocked)": "0HoP300000000knKAA"
+  }
+}
