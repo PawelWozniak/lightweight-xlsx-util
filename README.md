@@ -12,8 +12,8 @@ Because of the potential very large number of cells a few trade-off have been ma
 The XML file structures are not rocket science, but for a file to be valid and not give you any errors it can be very (case) sensitive. If you make changes make sure to follow the standards exactly. Friendly warning: A single wrong capital in an XML element name can break your file, so test regularly.
 
 ## Blog
-- Coming soon
--
+- Salesforce.com Developer Blog:
+- 
 
 ## Package Info
 | Info | Value |
@@ -24,31 +24,53 @@ The XML file structures are not rocket science, but for a file to be valid and n
 |Unlocked Installation URL| */packaging/installPackage.apexp?p0=xxx* |
 
 ## Parse Excel files
-Parsing is done using the ```Parse``` class in the xlsx namespace. We can parse to two different formats: a multi dimensional array a list of maps. In the array the first list represents the worksheet, the child the rows and the grand child the cells.
-A second option is to use a list of maps where each map represents a worksheet and the key is the cell name like "A1" and the value the corresponding value.
+Parsing is done using the `Parse` class in the `xlsx` namespace. We can parse to two different formats: a *multi dimensional array* or a *list of maps*. In the array format the first list represents the worksheet, the child the rows and the grand child the cells.
+In the Map List option, each map represents a worksheet and the Map Key equals the cell name like "A1" and the value the corresponding value object.
 
 The basic method outline is as below:
 ```java
 // OUTPUT AS MULTIDIMENSIONAL ARRAY
-Object[][][] xlsxDataArray = xlsx.Parse.toArray(entries){}
+Object[][][] xlsxDataArray = xlsx.Parse.toArray(Map<String,Compression.ZipEntry> entries){}
 
 // OUTPUT AS MAP
-List<Map<String,Object>> xlsxDataMap = xlsx.Parse.toMap(entries){}
+List<Map<String,Object>> xlsxDataMap = xlsx.Parse.toMap(Map<String,Compression.ZipEntry> entries){}
 ```
 
-The entries parameter is the unzipped blob data represented in a map with entries ```Map<String,Compression.ZipEntry>```. The blob data can come from a file, attachment or web service. As long as it is a valid XLSX file.
+The entries parameter is the unzipped blob data represented in a map with entries `Map<String,Compression.ZipEntry>`. The blob data can come from a file, attachment or web service. As long as it is a valid XLSX file.
 ```java
+// The document Id
+Id documentId = '015Qz000004jf7yIAA';
+
 // Query a document for content, this is a compressed zip file body
-Blob xlsxBlobData = [SELECT body FROM Document WHERE Id = :fileId LIMIT 1]?.Body;
+Blob xlsxBlobData = [SELECT body FROM Document WHERE Id = :documentId LIMIT 1]?.Body;
 
 // Create a new zip reader instance
-ZipReader reader = new Compression.ZipReader(xlsxBlobData);
+Compression.ZipReader reader = new Compression.ZipReader(xlsxBlobData);
 
 // Get a map with entries
 Map<String,Compression.ZipEntry> entries = reader.getEntriesMap();
 ```
+
+To preserve heap size this can be simplyfied by putting all statements inline instead of separate variables:
+```java
+// As multi dimensional array
+Object[][][] xlsxDataArray = xlsx.Parse.toArray(
+    new Compression.ZipReader(
+        [SELECT body FROM Document WHERE Id = '015Qz000004jf7yIAA' LIMIT 1]?.Body
+    ).getEntriesMap()
+);
+
+
+// As data map
+List<Map<String,Object>> xlsxDataMap = xlsx.Parse.toMap(
+    new Compression.ZipReader(
+        [SELECT body FROM Document WHERE Id = '015Qz000004jf7yIAA' LIMIT 1]?.Body
+    ).getEntriesMap()
+);
+```
+
 ## Parse Methods
-For different use cases you can use different parse methods each with advantages. Using the `Dom.Document` class for reading XML is a lot faster than the ```XmlStreamWriter``` but also limited due to the large heap size it uses.
+For different use cases you can use different parse methods each with advantages. Using the `Dom.Document` class for reading XML is a lot faster than the `XmlStreamWriter` but also limited due to the large heap size it uses.
 The `xlsx.Parse` class is used to parse an XLSX file body from an unzipped file body
 
 |Return type| Method signature| Use for |
@@ -161,7 +183,6 @@ The `examples folder` contains a number of examples you can check out:
 - https://www.brandwares.com/downloads/Open-XML-Explained.pdf
 
 
-
 # Getting started guide
 ## Set up the document properties
 Each new file you create starts with an `xlsx.Builder` class instance. The builder is used to "set up" the entire file.
@@ -233,11 +254,6 @@ b.enableAutoFilter(wi1);
 ## Add Styling
 
 ## Build as Document or ContentVersion
-
-
-
-
-
 
 
 

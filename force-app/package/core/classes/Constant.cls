@@ -1,7 +1,7 @@
 /**
  * @author         Justus van den Berg (jfwberg@gmail.com)
- * @date           November 2024
- * @copyright      (c) 2023 Justus van den Berg
+ * @date           January 2025
+ * @copyright      (c) 2025 Justus van den Berg
  * @license        MIT (See LICENSE file in the project root)
  * @description    Class containing all the static values that are used
  *                 to generate the various XML Files in the package

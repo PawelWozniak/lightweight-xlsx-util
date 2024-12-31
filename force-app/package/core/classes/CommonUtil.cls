@@ -1,11 +1,7 @@
 /**
- * @description
- */
-
- /**
  * @author         Justus van den Berg (jfwberg@gmail.com)
- * @date           November 2024
- * @copyright      (c) 2023 Justus van den Berg
+ * @date           January 2025
+ * @copyright      (c) 2025 Justus van den Berg
  * @license        MIT (See LICENSE file in the project root)
  * @description    Class that holds a set of common utilities that a developer can use
  *                 when creating XLSX files that are slightly more complex
@@ -21,8 +17,10 @@ global with sharing class CommonUtil {
 
     /**
      * @description Method to convert column index to column name
+     * @note        Ported from geeksforgeeks.org example
+     *              https://www.geeksforgeeks.org/find-excel-column-name-given-number/
      * @note        The input is the zero index from an array, not the column number
-     * @param  columnIndex The index of the column
+     * @param  columnIndex The zero index of the column
      * @return             The name of the column
      */
     global static String columnNameFromColumnIndex(Integer columnIndex){
@@ -60,6 +58,8 @@ global with sharing class CommonUtil {
     /**
      * @description Method that returns the number index for a column i.e. A = 1, B=2, ALL=1000
      * @note        This method uses the number, not the zero index
+     * @note        Ported from geeksforkeeks.org example
+     *              https://www.geeksforgeeks.org/find-excel-column-number-column-title/
      * @param columnName The name of the column i.e. A,B,ALL
      * @return      The number representation of the column i.e. 1,2,1000
      */
