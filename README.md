@@ -7,9 +7,7 @@ The library comes with the most common functionalities like freezing rows, mergi
 
 The application structure is built in a flexible way so that if you need to extend the application with specific functions, you can easily add additional XML elements as per the ECMA-376 - Office Open XML standard.
 
-Because of the potential very large number of cells a few trade-off have been made in consistent method usage. But they are roughly the same.
-
-The XML file structures are not rocket science, but for a file to be valid and not give you any errors it can be very (case) sensitive. If you make changes make sure to follow the standards exactly. Friendly warning: A single wrong capital in an XML element name can break your file, so test regularly.
+The XML file structures are not rocket science, but for a file to be valid the markup is very (case) sensitive. If you make changes make sure to follow the standards exactly. Friendly warning: A single wrong capital in an XML element name can break your file, so test as often as you can.
 
 ## Blog
 - Salesforce.com Developer Blog:
@@ -136,16 +134,17 @@ Making changes to anything in the sheets uses the worksheet index (`wi`), column
 ## Styles Methods
 The `xlsx.StylesBuilder` class is used to create custom styles and add them to a `xlsx.Builder` class instance.
 The `add methods` return an `index`, the indexes for number formats, fonts, files borders and alignments need to be used as the input parameters for the `addCellStyle()` method to create a unique style. Indexes can be reused to mix and match styles.
+
 |Return type| Method signature| Use for |
 |---|---|---|
-|`Integer`              |`addNumberFormat(Builder b, Integer numFmtId, String formatCode)`     |Add a custom number format, you'll rarely need this one|
+|`Integer`              |`addNumberFormat(Builder b, Integer numFmtId, String formatCode)`                                          |Add a custom number format, you'll rarely need this one|
 |`Integer`              |`addFont(Builder b, Integer sz, String name, String rgb, Boolean bold, Boolean italic, Boolean underline)` | Add a custom font with size color and decoration|
-|`Integer`              |`addFill(Builder b, String patternType, String fgColor, String bgColor)`   |Add a fill with a pattern, foreground and background color|
-|`Map<String,String>`   |`borderConfig(String style, String color)`     |Attribute for the `addBorder` method|
+|`Integer`              |`addFill(Builder b, String patternType, String fgColor, String bgColor)`                                   |Add a fill with a pattern, foreground and background color|
+|`Map<String,String>`   |`borderConfig(String style, String color)`                                                                 |Attribute for the `addBorder` method|
 |`Integer`              |`addBorder(Builder b, Map<String,String> left, Map<String,String> right, Map<String,String> top, Map<String,String> bottom)`   | Add a custom border with a style and a color. Valid values are: |
-|`Integer`              |`addAlignment(Builder b, String horizontal, String vertical, Integer textRotation, Boolean wrapText)`  | Add a custom alignment for the cell. Valid values are: |
-|`Integer`              |`addCellStyle(Builder b, Integer numFmtId, Integer fontId, Integer fillId, Integer borderId, Integer alignmentId)` | Combine the indexes from previous methods to create a unique style index that can be used in for row, columns and cells.|
-|`Integer`              |`getHeaderStyleIndex(Integer ci, Integer startCi, Integer endCi)`  | If you include the standard styles, use this method to get the index for a header of a "table". Set the ci, the start ci of teh table and the last ci of the table.|
+|`Integer`              |`addAlignment(Builder b, String horizontal, String vertical, Integer textRotation, Boolean wrapText)`                          | Add a custom alignment for the cell. Valid values are: |
+|`Integer`              |`addCellStyle(Builder b, Integer numFmtId, Integer fontId, Integer fillId, Integer borderId, Integer alignmentId)`             | Combine the indexes from previous methods to create a unique style index that can be used in for row, columns and cells.|
+|`Integer`              |`getHeaderStyleIndex(Integer ci, Integer startCi, Integer endCi)`                          | If you include the standard styles, use this method to get the index for a header of a "table". Set the ci, the start ci of teh table and the last ci of the table.|
 |`Integer`              |`getMainStyleIndex(Integer ci, Integer ri, Integer startCi, Integer endCi, Integer endRi)` |If you include the standard styles, use this method to get the index for the rows (including the bottom row). Set the first and last indexes of the cell range. |
 
 
@@ -162,26 +161,36 @@ The `xlsx.CommonUtil` class contains utilities that help you with the setup of a
 
 
 ## Exceptions
-In order to handle Exceptions there are two Exception classes: `xlsx.ParseException` and `xlsx.BuildException`. The first are thrown on any parsing issues and the second one on anything related to building the XLSX file.
+In order to handle Exceptions there are two Exception classes
+|Exception| Thrown when |
+|---|---|
+|`xlsx.ParseException`| Any issue happens during the parsing of an XLSX file|
+|`xlsx.BuildException`| Any issue that happens during the build of an XLSX file|
 
 
 ## Examples
-The `examples folder` contains a number of examples you can check out:
+The [`examples folder`](examples) contains a number of example implementation for both parsing and building XLSX files. Use these as a guide of how to create the files.
+
 ### Parse Examples
--
--
--
--
+|File| Description | Additional Info|
+|---|---|---|
+|[10_Parse_Document.apex](examples/parser/10_Parse_Document.apex)                   | Example to parse a an XLSX file stored as Document Object         ||
+|[11_Parse_ContentDocument.apex](examples/parser/11_Parse_ContentDocument.apex)     | Example to parse a an XLSX file stored as Attachment Object       ||
+|[12_Parse_Attachment.apex](examples/parser/12_Parse_Attachment.apex)               | Example to parse a an XLSX file stored as ContentVersion Object   ||
 
 ### Build Examples
--
--
--
--
-
-# Additional resources
-- https://www.brandwares.com/downloads/Open-XML-Explained.pdf
-
+|File| Description | Additional Info|
+|---|---|---|
+|[00_Twelf_Days_Of_Christmas.apex](examples/builder/00_Twelf_Days_Of_Christmas.apex)| Calculate how many gifts you get on the N day of Christmas.   ||
+|[01_sObject_Documentation.apex](examples/builder/01_sObject_Documentation.apex)    | Export your data model to Excel                               ||
+|[02_SOQL_With_Child_Queries.apex](examples/builder/02_SOQL_With_Child_Queries.apex)| Export a query with sub queries and metadata relationship information to Excel. Ideal for Archiving purposes                          |[Blog](https://medium.com/@justusvandenberg/dynamically-handle-salesforce-soql-subquery-response-data-using-apex-8130bd0622aa)|
+|[03_Data_Migration_Guide.apex](examples/builder/03_Data_Migration_Guide.apex)      | Creates a document with all sObjects in your org that contain data and puts in the in the correct loading order with metadata analysis|[Blog](https://medium.com/@justusvandenberg/programmatically-determine-the-object-loading-order-for-salesforce-data-migrations-using-apex-1f65841531fb)|
+|[04_Limit_Usage.apex](examples/builder/04_Limit_Usage.apex)                        | Export your org's limit usage to Excel                        ||
+|[05_Record_Count.apex](examples/builder/05_Record_Count.apex)                      | Export your org's data usage details to Excel                 ||
+|[06_Styling.apex](examples/builder/06_Styling.apex)                                | Example on how to style your Excel Sheets                     ||
+|[07_Hyperlinks.apex](examples/builder/07_Hyperlinks.apex)                          | Example on how to use hyperlinks                              ||
+|[08_List_Metadata.apex](examples/builder/08_List_Metadata.apex)                    | Export a list of metadata types like ApexClass, Profiles to a multi tab Excel workbook |[Blog](https://medium.com/@justusvandenberg/a-lightweight-salesforce-metadata-api-apex-library-47c0b4c34131)|
+|[09_Minimal_Required.apex](examples/builder/09_Minimal_Required.apex)              | An example the absolute minimum code to create an Excel Sheet ||
 
 # Getting started guide
 ## Set up the document properties
@@ -257,3 +266,17 @@ b.enableAutoFilter(wi1);
 
 
 
+# Additional resources
+## XLSX Performance
+[Apex Zip Support Performance Test](https://medium.com/@justusvandenberg/apex-zip-support-performance-test-03bef1539ed6)
+[Salesforce Apex Optimization: Large Strings vs Heap Size and CPU Time](https://medium.com/@justusvandenberg/salesforce-apex-optimization-large-strings-vs-heap-size-and-cpu-time-66ee6621ec26)
+[Salesforce Apex Optimization: Maps vs Multi-Dimensional Arrays](https://medium.com/@justusvandenberg/salesforce-apex-optimization-maps-vs-multi-dimensional-arrays-lists-3703b9aaaf79)
+
+## XLSX Examples
+[A Lightweight Salesforce Metadata API Apex Library](https://medium.com/@justusvandenberg/a-lightweight-salesforce-metadata-api-apex-library-47c0b4c34131)
+[Programmatically Determine The Object Loading Order For Salesforce Data Migrations Using Apex](https://medium.com/@justusvandenberg/programmatically-determine-the-object-loading-order-for-salesforce-data-migrations-using-apex-1f65841531fb)
+[Dynamically Handle Salesforce SOQL Subquery Response Data Using Apex](https://medium.com/@justusvandenberg/dynamically-handle-salesforce-soql-subquery-response-data-using-apex-8130bd0622aa)
+
+## XLSX Formatting
+[ECMA-376 Standard]()
+[Open XML Explained by Wouter van Vugt](https://www.brandwares.com/downloads/Open-XML-Explained.pdf)

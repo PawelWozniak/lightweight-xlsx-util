@@ -1,4 +1,3 @@
-
 /**
  * @author         Justus van den Berg (jfwberg@gmail.com)
  * @date           January 2025
