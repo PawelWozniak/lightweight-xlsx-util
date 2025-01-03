@@ -170,16 +170,15 @@ public void insertOpportunitContactRoles(Integer offset, Integer numberOfAccount
     OpportunityContactRole[] ocRoles = new OpportunityContactRole[]{};
  
     // Iterate the top level accounts
-    for(Integer i=offset; i<numberOfContacts; i++){
+    for(Integer i=offset; i<numberOfAccounts; i++){
         
         // Create an opportunity for each contact in the account
-        for(Integer j=offset; j<numberOfContacts; j++){
+        for(Integer j=contactOffset; j<numberOfContacts; j++){
         
             // Add a new opportunity to the list
             ocRoles.add(new OpportunityContactRole(
                 ContactId      = contacts[j].Id,
                 OpportunityId  = opportunities[j].Id
-                
             ));
         }
     }

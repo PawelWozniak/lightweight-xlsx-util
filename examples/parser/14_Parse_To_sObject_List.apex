@@ -8,15 +8,17 @@
  *                 the result to a list of SObjects
  * @note           This method uses the toArrayInverted() method to have record
  *                 rows before columns instead of the other way around
- * @note           - Worksheets need to have the sObject API Name
+ * @note           - Worksheets need to have the sObject API Name as their name
  *                 - The first line of the worksheet requires the API fields in the header
- *                 - No field validation like read-only or formula fields is applied
+ *                 - Basic field validation like read-only is applied and required
+ *                 - This is an example that is relatively efficient and scales
+ *                   pretty well. I would review it for production implementations though 
  */
 /** ****************************************************************************** **
  *     Parse to Multi-Dimensional Array and convert to a list of sObject Lists
  ** ****************************************************************************** **/
 try{
-    // If there are any errors or warnings they will be put in this list
+    // List to store errors or warnings
     String[] warnings = new String[]{};
 
     // Create a new list of sObject lists for the output of each worksheet
@@ -24,7 +26,7 @@ try{
     
     // Unzip the whole xlsx file, make sure the XLSX file only contains existing sObjects
     Map<String,Compression.ZipEntry> entries = new Compression.ZipReader(
-        [SELECT VersionData FROM ContentVersion WHERE ContentDocumentId = '069Qz000003N27SIAS' AND IsLatest = true LIMIT 1]?.VersionData
+        [SELECT body FROM Document WHERE Id = '015Qz000004oZ6mIAE' LIMIT 1]?.Body
     ).getEntriesMap();
 
     // Get an index for all the worksheets, because we need the worksheet name as sObject API name
@@ -36,62 +38,64 @@ try{
     // Keep track of the current worksheet
     Integer wi = -1;
 
-    // As data array
+    // Iterate each worksheet as each worksheet (should) contain it's own sObject
     for(Object[][] worksheet : xlsx.Parse.toArrayInverted(entries)){
         
-        // Set the WI
+        // Set the worksheet index. It's important to keep track of the indexes
         wi++;
 
+        // Extract the sObject name
+        String sObjectName = worksheetNameList[wi];
+
         // Create a list of sObjects for the current worksheet
-        SObject[] sObjectList = (SObject[]) Type.forName( 'List<'+worksheetNameList[wi]+'>' ).newInstance();
+        SObject[] sObjectList = (SObject[]) Type.forName( 'List<'+sObjectName+'>' )?.newInstance();
 
-        // Get the fields for the current sObject
-        Map<String, Schema.SObjectField> fieldMap = sObjectList.getSObjectType().getDescribe().fields.getMap();
-
+        // Check if the sObject in the worksheet name exists in the metadata, if not add a single empty cell
+        // and go to the next worksheet
+        if(sObjectList == null){
+            warnings.add('No sObject with the name "'+sObjectName+'" found in the metadata');
+            continue;
+        }
+                
         // Get a list of field names from the first row
+        // It needs to be a list so we can simply reference it by index for performance reasons
         String[] fieldNames = new String[]{};
 
-        // Convert the field name row to a list of strings
-        for(Integer i=0, max=worksheet[0].size();i<max;i++){
-            fieldNames.add((String)worksheet[0][i]);
-        }
+        // Create a check list where we can use an index to determine if a fields needs to be skipped
+        // This allows for a single check. Same performance trick as above. An index reference is the fastests
+        Boolean[] skipFields =  new Boolean[]{};
 
-        // Iterate the rows
-        for(Integer ri=1, max=worksheet.size(); ri<max; ri++){
-            
-            // Create a new sObject
-            SObject sObj = (SObject) Type.forName( worksheetNameList[wi] ).newInstance();
+        // Place to store the field describes for the current sObject
+        Map<String, Schema.DescribeFieldResult> fieldDescribeMap = new Map<String, Schema.DescribeFieldResult>();
 
-            // Populate the sObject with the values from the current row
-            for(Integer ci=0, cMax=worksheet[0].size();ci<cMax;ci++){
-                
-                if(!fieldMap.containsKey( fieldNames[ci] )){
-                    warnings.add(worksheetNameList[wi] + '.' + fieldNames[ci] + ' does not exist and is skipped');
-                    continue;
-                }
-
-                if(!fieldMap.get(fieldNames[ci]).getDescribe().isCreateable() || !fieldMap.get(fieldNames[ci]).getDescribe().isUpdateable()){
-                    warnings.add(worksheetNameList[wi] + '.' + fieldNames[ci] + ' is not creteable or updateable and skipped');
-                    continue;
-                }
-                
-                System.debug(fieldMap.get(fieldNames[ci]).getDescribe().getType() + fieldNames[ci] + ' --- ' + worksheet[ri][ci]);
-                
-                sObj.put(
-                    fieldNames[ci],
-                    castObjectFieldData(
-                        fieldMap.get(fieldNames[ci]).getDescribe().getType(),
-                        worksheet[ri][ci]
-                    )
-                );
-            }
-
-            // Add the sObject to the list
-            sObjectList.add( sObj );
-        }
+        // Process the header row
+        processHeaderRow(
+            sObjectName,
+            worksheet[0], 
+            sObjectList.getSObjectType().getDescribe().fields.getMap(),
+            fieldNames,
+            skipFields,
+            fieldDescribeMap,
+            warnings
+        );
+        
+        // Process all the rows except the header row
+        processDataRows(
+            sObjectName,
+            worksheet,
+            fieldNames,
+            skipFields,
+            fieldDescribeMap,
+            sObjectList
+        );
 
         // Add the sObject list to the output
         sObjectLists.add(sObjectList);
+    }
+
+    // Output any warnings on the import
+    for(String warning : warnings){
+        System.debug('WARNING: ' + warning);
     }
 
     // Output the results of what we have done
@@ -99,9 +103,6 @@ try{
         System.debug('sObjectType: "' + sObjectList.getSObjectType() + '" contains ' + sObjectList.size() + ' records');
     }
 
-    // Output any warnings on the import
-    System.debug(warnings);
-    
 // Catch a Zip Specific Exception
 }catch(Compression.ZipException e){
     System.debug('ZIP EXCEPTION: ' + e.getMessage());
@@ -116,8 +117,92 @@ try{
 }
 
 
+/**
+ * @description Method that processes the data rows and puts the data into SObject records
+ *              - Start at row 1, because row 0 should be the header row
+ *              - Type cast a new sObject based on the sObject name
+ *              - Skip the field if skip is true in the skip fields array
+ * 
+ */
+private static void processDataRows(String sObjectName, Object[][] worksheet, String[] fieldNames, Boolean[] skipFields, Map<String, Schema.DescribeFieldResult> fieldDescribeMap,  SObject[] sObjectList){
+    // Iterate the rows
+    for(Integer ri=1, max=worksheet.size(); ri<max; ri++){
+            
+        // Create a new sObject
+        SObject sObj = (SObject) Type.forName( sObjectName ).newInstance();
+
+        // Populate the sObject with the values from the current row
+        for(Integer ci=0, cMax=worksheet[0].size();ci<cMax;ci++){
+
+            // If there are any issues in the field we can skip it
+            if(skipFields[ci]){
+                 continue;
+            }
+            
+            // Put in the field value dynamically
+            sObj.put(
+                fieldNames[ci],
+                castObjectFieldData(
+                    fieldDescribeMap.get(fieldNames[ci]).getType(),
+                    worksheet[ri][ci]
+                )
+            );
+        }
+
+        // Add the sObject to the list
+        sObjectList.add( sObj );
+    }
+}
+
+
+/**
+ * @description Method that executes the field validation, it checks the fields exist
+ *              It runs a describe for each field to check if it is updatable
+ *              If the field is not found it is skipped
+ *              If the field is found but not updatable it is skipped
+ *              Adds a warning in case of any errors
+ */
+private static void processHeaderRow(String sObjectName, Object[] headerRow, Map<String, Schema.SObjectField> fieldMap, String[] fieldNames, Boolean[] skipFields, Map<String, Schema.DescribeFieldResult> fieldDescribeMap, String[] warnings){
+
+    // Iterate the columns in the header row
+    for(Integer ci=0, ciMax=headerRow.size(); ci<ciMax; ci++){
+            
+        // Add the field name to the list
+        String fieldName = (String) headerRow[ci];
+
+        // add field name, adding them all makes it easier to prevent an out of bounds errors
+        fieldNames.add(fieldName);
+
+        // Check the field exists in the metadata
+        if(!fieldMap.containsKey( fieldName )){
+            skipFields.add(true);
+            warnings.add(sObjectName + '.' + fieldName + ' does not exist and is skipped');
+            continue;
+        }
+
+        // If the field exists, describe the field so the describe can be reused
+        fieldDescribeMap.put(fieldName, fieldMap.get(fieldName).getDescribe());
+
+        // Check the field is creatable or updateable
+        if(fieldName?.toLowerCase() != 'id' && !fieldDescribeMap.get(fieldName).isUpdateable()){
+            skipFields.add(true);
+            warnings.add(sObjectName + '.' + fieldName + ' is creatable nor updateable and skipped');
+            continue;
+        }
+
+        // If there are no issues the fields, it does not have to be skipped
+        skipFields.add(false);
+    }
+}
+
+
+/**
+ * @description Casts the field data to the Apex data type
+ * @param fieldType  The DisplayType of the field
+ * @param fieldValue The value of the field
+ * @return      The field data cast to the matching data type
+ */
 public static Object castObjectFieldData(Schema.DisplayType fieldType, Object fieldValue) {
-    // create a switch for each dispaytype
     switch on fieldType {
         when BOOLEAN {
             return Boolean.valueOf(fieldValue);
@@ -129,7 +214,7 @@ public static Object castObjectFieldData(Schema.DisplayType fieldType, Object fi
             return Date.valueOf(String.valueOf(fieldValue));
         }
         when DATETIME {
-            return Datetime.valueOf(fieldValue);
+            return Datetime.valueOf(String.valueOf(fieldValue));
         }
         when INTEGER {
             return Integer.valueOf(fieldValue);
