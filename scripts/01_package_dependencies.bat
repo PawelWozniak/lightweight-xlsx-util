@@ -1,18 +1,7 @@
-REM --------------------------------------------------------
-REM MANGED DEPENDENCIES (PICK EITHER MANAGED OR UNLOCKED)  -
-REM --------------------------------------------------------
-
-
-REM --------------------------------------------------------
-REM UNLOCKED DEPENDENCIES (PICK EITHER MANAGED OR UNLOCKED)-
-REM --------------------------------------------------------
-
-
-REM --------------------------------------------------------
-REM                  ASSIGN PERMISSION SETS                -
-REM --------------------------------------------------------
-
-
-REM --------------- OPTIONAL / NEXT DEV --------------------
-rem Debug package
+REM --------------- REQUIRED FOR EXAMPLES --------------------
+rem Lightweight - Debug Util 0.1
 sf package install --package 04t4K000002WF5uQAG -w 30
+
+rem Lightweight SOAP Util 0.2
+sf package install --package 04tP3000000uNzdIAE -w 30
+

@@ -45,7 +45,9 @@ global with sharing class Parse{
         // Create an XSR for the current worksheet XML file
         XmlStreamReader xsr = new XmlStreamReader(entries.get(Constant.ZP_PATH_WORKBOOK).getContent().toString());
 
-        // I am not using while xsr.hasNext() to save a method call at the end of each item
+        // Traverse the XML elements in the worksheet
+        // I am not using while(xsr.hasNext()) to save a method call at the end of each item
+        // For some reason it's about 30% faster to put an if statement at the end. No idea why.
         while(true){
 
             // Start at the beginning of the book and make sure that it is a book
@@ -156,7 +158,8 @@ global with sharing class Parse{
             String columnName;
 
             // Traverse the XML elements in the worksheet
-            // I am not using while xsr.hasNext() to save a method call at the end of each item
+            // I am not using while(xsr.hasNext()) to save a method call at the end of each item
+            // For some reason it's about 30% faster to put an if statement at the end. No idea why.
             while(true) {
 
                 // Start at the beginning of the book and make sure that it is a book
@@ -457,7 +460,8 @@ global with sharing class Parse{
             String columnName;
 
             // Traverse the XML elements in the worksheet
-            // I am not using while xsr.hasNext() to save a method call at the end of each item
+            // I am not using while(xsr.hasNext()) to save a method call at the end of each item
+            // For some reason it's about 30% faster to put an if statement at the end. No idea why.
             while(true) {
 
                 // Start at the beginning of the book and make sure that it is a book
@@ -541,6 +545,154 @@ global with sharing class Parse{
         return output;
     }
 
+
+    /**
+     * @description Method that takes an unzipped xlsx archive as parameter and
+     *              returns the sheet data in a multi dimentional array in the form of
+     *              data[WorksheetIndex][ColumnIndex][RowIndex]
+     * @param  entries A map of path/zip entries from the unzipped XLSX file
+     * @return      A list of sheets with a list of rows with a list of cells
+     * @note        Faster CPU time, but does not scale very well past 50k cells
+     *              Use this method when you work with small sheets only
+     */
+    global static Object[][][] toArrayInvertedDomDoc(Map<String,Compression.ZipEntry> entries){
+        return toArrayInvertedDomDoc(entries, null);
+    }
+
+
+    /**
+     * @description A method to parse the XML using the DOM.Document classes. There is a trade-off in the max size
+     *              but this method is significantly faster on the CPU time.
+     * @param entries        A map of path/zip entries from the unzipped XLSX file
+     * @param selectedSheets A set of sheet indexes that are to be parsed
+     * @return      A list of sheets with a list of rows with a list of cells
+     * @note        I have optimised this method to being able to handle as much data as possible
+     *              this meant that some data is in variable to achieve this. With magical results.
+     * @note        Faster CPU time, but does not scale very well past 50k cells
+     *              Use this method when you work with small sheets only
+     */
+    global static Object[][][] toArrayInvertedDomDoc(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets){
+
+        // Create a multi-dimentional array for the output
+        // Worksheet - Column - Row
+        Object[][][] output = new Object[][][]{};
+
+        // Create a list of shared strings
+        String[] sharedStrings = getSharedStrings(entries);
+
+        // In order to sort the worksheets, we need to to put them in a list to sort
+        String[] worksheetPaths = getWorksheetPaths(entries);
+
+        // Keep track of the largest number of columns. If one sheet is larger than the other
+        // we do not do have a duplicate translation for overlapping column names
+        // i.e. If sheet 1 has 10 colums and sheet 2 has 20 columns, make sure to only
+        // translate the column names from 11 to 20 to save some CPU time
+        Integer maxColDimension = 0;
+
+        // Keep track of skipped worksheets
+        Integer worksheetSkipCount = 0;
+
+        // Parse each worksheet in it's own array
+        for(Integer wi =0, wiMax=worksheetPaths.size(); wi<wiMax; wi++){
+
+            // Skip sheets that are not included in the selectedSheets
+            if(selectedSheets != null && !selectedSheets.contains(wi)){
+                worksheetSkipCount++;
+                continue;
+            }
+
+            // Calculate the current worksheet index in case we select specific worksheets only
+            Integer currentWi = wi-worksheetSkipCount;
+
+            // Not every row has to be populated, so keep track for the actual row we are in
+            Integer currentRi;
+
+            // Add array for the sheet to hold the columns and rows
+            output.add(new Object[][]{});
+
+            // Create a DOM document for reading
+            Dom.Document doc = new Dom.Document();
+
+            // Load the XML
+            doc.load(entries.get(worksheetPaths[wi]).getContent().toString());
+
+            // Extract the dimension
+            Dom.XmlNode dimension = doc.getRootElement().getChildElement('dimension', Constant.NS_SPREADSHEET_ML);
+
+            // Get the cell name from the range, this tag is mandatory so should be there
+            String cName   = dimension.getAttributeValue('ref', null).split(':')[1];
+
+            // Get the ref element from the token and calculate the value
+            String colName = ParseUtil.columnNameFromCellName(cName);
+
+            // Get the number of columsn and rows that are in this worksheet
+            Integer numCols = CommonUtil.columnNumberFromColumnName(colName);
+            Integer numRows = Integer.valueOf(cName.removeStart(colName));
+
+            // Pre-populate a map with the column name related to the column index i.e. AA => 27, AB =>28 etc
+            // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
+            if(numCols > maxColDimension){
+
+                // Popualte the colum index (startnumber and the total number of columns)
+                ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
+
+                // Update to the new max column dimension
+                maxColDimension = numCols;
+            }
+
+            // Add empty values for each (potential cell)
+            for(Integer ri=0; ri<numRows; ri++){
+
+                // Pre-populate the entire "grid" with empty lists and null values
+                output[currentWi].add(new Object[]{});
+
+                // Create a new entry for the row
+                for(Integer ci=0; ci<numCols; ci++){
+                    output[currentWi][ri].add(null);
+                }
+            }
+
+            // Get the number of rows for this sheet
+            Integer numberOfRows = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements().size();
+
+            // Iterate the rows
+            for(Integer ri=0;ri<numberOfRows; ri++){
+
+                // Extracting the row reduces the CPU time by 50%, abnd for some weird reason improves the max heap size
+                Dom.XmlNode row = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements()[ri];
+
+                // Calculate the row index
+                currentRi = Integer.valueOf(row.getAttribute('r', null)) -1;
+
+                // Get the number of cells in the row
+                Integer numberOfCells = row.getChildElements().size();
+
+                // Iterate the cells
+                for(Integer ci=0;ci<numberOfCells; ci++){
+
+                    // Extracting the cell reducues the CPU time by another 50% !!
+                    Dom.XmlNode cell = row.getChildElements()[ci];
+
+                    String columnName = ParseUtil.columnNameFromCellName(cell.getAttributeValue('r', null));
+                    String cellType   = cell.getAttributeValue('t', null);
+
+                    // Define the value in case of an inline string or a shared string
+                    Object value = (cellType == 'inlineStr') ?
+                                    cell.getChildElement('is',Constant.NS_SPREADSHEET_ML).getChildElement('t', Constant.NS_SPREADSHEET_ML).getText() :
+                                    cell.getChildElement('v', Constant.NS_SPREADSHEET_ML).getText()
+                    ;
+
+                    // Put the value inside
+                    output[currentWi][currentRi][ParseUtil.columnIndexMap.get(columnName)] = (cellType == 's') ? sharedStrings[Integer.valueOf(value)] : value;
+                }
+            }
+        }
+
+        // Return the sheets data as a multi dimentional array
+        return output;
+    }
+
+
     /** **************************************************************************************************** **
      **                                          GLOBAL MAP METHODS                                          **
      ** **************************************************************************************************** **/
@@ -605,6 +757,8 @@ global with sharing class Parse{
             String cellType;
 
             // Traverse the XML elements in the worksheet
+            // I am not using while(xsr.hasNext()) to save a method call at the end of each item
+            // For some reason it's about 30% faster to put an if statement at the end. No idea why.
             while(true) {
 
                 // Start at the beginning of the book and make sure that it is a book
@@ -770,11 +924,10 @@ global with sharing class Parse{
             // Create an XSR for the shared strings XML file
             XmlStreamReader xsr = new XmlStreamReader(entries.get(Constant.ZP_PATH_SHRD_STRS).getContent().toString());
 
-            // Indicator if there are any more XML elements left to traverse
-            boolean isSafeToGetNextXmlElement = true;
-
             // Traverse the XML elements in the worksheet
-            while(isSafeToGetNextXmlElement){
+            // I am not using while(xsr.hasNext()) to save a method call at the end of each item
+            // For some reason it's about 30% faster to put an if statement at the end. No idea why.
+            while(true){
 
                 // Get all the string values and add them to the shared stings list
                 if (xsr.getEventType() == XmlTag.START_ELEMENT && xsr.getLocalName() == 't') {

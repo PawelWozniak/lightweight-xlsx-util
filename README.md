@@ -1,3 +1,9 @@
+TODO
+- Add additional test methods
+- Add few examples for dom doc and 
+- Update blog links before republish
+
+
 # Lightweight - XLSX Util
 A Lightweight Salesforce Apex utility to read and write basic XLSX files based on the ECMA-376 standard fully on platform without the need for any external API calls for processing. The application is based on the `ZipWriter` and `ZipReader` classes from the compression namespace. These are currently in developer preview but should go GA in the Sprint 25 release.
 
@@ -69,19 +75,27 @@ List<Map<String,Object>> xlsxDataMap = xlsx.Parse.toMap(
 
 ## Parse Methods
 For different use cases you can use different parse methods each with advantages. Using the `Dom.Document` class for reading XML is a lot faster than the `XmlStreamWriter` but also limited due to the large heap size it uses.
+
+The default output order for the `toArray()` methods is `Worksheet.Column.Row`. This follows the Excel cell format like A1, A2, ALL999 and is ideal when you work with columns.
+The `toArrayInverted()` methods use the `Worksheet.Row.Column` order. This makes working with record data (i.e. CSV) a lot easier.
+
 The `xlsx.Parse` class is used to parse an XLSX file body from an unzipped file body
 
 |Return type| Method signature| Use for |
 |---|---|---|
-| `Object[][][]`             |`xlsx.Parse.toArray(Map<String,Compression.ZipEntry> entries)`                                    | Large files, CSV like data |
-| `Object[][][]`             |`xlsx.Parse.toArray(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)`       | Large files, CSV like data, specific sheets only |
-| `Object[][][]`             |`xlsx.Parse.toArrayDomDoc(Map<String,Compression.ZipEntry> entries)`                              | Small files, CSV like data  |
-| `Object[][][]`             |`xlsx.Parse.toArrayDomDoc(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)` | Small files, CSV like data, specific sheets only |
-| `List<Map<String,Object>>` |`xlsx.Parse.toMap(Map<String,Compression.ZipEntry> entries)`                                      | Large files, Data based on cell names |
-| `List<Map<String,Object>>` |`xlsx.Parse.toMap(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)`         | Large files, Data based on cell names, specific sheets only |
-| `List<Map<String,Object>>` |`xlsx.Parse.toMapDomDoc(Map<String,Compression.ZipEntry> entries)`                                | Small files, Data based Cell Name |
-| `List<Map<String,Object>>` |`xlsx.Parse.toMapDomDoc(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)`   | Small files, Data based on cell namese, specific sheets only |
-| `Map<String,Integer>`      |`xlsx.Parse.toWorksheetNameIndexMap(Map<String,Compression.ZipEntry> entries)`                    | You need to get the index based on the name of the worksheet |
+| `Object[][][]`             |`xlsx.Parse.toArray(Map<String,Compression.ZipEntry> entries)`                                            | Large files, CSV like data, Output format is Worksheets.Columns.Rows |
+| `Object[][][]`             |`xlsx.Parse.toArray(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)`               | Large files, CSV like data, specific sheets only, Output format is Worksheets.Columns.Rows |
+| `Object[][][]`             |`xlsx.Parse.toArrayDomDoc(Map<String,Compression.ZipEntry> entries)`                                      | Small files, CSV like data, Output format is Worksheets.Columns.Rows  |
+| `Object[][][]`             |`xlsx.Parse.toArrayDomDoc(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)`         | Small files, CSV like data, specific sheets only, Output format is Worksheets.Columns.Rows |
+| `Object[][][]`             |`xlsx.Parse.toArrayInverted(Map<String,Compression.ZipEntry> entries)`                                    | Large files, CSV like data, Output format is Worksheets.Rows.Columns |
+| `Object[][][]`             |`xlsx.Parse.toArrayInverted(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)`       | Large files, CSV like data, specific sheets only, Output format is Worksheets.Rows.Columns |
+| `Object[][][]`             |`xlsx.Parse.toArrayInvertedDomDoc(Map<String,Compression.ZipEntry> entries)`                              | Small files, CSV like data, Output format is Worksheets.Rows.Columns  |
+| `Object[][][]`             |`xlsx.Parse.toArraInvertedyDomDoc(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)` | Small files, CSV like data, specific sheets only, Output format is Worksheets.Rows.Columns |
+| `List<Map<String,Object>>` |`xlsx.Parse.toMap(Map<String,Compression.ZipEntry> entries)`                                              | Large files, Data based on cell names |
+| `List<Map<String,Object>>` |`xlsx.Parse.toMap(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)`                 | Large files, Data based on cell names, specific sheets only |
+| `List<Map<String,Object>>` |`xlsx.Parse.toMapDomDoc(Map<String,Compression.ZipEntry> entries)`                                        | Small files, Data based Cell Name |
+| `List<Map<String,Object>>` |`xlsx.Parse.toMapDomDoc(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets)`           | Small files, Data based on cell namese, specific sheets only |
+| `Map<String,Integer>`      |`xlsx.Parse.toWorksheetNameIndexMap(Map<String,Compression.ZipEntry> entries)`                            | You need to get the index based on the name of the worksheet |
 
 
 ## Build Methods

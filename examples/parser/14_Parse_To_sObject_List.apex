@@ -8,6 +8,8 @@
  *                 the result to a list of SObjects
  * @note           This method uses the toArrayInverted() method to have record
  *                 rows before columns instead of the other way around
+ *                 Depending on your file sizes, use toArrayInvertedDomDoc() for 
+ *                 performance improvements
  * @note           - Worksheets need to have the sObject API Name as their name
  *                 - The first line of the worksheet requires the API fields in the header
  *                 - Basic field validation like read-only is applied and required
@@ -26,7 +28,7 @@ try{
     
     // Unzip the whole xlsx file, make sure the XLSX file only contains existing sObjects
     Map<String,Compression.ZipEntry> entries = new Compression.ZipReader(
-        [SELECT body FROM Document WHERE Id = '015Qz000004oZ6mIAE' LIMIT 1]?.Body
+        [SELECT body FROM Document WHERE Id = '015Qz000004poTWIAY' LIMIT 1]?.Body
     ).getEntriesMap();
 
     // Get an index for all the worksheets, because we need the worksheet name as sObject API name
@@ -39,7 +41,7 @@ try{
     Integer wi = -1;
 
     // Iterate each worksheet as each worksheet (should) contain it's own sObject
-    for(Object[][] worksheet : xlsx.Parse.toArrayInverted(entries)){
+    for(Object[][] worksheet : xlsx.Parse.toArrayInvertedDomDoc(entries)){
         
         // Set the worksheet index. It's important to keep track of the indexes
         wi++;
@@ -61,6 +63,9 @@ try{
         // It needs to be a list so we can simply reference it by index for performance reasons
         String[] fieldNames = new String[]{};
 
+        // Create alist of field names so we can reference the display type based on an index
+        Schema.DisplayType[] fieldTypes = new Schema.DisplayType[]{};
+
         // Create a check list where we can use an index to determine if a fields needs to be skipped
         // This allows for a single check. Same performance trick as above. An index reference is the fastests
         Boolean[] skipFields =  new Boolean[]{};
@@ -74,6 +79,7 @@ try{
             worksheet[0], 
             sObjectList.getSObjectType().getDescribe().fields.getMap(),
             fieldNames,
+            fieldTypes,
             skipFields,
             fieldDescribeMap,
             warnings
@@ -84,6 +90,7 @@ try{
             sObjectName,
             worksheet,
             fieldNames,
+            fieldTypes,
             skipFields,
             fieldDescribeMap,
             sObjectList
@@ -124,7 +131,8 @@ try{
  *              - Skip the field if skip is true in the skip fields array
  * 
  */
-private static void processDataRows(String sObjectName, Object[][] worksheet, String[] fieldNames, Boolean[] skipFields, Map<String, Schema.DescribeFieldResult> fieldDescribeMap,  SObject[] sObjectList){
+private static void processDataRows(String    sObjectName, Object[][]                              worksheet,         String[]  fieldNames, Schema.DisplayType[] fieldTypes,
+                                    Boolean[] skipFields,  Map<String, Schema.DescribeFieldResult> fieldDescribeMap,  SObject[] sObjectList){
     // Iterate the rows
     for(Integer ri=1, max=worksheet.size(); ri<max; ri++){
             
@@ -143,7 +151,7 @@ private static void processDataRows(String sObjectName, Object[][] worksheet, St
             sObj.put(
                 fieldNames[ci],
                 castObjectFieldData(
-                    fieldDescribeMap.get(fieldNames[ci]).getType(),
+                    fieldTypes[ci],
                     worksheet[ri][ci]
                 )
             );
@@ -162,7 +170,8 @@ private static void processDataRows(String sObjectName, Object[][] worksheet, St
  *              If the field is found but not updatable it is skipped
  *              Adds a warning in case of any errors
  */
-private static void processHeaderRow(String sObjectName, Object[] headerRow, Map<String, Schema.SObjectField> fieldMap, String[] fieldNames, Boolean[] skipFields, Map<String, Schema.DescribeFieldResult> fieldDescribeMap, String[] warnings){
+private static void processHeaderRow(String               sObjectName, Object[]  headerRow,  Map<String, Schema.SObjectField>        fieldMap,         String[] fieldNames,
+                                     Schema.DisplayType[] fieldTypes,  Boolean[] skipFields, Map<String, Schema.DescribeFieldResult> fieldDescribeMap, String[] warnings){
 
     // Iterate the columns in the header row
     for(Integer ci=0, ciMax=headerRow.size(); ci<ciMax; ci++){
@@ -175,13 +184,26 @@ private static void processHeaderRow(String sObjectName, Object[] headerRow, Map
 
         // Check the field exists in the metadata
         if(!fieldMap.containsKey( fieldName )){
+            
+            // prevent out of bounds
+            fieldTypes.add(null);
+
+            // This field can be skipped as it does not exist
             skipFields.add(true);
+
+            // Add a warning
             warnings.add(sObjectName + '.' + fieldName + ' does not exist and is skipped');
+            
+            // Next field
             continue;
         }
 
         // If the field exists, describe the field so the describe can be reused
         fieldDescribeMap.put(fieldName, fieldMap.get(fieldName).getDescribe());
+
+        // Add the field type to the list so it can be reference using an index
+        // and the getType() method is executed only once for each field
+        fieldTypes.add(fieldDescribeMap.get(fieldName).getType());
 
         // Check the field is creatable or updateable
         if(fieldName?.toLowerCase() != 'id' && !fieldDescribeMap.get(fieldName).isUpdateable()){
@@ -204,8 +226,8 @@ private static void processHeaderRow(String sObjectName, Object[] headerRow, Map
  */
 public static Object castObjectFieldData(Schema.DisplayType fieldType, Object fieldValue) {
     switch on fieldType {
-        when BOOLEAN {
-            return Boolean.valueOf(fieldValue);
+        when STRING, TEXTAREA, URL, PHONE, EMAIL {
+            return String.valueOf(fieldValue);
         }
         when DOUBLE, CURRENCY, PERCENT {
             return Double.valueOf(fieldValue);
@@ -216,11 +238,11 @@ public static Object castObjectFieldData(Schema.DisplayType fieldType, Object fi
         when DATETIME {
             return Datetime.valueOf(String.valueOf(fieldValue));
         }
+        when BOOLEAN {
+            return Boolean.valueOf(fieldValue);
+        }
         when INTEGER {
             return Integer.valueOf(fieldValue);
-        }
-        when STRING, TEXTAREA, URL, PHONE, EMAIL {
-            return String.valueOf(fieldValue);
         }
         when else {
             return fieldValue;

@@ -3,9 +3,9 @@
  * @date           January 2025
  * @copyright      (c) 2025 Justus van den Berg
  * @license        MIT (See LICENSE file in the project root)
- * @description Example of you can export your org's metadata details to an Excel sheet
- * @requires    Lightweight - SOAP Util v0.2 (/packaging/installPackage.apexp?p0=04tP3000000uNzdIAE)
- * @note        This is a bad implementation, but should give you an idea of how to use the builder
+ * @description    Example of you can export your org's metadata details to an Excel sheet
+ * @requires       Lightweight - SOAP Util v0.2 (/packaging/installPackage.apexp?p0=04tP3000000uNzdIAE)
+ * @note           This is a bad implementation, but should give you an idea of how to use the builder
  */
 // Create a new builder
 xlsx.Builder b = new xlsx.Builder();
@@ -74,8 +74,10 @@ for(Integer i=0, iMax=metadataTypes.size(); i<iMax; i++){
     // Treat texts as blocks to properly handle nulls
     xsr.setCoalescing(true);
 
-    // Stream throught the XML Elements and handle accordingly
-    while(xsr.hasNext()){
+    // Traverse the XML elements in the worksheet
+    // I am not using while(xsr.hasNext()) to save a method call at the end of each item
+    // For some reason it's about 30% faster to put an if statement at the end. No idea why.
+    while(true){
         if(xsr.getEventType()==XmlTag.START_ELEMENT){
 
             // Basic error handling incase there is a soap error
@@ -101,7 +103,9 @@ for(Integer i=0, iMax=metadataTypes.size(); i<iMax; i++){
                 }
             }
         }
-        xsr.next();
+
+        // If there is a next element go to the next element, else we're done
+        if(xsr.hasNext()){ xsr.next(); } else { break; }
     }
 }
 

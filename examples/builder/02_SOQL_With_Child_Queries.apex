@@ -6,7 +6,7 @@
  * @description    An example of how you parse the result of a SOQL query directly to a multi tabbed XLSX file
  *                 For each sOBject
  * 
- * @note        REQUIRES SoqlParser and SoqlBuilder classes to be in the org
+ * @note           REQUIRES SoqlParser and SoqlBuilder classes to be in the org
  */
 // Create a new builder
 xlsx.Builder b = new xlsx.Builder();

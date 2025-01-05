@@ -14,7 +14,7 @@
 //      3       25     2625    196,875      5690ms  3608ms
 //      4       25     2000    200,000      5463ms  3830ms
 //      5       25     1650    206,250      5706ms  3835ms
-xlsx.BuilderPerformanceTest.run(5,25,1650);
+xlsx.BuilderPerformanceTest.run(2,25,2500);
 
 
 // -------------------------------------------------------
@@ -26,4 +26,4 @@ xlsx.BuilderPerformanceTest.run(5,25,1650);
 //      3       25     5250    393,750      8812ms  4672ms
 //      4       25     4000    400,000      7634ms  4144ms
 //      5       25     3300    412,500      9067ms  3992ms
-xlsx.BuilderPerformanceTest.runAsync(5,25,3000);
+xlsx.BuilderPerformanceTest.runAsync(2,25,8000);
