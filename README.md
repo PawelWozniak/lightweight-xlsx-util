@@ -1,7 +1,9 @@
 TODO
+- Speak to data cloud lady
 - Add additional test methods
 - Add few examples for dom doc and 
 - Update blog links before republish
+- finish readme (getting started guide, handy links ecma etc)
 
 
 # Lightweight - XLSX Util
@@ -76,8 +78,7 @@ List<Map<String,Object>> xlsxDataMap = xlsx.Parse.toMap(
 ## Parse Methods
 For different use cases you can use different parse methods each with advantages. Using the `Dom.Document` class for reading XML is a lot faster than the `XmlStreamWriter` but also limited due to the large heap size it uses.
 
-The default output order for the `toArray()` methods is `Worksheet.Column.Row`. This follows the Excel cell format like A1, A2, ALL999 and is ideal when you work with columns.
-The `toArrayInverted()` methods use the `Worksheet.Row.Column` order. This makes working with record data (i.e. CSV) a lot easier.
+The default output order for the `toArray()` methods is `Worksheet.Column.Row`. This follows the Excel cell format like A1, A2, ALL999 and is ideal when you work with **columns**. The `toArrayInverted()` methods use the `Worksheet.Row.Column` order. This makes working with **record data** (i.e. CSV) a lot easier.
 
 The `xlsx.Parse` class is used to parse an XLSX file body from an unzipped file body
 
@@ -168,7 +169,7 @@ The `xlsx.CommonUtil` class contains utilities that help you with the setup of a
 |---|---|---|
 |`String`     | `columnNameFromColumnIndex(Integer columnIndex)`   |Translate a column `index` to a column name. I.e. 0=A and 4=E etc.|
 |`Integer`    | `columnNumberFromColumnName(String columnName)`    |Get a column `number` from a column name. I.e A=1 and E=5|
-|`String`     | `cellName(Integer columnIndex, Integer rowIndex)`  |Get cell name based on row and column `index`. Ie,e 0,1 = A1, 4,4 = E5 etc.|
+|`String`     | `cellName(Integer columnIndex, Integer rowIndex)`  |Get cell name based on row and column `index`. Ie,e 0,0 = A1, 4,4 = E5 etc. This is handy if you work with formulas|
 |`String`     | `randomHtmlHexColorCode()`                         |Creates a random 6 digit HEX code that can be used in tabs. Handy for testing purposes to distinguish between tabs.|
 |`Datetime`   | `getTimestamp()`                                   |Get the timestamp that is used when creating an `xlsx.Builder` class instance. This ensures you use the same timestamp through out.|
 |`String`     | `getTimestampString()`                             |Get the timestamp as a string that can be used in a file name|
@@ -191,6 +192,8 @@ The [`examples folder`](examples) contains a number of example implementation fo
 |[10_Parse_Document.apex](examples/parser/10_Parse_Document.apex)                   | Example to parse a an XLSX file stored as Document Object         ||
 |[11_Parse_ContentDocument.apex](examples/parser/11_Parse_ContentDocument.apex)     | Example to parse a an XLSX file stored as Attachment Object       ||
 |[12_Parse_Attachment.apex](examples/parser/12_Parse_Attachment.apex)               | Example to parse a an XLSX file stored as ContentVersion Object   ||
+|[13_Parse_To_CSV.apex](examples/parser/13_Parse_To_CSV.apex)                       | Example to parse a an XLSX file and convert it to a CSV file (one for each worksheet)        ||
+|[14_Parse_To_sObject_List.apex](examples/parser/14_Parse_To_sObject_List.apex)     | Example to parse a an XLSX to an sObject list. This allows you to handle the data as records ||
 
 ### Build Examples
 |File| Description | Additional Info|
@@ -205,6 +208,14 @@ The [`examples folder`](examples) contains a number of example implementation fo
 |[07_Hyperlinks.apex](examples/builder/07_Hyperlinks.apex)                          | Example on how to use hyperlinks                              ||
 |[08_List_Metadata.apex](examples/builder/08_List_Metadata.apex)                    | Export a list of metadata types like ApexClass, Profiles to a multi tab Excel workbook |[Blog](https://medium.com/@justusvandenberg/a-lightweight-salesforce-metadata-api-apex-library-47c0b4c34131)|
 |[09_Minimal_Required.apex](examples/builder/09_Minimal_Required.apex)              | An example the absolute minimum code to create an Excel Sheet ||
+
+# Roadmap
+There is not really a roadmap as of now, but a few things I am planning to add are:
+-   Native support to parse files directly to CSV for better performance than the example in the examples folder (i.e. `xlsx.Parse.toCSV()`)
+    The main purpose for this is to accomodate the loading of data to Data Cloud.
+-   Native support to parse files directly to sObjects for better performance than the example in the examples folder (i.e. `xlsx.Parse.toSObject()`)
+    Generic SObject Parsing is quite tricky and it would require to check the metadata to see if objects / fields exist. Adding support for this comes with a lot of potential issues as so much can go wrong with crappy data in the wrong field types for example. But it would be useful and the boiler plate code has bene written in the examples.
+
 
 # Getting started guide
 ## Set up the document properties
