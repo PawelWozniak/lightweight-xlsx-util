@@ -36,7 +36,7 @@
   "name": "lightweight-xlsx-util",
   "namespace": "xlsx",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "62.0",
+  "sourceApiVersion": "63.0",
   "packageAliases": {
     "Lightweight - XLSX Util": "0HoP300000000jBKAQ",
     "Lightweight - XLSX Util (Unlocked)": "0HoP300000000knKAA"

@@ -1,13 +1,14 @@
 TODO
 - Speak to data cloud lady
-- Add additional test methods
 - Add few examples for dom doc and 
 - Update blog links before republish
 - finish readme (getting started guide, handy links ecma etc)
+- Update salesforce blog
 
+# Salesforce Apex - Lightweight - XLSX Util
+A Lightweight Salesforce Apex utility to read and write basic XLSX files based on the ECMA-376 standard fully on platform without the need for any external API calls for processing.
 
-# Lightweight - XLSX Util
-A Lightweight Salesforce Apex utility to read and write basic XLSX files based on the ECMA-376 standard fully on platform without the need for any external API calls for processing. The application is based on the `ZipWriter` and `ZipReader` classes from the compression namespace. These are currently in developer preview but should go GA in the Sprint 25 release.
+The application is based on the `ZipWriter` and `ZipReader` classes from the compression namespace. Due to this the library requires API version 63.0 (Spring '25)+
 
 We are limited to the Apex govenor limits, but nonetheless it can write pretty large worksheets synchronously and even larger asynchronously. If you need extremly large or complex files, you're probably better off using Salesforce Document Builder or a 3rd party application like Conga Composer.
 
@@ -18,8 +19,7 @@ The application structure is built in a flexible way so that if you need to exte
 The XML file structures are not rocket science, but for a file to be valid the markup is very (case) sensitive. If you make changes make sure to follow the standards exactly. Friendly warning: A single wrong capital in an XML element name can break your file, so test as often as you can.
 
 ## Blog
-- Salesforce.com Developer Blog:
-- 
+- Coming soon
 
 ## Package Info
 | Info | Value |
@@ -134,8 +134,8 @@ Making changes to anything in the sheets uses the worksheet index (`wi`), column
 |`void`     |`addTextCell(Integer wi, Integer ci, Integer ri, String v, Integer s)`             | Add a Text cell with style index|
 |`void`     |`addNumberCell(Integer wi, Integer ci, Integer ri, Integer v, Integer s)`          | Add an Integer cell with style index|
 |`void`     |`addNumberCell(Integer wi, Integer ci, Integer ri, Decimal v, Integer s)`          | Add a Decimal cell with style index|
-|`void`     |`addBooleanCell(Integer wi, Integer ci, Integer ri, Boolean v, Integer s)`         | Add a Boolean cell with style index|
-|`void`     |`addFormulaCell(Integer wi, Integer ci, Integer ri, Object v, String f, Integer s)`| Add a Formula cell with style index|
+|`void`     |`addBooleanCell(Integer wi, Integer ci, Integer ri, Boolean v, Integer s)`                 | Add a Boolean cell with style index|
+|`void`     |`addFormulaCell(Integer wi, Integer ci, Integer ri, Object v, String f, Integer s)`        | Add a Formula cell with style index|
 |`void`     |`addMergeCell(Integer wi, Integer startCi, Integer startRi, Integer endCi, Integer endRi))`| Merge cells together. Note: merge cells cannot overlap or your sheet won't work.|
 |`void`     |`addHyperLink(Integer wi, Integer ci, Integer ri, String location, String display)`        | Add a hyperlinked cell, note you need to add a text cell first before adding a hyperlink|
 |`void`     |`setRowStyle(Integer wi, Integer ri, Integer s)`               | Set a row's style index |
@@ -216,6 +216,21 @@ There is not really a roadmap as of now, but a few things I am planning to add a
 -   Native support to parse files directly to sObjects for better performance than the example in the examples folder (i.e. `xlsx.Parse.toSObject()`)
     Generic SObject Parsing is quite tricky and it would require to check the metadata to see if objects / fields exist. Adding support for this comes with a lot of potential issues as so much can go wrong with crappy data in the wrong field types for example. But it would be useful and the boiler plate code has bene written in the examples.
 
+# Additional resources
+## XLSX Performance
+- [Apex Zip Support Performance Test](https://medium.com/@justusvandenberg/apex-zip-support-performance-test-03bef1539ed6)
+- [Salesforce Apex Optimization: Large Strings vs Heap Size and CPU Time](https://medium.com/@justusvandenberg/salesforce-apex-optimization-large-strings-vs-heap-size-and-cpu-time-66ee6621ec26)
+- [Salesforce Apex Optimization: Maps vs Multi-Dimensional Arrays](https://medium.com/@justusvandenberg/salesforce-apex-optimization-maps-vs-multi-dimensional-arrays-lists-3703b9aaaf79)
+
+## XLSX Examples
+- [A Lightweight Salesforce Metadata API Apex Library](https://medium.com/@justusvandenberg/a-lightweight-salesforce-metadata-api-apex-library-47c0b4c34131)
+- [Programmatically Determine The Object Loading Order For Salesforce Data Migrations Using Apex](https://medium.com/@justusvandenberg/programmatically-determine-the-object-loading-order-for-salesforce-data-migrations-using-apex-1f65841531fb)
+- [Dynamically Handle Salesforce SOQL Subquery Response Data Using Apex](https://medium.com/@justusvandenberg/dynamically-handle-salesforce-soql-subquery-response-data-using-apex-8130bd0622aa)
+
+## XLSX Formatting
+- [ECMA-376 Standard](https://ecma-international.org/publications-and-standards/standards/ecma-376/)
+- [C-REX.net (Detailed documentation of the XML structures)](https://c-rex.net/samples/ooxml/e1/Whitepaper/structure.html)
+- [Open XML Explained by Wouter van Vugt (Whitepaper with the high level details of the XML structure)](https://www.brandwares.com/downloads/Open-XML-Explained.pdf)
 
 # Getting started guide
 ## Set up the document properties
@@ -290,18 +305,3 @@ b.enableAutoFilter(wi1);
 ## Build as Document or ContentVersion
 
 
-
-# Additional resources
-## XLSX Performance
-[Apex Zip Support Performance Test](https://medium.com/@justusvandenberg/apex-zip-support-performance-test-03bef1539ed6)
-[Salesforce Apex Optimization: Large Strings vs Heap Size and CPU Time](https://medium.com/@justusvandenberg/salesforce-apex-optimization-large-strings-vs-heap-size-and-cpu-time-66ee6621ec26)
-[Salesforce Apex Optimization: Maps vs Multi-Dimensional Arrays](https://medium.com/@justusvandenberg/salesforce-apex-optimization-maps-vs-multi-dimensional-arrays-lists-3703b9aaaf79)
-
-## XLSX Examples
-[A Lightweight Salesforce Metadata API Apex Library](https://medium.com/@justusvandenberg/a-lightweight-salesforce-metadata-api-apex-library-47c0b4c34131)
-[Programmatically Determine The Object Loading Order For Salesforce Data Migrations Using Apex](https://medium.com/@justusvandenberg/programmatically-determine-the-object-loading-order-for-salesforce-data-migrations-using-apex-1f65841531fb)
-[Dynamically Handle Salesforce SOQL Subquery Response Data Using Apex](https://medium.com/@justusvandenberg/dynamically-handle-salesforce-soql-subquery-response-data-using-apex-8130bd0622aa)
-
-## XLSX Formatting
-[ECMA-376 Standard]()
-[Open XML Explained by Wouter van Vugt](https://www.brandwares.com/downloads/Open-XML-Explained.pdf)

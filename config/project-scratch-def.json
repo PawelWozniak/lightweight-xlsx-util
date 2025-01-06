@@ -1,9 +1,9 @@
 {
-    "orgName": "Lightweight - XLSX - Util - Scratch Org",
+    "orgName": "Lightweight - XLSX - Util - Scratch Org (v63.0)",
     "edition" : "Developer",
+    "release" : "Preview",
     "features": [
-        "EnableSetPasswordInApi",
-        "ZipSupportInApex"
+        "EnableSetPasswordInApi"
     ],
     "language": "en_US",
     "country": "GB",

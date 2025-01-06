@@ -17,7 +17,7 @@ global with sharing class Builder {
      **                                          PRIVATE VARIABLES                                           **
      ** **************************************************************************************************** **/
     // Flag to switch bewteen shared and inline strings
-    private Boolean     useSharedStrings     = Constant.DEF_SHARED_STRINGS;
+    private Boolean     useSharedStrings = Constant.DEF_SHARED_STRINGS;
 
     // Set for the worksheet names to prevent duplicate names and to create the relationship XML file
     private Set<String> worksheetNames   = new Set<String>{};
@@ -248,7 +248,6 @@ global with sharing class Builder {
     /**
      * WORKSHEET SETTERS
      */
-
     /**
      * @description Method to manually pad the worksheet to improve performance
      *              This method should only be used when you know the number of cells and rows

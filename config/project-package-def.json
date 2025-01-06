@@ -1,0 +1,18 @@
+{
+    "orgName": "Lightweight - XLSX - Util - Scratch Org (v63.0)",
+    "edition" : "Developer",
+    "release" : "Preview",
+    "features": [
+        "EnableSetPasswordInApi"
+    ],
+    "language": "en_US",
+    "country": "GB",
+    "settings": {
+        "lightningExperienceSettings": {
+            "enableS1DesktopEnabled": true
+        },
+        "mobileSettings": {
+            "enableS1EncryptedStoragePref2": false
+        }
+    }   
+}

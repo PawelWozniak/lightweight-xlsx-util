@@ -1,7 +1,11 @@
 /**
- * @description Test class for the styles and the styles builder
- * @tests   StylesBuilder
- *          StylesXmlElement
+ * @author         Justus van den Berg (jfwberg@gmail.com)
+ * @date           January 2025
+ * @copyright      (c) 2025 Justus van den Berg
+ * @license        MIT (See LICENSE file in the project root)
+ * @description    Test class for the styles and the styles builder
+ * @tests          StylesBuilder
+ *                 StylesXmlElement
  */
 @IsTest
 private with sharing class StylesBuilderTest {

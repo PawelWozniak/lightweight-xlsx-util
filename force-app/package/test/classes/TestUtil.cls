@@ -1,5 +1,9 @@
 /**
- * @description Class containing utilities for Apex Unit Testing
+ * @author         Justus van den Berg (jfwberg@gmail.com)
+ * @date           January 2025
+ * @copyright      (c) 2025 Justus van den Berg
+ * @license        MIT (See LICENSE file in the project root)
+ * @description    Class containing utilities for Apex Unit Testing
  */
 @IsTest
 @TestVisible

@@ -1,7 +1,11 @@
 /**
- * @description Test class for the Parse and Build classes
- * @tests       Parse
- *              Build
+ * @author         Justus van den Berg (jfwberg@gmail.com)
+ * @date           January 2025
+ * @copyright      (c) 2025 Justus van den Berg
+ * @license        MIT (See LICENSE file in the project root)
+ * @description    Test class for the Parse and Build classes
+ * @tests          Parse
+ *                 Build
  */
 @IsTest
 @SuppressWarnings('PMD.OneDeclarationPerLine')
@@ -77,30 +81,52 @@ private with sharing class ParseTest {
         
         // Execute the tests
         Test.startTest();
-        Object[][][] documentResult             = Parse.toArray(
-                                                    new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
-                                                );
+        Object[][][] documentResult                 = Parse.toArray(
+                                                        new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
+                                                    );
 
-        Object[][][] contentVersionResult       = Parse.toArray(
-                                                    new Compression.ZipReader(Build.asContentVersion(b).VersionData).getEntriesMap(),
-                                                    new Set<Integer>{0,2}
-                                                );
+        Object[][][] contentVersionResult           = Parse.toArray(
+                                                        new Compression.ZipReader(Build.asContentVersion(b).VersionData).getEntriesMap(),
+                                                        new Set<Integer>{0,2}
+                                                    );
 
-        Object[][][] documentResultDomDoc       = Parse.toArrayDomDoc(
-                                                    new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
-        );
+        Object[][][] documentResultDomDoc           = Parse.toArrayDomDoc(
+                                                        new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
+                                                    );
 
-        Object[][][] contentVersionResultDomDoc = Parse.toArrayDomDoc(
-                                                    new Compression.ZipReader(Build.asContentVersion(b).VersionData).getEntriesMap(),
-                                                    new Set<Integer>{0,2}
-                                                );
+        Object[][][] contentVersionResultDomDoc     = Parse.toArrayDomDoc(
+                                                        new Compression.ZipReader(Build.asContentVersion(b).VersionData).getEntriesMap(),
+                                                        new Set<Integer>{0,2}
+                                                    );
+        
+        Object[][][] documentResultIv               = Parse.toArrayInverted(
+                                                        new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
+                                                    );
+
+        Object[][][] contentVersionResultIv         = Parse.toArrayInverted(
+                                                        new Compression.ZipReader(Build.asContentVersion(b).VersionData).getEntriesMap(),
+                                                        new Set<Integer>{0,2}
+                                                    );
+
+        Object[][][] documentResultDomDocIv         = Parse.toArrayInvertedDomDoc(
+                                                        new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
+                                                    );
+
+        Object[][][] contentVersionResultDomDocIv   = Parse.toArrayInvertedDomDoc(
+                                                        new Compression.ZipReader(Build.asContentVersion(b).VersionData).getEntriesMap(),
+                                                        new Set<Integer>{0,2}
+                                                    );
         Test.stopTest();
 
         // Validate we have the correct number of worksheets
-        Assert.areEqual(3,documentResult.size(),             'Unexpected number of worksheets');
-        Assert.areEqual(2,contentVersionResult.size(),       'Unexpected number of worksheets');
-        Assert.areEqual(3,documentResultDomDoc.size(),       'Unexpected number of worksheets');
-        Assert.areEqual(2,contentVersionResultDomDoc.size(), 'Unexpected number of worksheets');
+        Assert.areEqual(3,documentResult.size(),                'Unexpected number of worksheets');
+        Assert.areEqual(2,contentVersionResult.size(),          'Unexpected number of worksheets');
+        Assert.areEqual(3,documentResultDomDoc.size(),          'Unexpected number of worksheets');
+        Assert.areEqual(2,contentVersionResultDomDoc.size(),    'Unexpected number of worksheets');
+        Assert.areEqual(3,documentResultIv.size(),              'Unexpected number of worksheets');
+        Assert.areEqual(2,contentVersionResultIv.size(),        'Unexpected number of worksheets');
+        Assert.areEqual(3,documentResultDomDocIv.size(),        'Unexpected number of worksheets');
+        Assert.areEqual(2,contentVersionResultDomDocIv.size(),  'Unexpected number of worksheets');
 
         // Iterate all worksheets in all results and validate their output
         for (Integer i = 0, max=documentResult.size(); i < max; i++) {
@@ -120,6 +146,26 @@ private with sharing class ParseTest {
         // Iterate all worksheets in all results and validate their output
         for (Integer i = 0, max=contentVersionResultDomDoc.size(); i < max; i++) {
             validateCellValuesInArray(contentVersionResultDomDoc[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=documentResultIv.size(); i < max; i++) {
+            validateCellValuesInArray(documentResultIv[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=contentVersionResultIv.size(); i < max; i++) {
+            validateCellValuesInArray(contentVersionResultIv[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=documentResultDomDocIv.size(); i < max; i++) {
+            validateCellValuesInArray(documentResultDomDocIv[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=contentVersionResultDomDocIv.size(); i < max; i++) {
+            validateCellValuesInArray(contentVersionResultDomDocIv[i]);
         } 
     }
 
@@ -212,18 +258,23 @@ private with sharing class ParseTest {
         // Execute the tests
         Test.startTest();
 
-        Object[][][] arrayResult            = Parse.toArrayDomDoc(
-                                                new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
-                                            );
+        Object[][][]             arrayResult    = Parse.toArrayDomDoc(
+                                                    new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
+                                                );
 
-        List<Map<String,Object>> mapResult  = Parse.toMapDomDoc(
-                                                new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
-                                            );
+        Object[][][]             arrayResultIv  = Parse.toArrayInvertedDomDoc(
+                                                    new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
+                                                );
+
+        List<Map<String,Object>> mapResult      = Parse.toMapDomDoc(
+                                                    new Compression.ZipReader(Build.asDocument(b).body).getEntriesMap()
+                                                );
         Test.stopTest();
 
         // Validate we have the correct number of worksheets
-        Assert.areEqual(1,arrayResult.size(), 'Unexpected number of worksheets');
-        Assert.areEqual(1,mapResult.size(),   'Unexpected number of worksheets');
+        Assert.areEqual(1, arrayResult.size(),   'Unexpected number of worksheets');
+        Assert.areEqual(1, arrayResultIv.size(), 'Unexpected number of worksheets');
+        Assert.areEqual(1, mapResult.size(),     'Unexpected number of worksheets');
         
         // Validate cell values
         Assert.areEqual('Lalalalala',   String.valueOf( arrayResult[0][0][0]),   'Unexpected Cell value');
