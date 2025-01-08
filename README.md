@@ -1,11 +1,4 @@
-TODO
-- Speak to data cloud lady
-- Add few examples for dom doc and 
-- Update blog links before republish
-- finish readme (getting started guide, handy links ecma etc)
-- Update salesforce blog
-
-# Salesforce Apex - Lightweight - XLSX Util
+# Salesforce Apex - XLSX Util
 A Lightweight Salesforce Apex utility to read and write basic XLSX files based on the ECMA-376 standard fully on platform without the need for any external API calls for processing.
 
 The application is based on the `ZipWriter` and `ZipReader` classes from the compression namespace. Due to this the library requires API version 63.0 (Spring '25)+

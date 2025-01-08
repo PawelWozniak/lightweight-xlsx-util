@@ -18,7 +18,7 @@ try{
     // As data array
     Object[][][] xlsxDataArray = xlsx.Parse.toArray(
         new Compression.ZipReader(
-            [SELECT body FROM Document WHERE Id = '015Qz000004lyckIAA' LIMIT 1]?.Body
+            [SELECT body FROM Document WHERE Id = '015Pt0000033Q97IAE' LIMIT 1]?.Body
         ).getEntriesMap()
     );
 
@@ -67,7 +67,7 @@ try{
     // As data map list
     List<Map<String,Object>> xlsxDataMapList = xlsx.Parse.toMap(
         new Compression.ZipReader(
-            [SELECT body FROM Document WHERE Id = '015Qz000004jf7yIAA' LIMIT 1]?.Body
+            [SELECT body FROM Document WHERE Id = '015Pt0000033Q97IAE' LIMIT 1]?.Body
         ).getEntriesMap()
     );
 

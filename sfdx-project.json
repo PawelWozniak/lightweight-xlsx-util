@@ -27,7 +27,7 @@
     {
         "versionName": "v63.0 - 0.1",
         "versionNumber": "0.1.0.NEXT",
-        "path": "performance_tests",
+        "path": "performance_tests/remove_from_path_to_deploy",
         "default": false,
         "package": "Lightweight - XLSX Util Performance Test Support Classes",
         "versionDescription": "A path for easy deployment of the performance test classes"
@@ -36,7 +36,7 @@
   "name": "lightweight-xlsx-util",
   "namespace": "xlsx",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "63.0",
+  "sourceApiVersion": "62.0",
   "packageAliases": {
     "Lightweight - XLSX Util": "0HoP300000000jBKAQ",
     "Lightweight - XLSX Util (Unlocked)": "0HoP300000000knKAA"
