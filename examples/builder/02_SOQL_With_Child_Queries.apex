@@ -24,17 +24,17 @@ b.setDescription('An example of how you parse the result of a SOQL query directl
 b.addKeyword('SOQL');
 
 // Use labels instead of API Names in the header
-xlsx.SoqlBuilder.useLabels();
+SoqlBuilder.useLabels();
 
 // Metadata information for the fields is included in separate tabs
-xlsx.SoqlBuilder.includeMetadata();
+SoqlBuilder.includeMetadata();
 
 // Apply the default styling for SOQL Tabs to the builder
-xlsx.SoqlBuilder.applyDefaultStyles(b);
+SoqlBuilder.applyDefaultStyles(b);
 
 // Add the records to the SOQL Builder
 // This method should only run once to prevent strange behaviour
-xlsx.SoqlBuilder.addRecords(b, getObjectList());
+SoqlBuilder.addRecords(b, getObjectList());
 
 // Build the workbook as a document, insert it and get the link
 System.debug(

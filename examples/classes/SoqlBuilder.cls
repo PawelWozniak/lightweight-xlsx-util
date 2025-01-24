@@ -49,9 +49,9 @@ global with sharing class SoqlBuilder{
      * @description Method to enable the default XLSX Styles
      * @param b     The XLSX Builder class instance
      */
-    global static void applyDefaultStyles(Builder b){
+    global static void applyDefaultStyles(xlsx.Builder b){
         applyDefaultStyles = true;
-        StylesBuilder.populateDefaultStyles(b);
+        b.setIncludeDefaultStyles(true);
     }
     
 
@@ -60,7 +60,7 @@ global with sharing class SoqlBuilder{
      * @param b       The XLSX Builder class instance
      * @param records List of objects from either the API or serialized SObjects
      */
-    global static void addRecords(Builder b, Object[] records){
+    global static void addRecords(xlsx.Builder b, Object[] records){
         
         // Add a new sheet for each sObjectType returned from the SOQL parser
         for(SoqlParser.SObjectType soqlWorksheet : SoqlParser.create(records)){
@@ -92,7 +92,7 @@ global with sharing class SoqlBuilder{
                 b.addTextCell(
                     wi, ci, 0, 
                     useLabels ? soqlWorksheet.fields.get(fieldName).label : fieldName,
-                    applyDefaultStyles ? StylesBuilder.getHeaderStyleIndex(ci,0,endCi)  : null
+                    applyDefaultStyles ? xlsx.StylesBuilder.getHeaderStyleIndex(ci,0,endCi)  : null
                 );
                 
                 // Create the field name / index mapping
@@ -115,7 +115,7 @@ global with sharing class SoqlBuilder{
                     b.addTextCell(
                         wi, rCi, ri+1, 
                         soqlWorksheet.records[ri].get(fieldName).toString(),
-                        applyDefaultStyles ? StylesBuilder.getMainStyleIndex(rCi, ri+1, 0, endCi, max) : null
+                        applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(rCi, ri+1, 0, endCi, max) : null
                     );
 
                 }
@@ -136,7 +136,7 @@ global with sharing class SoqlBuilder{
      * @param b              The builder object to add the metadata to.
      * @param soqlWorksheet  The SOQL parser sObjectType to use for the metadata.
      */
-    private static void addMetadata(Builder b, SoqlParser.SObjectType soqlWorksheet){
+    private static void addMetadata(xlsx.Builder b, SoqlParser.SObjectType soqlWorksheet){
         
         // Create a worksheet for each sObjectType
         Integer wi = b.addWorksheet(soqlWorksheet.sObjectType + '.Metadata');
@@ -158,8 +158,8 @@ global with sharing class SoqlBuilder{
         };
 
         // Add the header row for each field, populate either name or label
-        b.addTextCell(wi, 0, ri, 'Attribute', applyDefaultStyles ? (StylesBuilder.getHeaderStyleIndex(0, 0, 1)+1) : null);
-        b.addTextCell(wi, 1, ri, 'Value',     applyDefaultStyles ? (StylesBuilder.getHeaderStyleIndex(0, 0, 1)+1) : null);
+        b.addTextCell(wi, 0, ri, 'Attribute', applyDefaultStyles ? (xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 1)+1) : null);
+        b.addTextCell(wi, 1, ri, 'Value',     applyDefaultStyles ? (xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 1)+1) : null);
         
         // Add an empty row
         ri++;
@@ -169,8 +169,8 @@ global with sharing class SoqlBuilder{
 
         // Add all sObject details
         for(String sObjectAttribute : sObjectMetadata.keySet()){
-            b.addTextCell(wi, 0, ri, sObjectAttribute,                                      applyDefaultStyles ? StylesBuilder.getMainStyleIndex(0, ri, 0, 1, endRi) : null);
-            b.addTextCell(wi, 1, ri, String.valueOf(sObjectMetadata.get(sObjectAttribute)), applyDefaultStyles ? StylesBuilder.getMainStyleIndex(1, ri, 0, 1, endRi) : null);
+            b.addTextCell(wi, 0, ri, sObjectAttribute,                                      applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 1, endRi) : null);
+            b.addTextCell(wi, 1, ri, String.valueOf(sObjectMetadata.get(sObjectAttribute)), applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 1, endRi) : null);
             ri++;
         }
 
@@ -178,9 +178,9 @@ global with sharing class SoqlBuilder{
         ri++;
 
         // Create the relationship Header
-        b.addTextCell( wi, 0, ri, 'Relationship Name', applyDefaultStyles ? StylesBuilder.getHeaderStyleIndex(0, 0, 1) : null);
-        b.addTextCell( wi, 1, ri, 'Relationship Path', applyDefaultStyles ? StylesBuilder.getHeaderStyleIndex(0, 0, 1) : null);                
-        b.addTextCell( wi, 2, ri, 'Relationship Depth',applyDefaultStyles ? StylesBuilder.getHeaderStyleIndex(0, 0, 1) : null);
+        b.addTextCell( wi, 0, ri, 'Relationship Name', applyDefaultStyles ? xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 1) : null);
+        b.addTextCell( wi, 1, ri, 'Relationship Path', applyDefaultStyles ? xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 1) : null);                
+        b.addTextCell( wi, 2, ri, 'Relationship Depth',applyDefaultStyles ? xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 1) : null);
 
         // Calculate the row index fror the last row so we can draw our style
         Integer endRelRi = (soqlWorksheet.relationships.size()-1) + ri;
@@ -192,9 +192,9 @@ global with sharing class SoqlBuilder{
             ri++;
 
             // Popualte relationship cells
-            b.addTextCell(   wi, 0, ri, relationshipName,                                       applyDefaultStyles ? StylesBuilder.getMainStyleIndex(0, ri, 0, 2, endRelRi) : null);
-            b.addTextCell(   wi, 1, ri, soqlWorksheet.relationships.get(relationshipName).field,applyDefaultStyles ? StylesBuilder.getMainStyleIndex(1, ri, 0, 2, endRelRi) : null);
-            b.addNumberCell( wi, 2, ri, soqlWorksheet.relationships.get(relationshipName).depth,applyDefaultStyles ? StylesBuilder.getMainStyleIndex(2, ri, 0, 2, endRelRi) : null);
+            b.addTextCell(   wi, 0, ri, relationshipName,                                       applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 2, endRelRi) : null);
+            b.addTextCell(   wi, 1, ri, soqlWorksheet.relationships.get(relationshipName).field,applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 2, endRelRi) : null);
+            b.addNumberCell( wi, 2, ri, soqlWorksheet.relationships.get(relationshipName).depth,applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(2, ri, 0, 2, endRelRi) : null);
         }
 
         // Add a blank line before the fields table
@@ -207,7 +207,7 @@ global with sharing class SoqlBuilder{
 
         // Add the header fields
         for(Integer hci=0,hcimax=fieldHeaders.size(); hci < hcimax; hci++){
-            b.addTextCell (wi, hci, ri, fieldHeaders[hci],applyDefaultStyles ? StylesBuilder.getHeaderStyleIndex(hci, 0, hcimax-1) : null);
+            b.addTextCell (wi, hci, ri, fieldHeaders[hci],applyDefaultStyles ? xlsx.StylesBuilder.getHeaderStyleIndex(hci, 0, hcimax-1) : null);
         }
 
         // Add the number of rows for the correct offset for the styles
@@ -220,13 +220,13 @@ global with sharing class SoqlBuilder{
             ri++;
 
             // Popualte field cells
-            b.addTextCell(      wi, 0, ri, fieldName,applyDefaultStyles ? StylesBuilder.getMainStyleIndex(0, ri, 0, 6, endFieldRi) : null);
-            b.addTextCell(      wi, 1, ri, soqlWorksheet.fields.get(fieldName).label,                   applyDefaultStyles ? StylesBuilder.getMainStyleIndex(1, ri, 0, 6, endFieldRi) : null);
-            b.addTextCell(      wi, 2, ri, soqlWorksheet.fields.get(fieldName).type,                    applyDefaultStyles ? StylesBuilder.getMainStyleIndex(2, ri, 0, 6, endFieldRi) : null);
-            b.addTextCell(      wi, 3, ri, soqlWorksheet.fields.get(fieldName).relationshipName,        applyDefaultStyles ? StylesBuilder.getMainStyleIndex(3, ri, 0, 6, endFieldRi) : null);
-            b.addBooleanCell(   wi, 4, ri, soqlWorksheet.fields.get(fieldName).externalId,              applyDefaultStyles ? StylesBuilder.getMainStyleIndex(4, ri, 0, 6, endFieldRi) : null);
-            b.addBooleanCell(   wi, 5, ri, soqlWorksheet.fields.get(fieldName).masterDetail ?? false,   applyDefaultStyles ? StylesBuilder.getMainStyleIndex(5, ri, 0, 6, endFieldRi) : null);
-            b.addBooleanCell(   wi, 6, ri, soqlWorksheet.fields.get(fieldName).readOnly,                applyDefaultStyles ? StylesBuilder.getMainStyleIndex(6, ri, 0, 6, endFieldRi) : null);   
+            b.addTextCell(      wi, 0, ri, fieldName,applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 6, endFieldRi) : null);
+            b.addTextCell(      wi, 1, ri, soqlWorksheet.fields.get(fieldName).label,                   applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 6, endFieldRi) : null);
+            b.addTextCell(      wi, 2, ri, soqlWorksheet.fields.get(fieldName).type,                    applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(2, ri, 0, 6, endFieldRi) : null);
+            b.addTextCell(      wi, 3, ri, soqlWorksheet.fields.get(fieldName).relationshipName,        applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(3, ri, 0, 6, endFieldRi) : null);
+            b.addBooleanCell(   wi, 4, ri, soqlWorksheet.fields.get(fieldName).externalId,              applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(4, ri, 0, 6, endFieldRi) : null);
+            b.addBooleanCell(   wi, 5, ri, soqlWorksheet.fields.get(fieldName).masterDetail ?? false,   applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(5, ri, 0, 6, endFieldRi) : null);
+            b.addBooleanCell(   wi, 6, ri, soqlWorksheet.fields.get(fieldName).readOnly,                applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(6, ri, 0, 6, endFieldRi) : null);   
         }
     }    
 }

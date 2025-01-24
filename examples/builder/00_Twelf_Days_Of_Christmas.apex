@@ -125,7 +125,7 @@ private static String insertDocumentAndGetDownloadLink(Document d){
  * N Days(12) of Christmas Example: An Excel sheet to answer the age old Question:
  * How many presents did my true love gave to me after N(12) days?
  */
-private static void buildNdaysOfChristmasWorksheet(Builder b, String[] gifts){
+private static void buildNdaysOfChristmasWorksheet(xlsx.Builder b, String[] gifts){
 
     // Get the number of gifts
     Integer numberOfGifts = gifts.size();
@@ -199,8 +199,8 @@ private static void buildNdaysOfChristmasWorksheet(Builder b, String[] gifts){
     for(Integer columnIndex = 1; columnIndex<=numberOfGifts; columnIndex++){
         
         // Get the column names i + the first column as offset
-        String columnStart = CommonUtil.cellName(columnIndex, 1);
-        String columnEnd   = CommonUtil.cellName(columnIndex, numberOfGifts);
+        String columnStart = xlsx.CommonUtil.cellName(columnIndex, 1);
+        String columnEnd   = xlsx.CommonUtil.cellName(columnIndex, numberOfGifts);
         
         // Calcualte the total
         Integer typeTotal = (numberOfGifts+1 - columnIndex) * columnIndex;
@@ -219,8 +219,8 @@ private static void buildNdaysOfChristmasWorksheet(Builder b, String[] gifts){
     for(Integer rowIndex=1; rowIndex<=numberOfGifts; rowIndex++){
 
         // The start cell is 1 (column B) and the end cell is the Last column
-        String rowStartCell = CommonUtil.cellName(1,rowIndex);
-        String rowEndCell   = CommonUtil.cellName(numberOfGifts, rowIndex);
+        String rowStartCell = xlsx.CommonUtil.cellName(1,rowIndex);
+        String rowEndCell   = xlsx.CommonUtil.cellName(numberOfGifts, rowIndex);
 
         // Calculate the day total
         Integer dayTotal = 0;

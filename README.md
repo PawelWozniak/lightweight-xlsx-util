@@ -15,12 +15,12 @@ The XML file structures are not rocket science, but for a file to be valid the m
 - Coming soon
 
 ## Package Info
-| Info | Value |
-|---|---|
-|Name|Lightweight - XLSX Builder|
-|Version|0.1.0-1|
-|Managed Installation URL | */packaging/installPackage.apexp?p0=xxx* |
-|Unlocked Installation URL| */packaging/installPackage.apexp?p0=xxx* |
+| Info | Value | Options|
+|---|---|----|
+|Name|Lightweight - XLSX Builder||
+|Version|0.1.0||
+|Managed Installation URL | */packaging/installPackage.apexp?p0=04tP30000010lw1IAA* |install|
+|Unlocked Installation URL| */packaging/installPackage.apexp?p0=04tP30000010p0LIAQ* |install|
 
 ## Parse Excel files
 Parsing is done using the `Parse` class in the `xlsx` namespace. We can parse to two different formats: a *multi dimensional array* or a *list of maps*. In the array format the first list represents the worksheet, the child the rows and the grand child the cells.

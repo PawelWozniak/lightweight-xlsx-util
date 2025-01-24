@@ -42,14 +42,14 @@ b.addTextCell(0, 7, 0, 'Searchable');
 
 // Apply the header cell styles
 // getHeaderStyleIndex(Integer ci, Integer startCi, Integer endCi)
-b.setCellStyle(0, 0, 0, StylesBuilder.getHeaderStyleIndex(0, 0, 7));
-b.setCellStyle(0, 1, 0, StylesBuilder.getHeaderStyleIndex(1, 0, 7));
-b.setCellStyle(0, 2, 0, StylesBuilder.getHeaderStyleIndex(2, 0, 7));
-b.setCellStyle(0, 3, 0, StylesBuilder.getHeaderStyleIndex(3, 0, 7));
-b.setCellStyle(0, 4, 0, StylesBuilder.getHeaderStyleIndex(4, 0, 7));
-b.setCellStyle(0, 5, 0, StylesBuilder.getHeaderStyleIndex(5, 0, 7));
-b.setCellStyle(0, 6, 0, StylesBuilder.getHeaderStyleIndex(6, 0, 7));
-b.setCellStyle(0, 7, 0, StylesBuilder.getHeaderStyleIndex(7, 0, 7));
+b.setCellStyle(0, 0, 0, xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 7));
+b.setCellStyle(0, 1, 0, xlsx.StylesBuilder.getHeaderStyleIndex(1, 0, 7));
+b.setCellStyle(0, 2, 0, xlsx.StylesBuilder.getHeaderStyleIndex(2, 0, 7));
+b.setCellStyle(0, 3, 0, xlsx.StylesBuilder.getHeaderStyleIndex(3, 0, 7));
+b.setCellStyle(0, 4, 0, xlsx.StylesBuilder.getHeaderStyleIndex(4, 0, 7));
+b.setCellStyle(0, 5, 0, xlsx.StylesBuilder.getHeaderStyleIndex(5, 0, 7));
+b.setCellStyle(0, 6, 0, xlsx.StylesBuilder.getHeaderStyleIndex(6, 0, 7));
+b.setCellStyle(0, 7, 0, xlsx.StylesBuilder.getHeaderStyleIndex(7, 0, 7));
 
 // Update the colum width for the number column
 b.setColWidth(0,0,4);
@@ -91,7 +91,7 @@ private static String insertDocumentAndGetDownloadLink(Document d){
 }
 
 
-private static void buildCustomObjectWorksheet(Builder b, SObjectType[] objects){
+private static void buildCustomObjectWorksheet(xlsx.Builder b, SObjectType[] objects){
     
     // Extract the number of objects so we can style the bottom row
     // 1 Header rows + objects size - 1 for zero index to even it out
@@ -104,7 +104,7 @@ private static void buildCustomObjectWorksheet(Builder b, SObjectType[] objects)
 }
 
 
-private static void buildCustObjSheets(Builder b, Schema.DescribeSObjectResult dsr, Integer ri, Integer lastRowIndex){
+private static void buildCustObjSheets(xlsx.Builder b, Schema.DescribeSObjectResult dsr, Integer ri, Integer lastRowIndex){
 
     // In this example give me all objects that I can read, query and that have a key prefix
     if(dsr.isAccessible() && dsr.isQueryable() && dsr.getKeyPrefix() != null){
@@ -124,14 +124,14 @@ private static void buildCustObjSheets(Builder b, Schema.DescribeSObjectResult d
 
         // Apply default styling
         // getMainStyleIndex(Integer ci, Integer ri, Integer startCi, Integer endCi, Integer endRi)
-        b.setCellStyle(0, 0, ri, StylesBuilder.getMainStyleIndex(0, ri, 0, 7, lastRowIndex));
-        b.setCellStyle(0, 1, ri, StylesBuilder.getMainStyleIndex(1, ri, 0, 7, lastRowIndex));
-        b.setCellStyle(0, 2, ri, StylesBuilder.getMainStyleIndex(2, ri, 0, 7, lastRowIndex));
-        b.setCellStyle(0, 3, ri, StylesBuilder.getMainStyleIndex(3, ri, 0, 7, lastRowIndex));
-        b.setCellStyle(0, 4, ri, StylesBuilder.getMainStyleIndex(4, ri, 0, 7, lastRowIndex));
-        b.setCellStyle(0, 5, ri, StylesBuilder.getMainStyleIndex(5, ri, 0, 7, lastRowIndex));
-        b.setCellStyle(0, 6, ri, StylesBuilder.getMainStyleIndex(6, ri, 0, 7, lastRowIndex));
-        b.setCellStyle(0, 7, ri, StylesBuilder.getMainStyleIndex(7, ri, 0, 7, lastRowIndex));
+        b.setCellStyle(0, 0, ri, xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 7, lastRowIndex));
+        b.setCellStyle(0, 1, ri, xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 7, lastRowIndex));
+        b.setCellStyle(0, 2, ri, xlsx.StylesBuilder.getMainStyleIndex(2, ri, 0, 7, lastRowIndex));
+        b.setCellStyle(0, 3, ri, xlsx.StylesBuilder.getMainStyleIndex(3, ri, 0, 7, lastRowIndex));
+        b.setCellStyle(0, 4, ri, xlsx.StylesBuilder.getMainStyleIndex(4, ri, 0, 7, lastRowIndex));
+        b.setCellStyle(0, 5, ri, xlsx.StylesBuilder.getMainStyleIndex(5, ri, 0, 7, lastRowIndex));
+        b.setCellStyle(0, 6, ri, xlsx.StylesBuilder.getMainStyleIndex(6, ri, 0, 7, lastRowIndex));
+        b.setCellStyle(0, 7, ri, xlsx.StylesBuilder.getMainStyleIndex(7, ri, 0, 7, lastRowIndex));
         
         // Add a link to the name cell to go to the matching tab
         b.addHyperLink(
@@ -165,12 +165,12 @@ private static void buildCustObjSheets(Builder b, Schema.DescribeSObjectResult d
         b.addTextCell(wi, 6, 0, ' ');
         
         // Add style to the top header row
-        b.setCellStyle(wi, 1, 0, StylesBuilder.getHeaderStyleIndex(1, 0, 6));
-        b.setCellStyle(wi, 2, 0, StylesBuilder.getHeaderStyleIndex(2, 0, 6));
-        b.setCellStyle(wi, 3, 0, StylesBuilder.getHeaderStyleIndex(3, 0, 6));
-        b.setCellStyle(wi, 4, 0, StylesBuilder.getHeaderStyleIndex(4, 0, 6));
-        b.setCellStyle(wi, 5, 0, StylesBuilder.getHeaderStyleIndex(5, 0, 6));
-        b.setCellStyle(wi, 6, 0, StylesBuilder.getHeaderStyleIndex(6, 0, 6));
+        b.setCellStyle(wi, 1, 0, xlsx.StylesBuilder.getHeaderStyleIndex(1, 0, 6));
+        b.setCellStyle(wi, 2, 0, xlsx.StylesBuilder.getHeaderStyleIndex(2, 0, 6));
+        b.setCellStyle(wi, 3, 0, xlsx.StylesBuilder.getHeaderStyleIndex(3, 0, 6));
+        b.setCellStyle(wi, 4, 0, xlsx.StylesBuilder.getHeaderStyleIndex(4, 0, 6));
+        b.setCellStyle(wi, 5, 0, xlsx.StylesBuilder.getHeaderStyleIndex(5, 0, 6));
+        b.setCellStyle(wi, 6, 0, xlsx.StylesBuilder.getHeaderStyleIndex(6, 0, 6));
 
         // Make the header row size bigger
         b.setRowHeight(wi,0,20);
@@ -185,13 +185,13 @@ private static void buildCustObjSheets(Builder b, Schema.DescribeSObjectResult d
         b.addTextCell(wi, 6, 1, 'Related to');
 
         // Add style to the top header row
-        b.setCellStyle(wi, 0, 1, StylesBuilder.getHeaderStyleIndex(0, 0, 6));
-        b.setCellStyle(wi, 1, 1, StylesBuilder.getHeaderStyleIndex(1, 0, 6));
-        b.setCellStyle(wi, 2, 1, StylesBuilder.getHeaderStyleIndex(2, 0, 6));
-        b.setCellStyle(wi, 3, 1, StylesBuilder.getHeaderStyleIndex(3, 0, 6));
-        b.setCellStyle(wi, 4, 1, StylesBuilder.getHeaderStyleIndex(4, 0, 6));
-        b.setCellStyle(wi, 5, 1, StylesBuilder.getHeaderStyleIndex(5, 0, 6));
-        b.setCellStyle(wi, 6, 1, StylesBuilder.getHeaderStyleIndex(6, 0, 6));
+        b.setCellStyle(wi, 0, 1, xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 6));
+        b.setCellStyle(wi, 1, 1, xlsx.StylesBuilder.getHeaderStyleIndex(1, 0, 6));
+        b.setCellStyle(wi, 2, 1, xlsx.StylesBuilder.getHeaderStyleIndex(2, 0, 6));
+        b.setCellStyle(wi, 3, 1, xlsx.StylesBuilder.getHeaderStyleIndex(3, 0, 6));
+        b.setCellStyle(wi, 4, 1, xlsx.StylesBuilder.getHeaderStyleIndex(4, 0, 6));
+        b.setCellStyle(wi, 5, 1, xlsx.StylesBuilder.getHeaderStyleIndex(5, 0, 6));
+        b.setCellStyle(wi, 6, 1, xlsx.StylesBuilder.getHeaderStyleIndex(6, 0, 6));
 
         // Start the row index at 2 because we have a header and a sub header
         Integer rowIndex = 2;
@@ -214,9 +214,9 @@ private static void buildCustObjSheets(Builder b, Schema.DescribeSObjectResult d
 }
 
 // Create a row of cells
-private static void addFieldCells(Builder b, Integer wi, Integer ri, Schema.DescribeFieldResult dfr, Integer lastFieldRowIndex){
+private static void addFieldCells(xlsx.Builder b, Integer wi, Integer ri, Schema.DescribeFieldResult dfr, Integer lastFieldRowIndex){
     // Add a link back to the index tab
-    b.addTextCell( wi, 0, 0, 'Index', StylesBuilder.getHeaderStyleIndex(0, 0, 1));
+    b.addTextCell( wi, 0, 0, 'Index', xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 1));
     b.addHyperLink(wi, 0, 0, '\'Index\'!A1', 'Index');
 
     // Add cells
@@ -229,11 +229,11 @@ private static void addFieldCells(Builder b, Integer wi, Integer ri, Schema.Desc
     b.addTextCell(wi, 6, ri, String.valueOf((dfr.getType() == Schema.DisplayType.REFERENCE && dfr.getReferenceTo().size() > 0) ? String.valueOf(dfr.getReferenceTo()[0]) : ''));
 
     // Add styles
-    b.setCellStyle(wi, 0, ri,  StylesBuilder.getMainStyleIndex(0, ri, 0, 6, lastFieldRowIndex));
-    b.setCellStyle(wi, 1, ri,  StylesBuilder.getMainStyleIndex(1, ri, 0, 6, lastFieldRowIndex));
-    b.setCellStyle(wi, 2, ri,  StylesBuilder.getMainStyleIndex(2, ri, 0, 6, lastFieldRowIndex));
-    b.setCellStyle(wi, 3, ri,  StylesBuilder.getMainStyleIndex(3, ri, 0, 6, lastFieldRowIndex));
-    b.setCellStyle(wi, 4, ri,  StylesBuilder.getMainStyleIndex(4, ri, 0, 6, lastFieldRowIndex));
-    b.setCellStyle(wi, 5, ri,  StylesBuilder.getMainStyleIndex(5, ri, 0, 6, lastFieldRowIndex));
-    b.setCellStyle(wi, 6, ri,  StylesBuilder.getMainStyleIndex(6, ri, 0, 6, lastFieldRowIndex));    
+    b.setCellStyle(wi, 0, ri,  xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 6, lastFieldRowIndex));
+    b.setCellStyle(wi, 1, ri,  xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 6, lastFieldRowIndex));
+    b.setCellStyle(wi, 2, ri,  xlsx.StylesBuilder.getMainStyleIndex(2, ri, 0, 6, lastFieldRowIndex));
+    b.setCellStyle(wi, 3, ri,  xlsx.StylesBuilder.getMainStyleIndex(3, ri, 0, 6, lastFieldRowIndex));
+    b.setCellStyle(wi, 4, ri,  xlsx.StylesBuilder.getMainStyleIndex(4, ri, 0, 6, lastFieldRowIndex));
+    b.setCellStyle(wi, 5, ri,  xlsx.StylesBuilder.getMainStyleIndex(5, ri, 0, 6, lastFieldRowIndex));
+    b.setCellStyle(wi, 6, ri,  xlsx.StylesBuilder.getMainStyleIndex(6, ri, 0, 6, lastFieldRowIndex));    
 }

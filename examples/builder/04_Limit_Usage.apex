@@ -26,7 +26,7 @@ b.addKeyword('Usage');
 Integer wi = b.addWorksheet('Limit Usage');
 
 // Give our tab a festive color (random color)
-b.setTabColor(wi, CommonUtil.randomHtmlHexColorCode());
+b.setTabColor(wi, xlsx.CommonUtil.randomHtmlHexColorCode());
 
 // Enable the filter options for the first row
 b.setAutoFilter(wi,true);
@@ -55,7 +55,7 @@ for(String key : OrgLimits.getMap().keySet()){
 
 // add header cells
 for (Integer ci = 0,ciMax=headerFields.size(); ci < ciMax; ci++) {
-    b.addTextCell(wi,ci,0,headerFields[ci],StylesBuilder.getHeaderStyleIndex(0, ci, headerFields.size()-1));
+    b.addTextCell(wi,ci,0,headerFields[ci],xlsx.StylesBuilder.getHeaderStyleIndex(0, ci, headerFields.size()-1));
 }
 
 // Populate the rows with data
@@ -67,7 +67,7 @@ for(Integer ri=0, riMax=dataArray.size()-1;ri<=riMax;ri++){
                 ci,
                 ri+1, // +1 for the header offset
                 String.valueOf(dataArray[ri][ci]),
-                StylesBuilder.getMainStyleIndex(ci, ri+1, 0, ciMax, riMax+1)
+                xlsx.StylesBuilder.getMainStyleIndex(ci, ri+1, 0, ciMax, riMax+1)
             );
         }else{
             b.addNumberCell(
@@ -75,7 +75,7 @@ for(Integer ri=0, riMax=dataArray.size()-1;ri<=riMax;ri++){
                 ci,
                 ri+1, // +1 for the header offset
                 Integer.valueOf(dataArray[ri][ci]),
-                StylesBuilder.getMainStyleIndex(ci, ri+1, 0, ciMax, riMax+1)
+                xlsx.StylesBuilder.getMainStyleIndex(ci, ri+1, 0, ciMax, riMax+1)
             );
         }
     }

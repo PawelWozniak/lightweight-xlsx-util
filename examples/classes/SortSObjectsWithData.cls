@@ -57,7 +57,7 @@ public with sharing class SortSObjectsWithData{
     
         // Create new request
         HttpRequest request = new HttpRequest();
-        request.setEndpoint(URL.getOrgDomainUrl().toExternalForm() + '/services/data/v62.0/limits/recordCount');
+        request.setEndpoint(URL.getOrgDomainUrl().toExternalForm() + '/services/data/v63.0/limits/recordCount');
         request.setMethod('GET');
         request.setHeader('Content-Type', 'application/json;charset=UTF-8');
         request.setHeader('Authorization', 'Bearer ' + userInfo.getSessionId());
