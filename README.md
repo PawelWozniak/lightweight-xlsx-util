@@ -7,20 +7,19 @@ We are limited to the Apex govenor limits, but nonetheless it can write pretty l
 
 The library comes with the most common functionalities like freezing rows, merging cells, create hyperlinks and the majority of the styling options. There is no support for table styles, charts or images at this time.
 
-The application structure is built in a flexible way so that if you need to extend the application with specific functions, you can easily add additional XML elements as per the ECMA-376 - Office Open XML standard.
-
-The XML file structures are not rocket science, but for a file to be valid the markup is very (case) sensitive. If you make changes make sure to follow the standards exactly. Friendly warning: A single wrong capital in an XML element name can break your file, so test as often as you can.
 
 ## Blog
 - Coming soon
 
 ## Package Info
-| Info | Value | Options|
-|---|---|----|
+| Info | Value | ||
+|---|---|---|---|
 |Name|Lightweight - XLSX Builder||
 |Version|0.1.0||
-|Managed Installation URL | */packaging/installPackage.apexp?p0=04tP30000010lw1IAA* |install|
-|Unlocked Installation URL| */packaging/installPackage.apexp?p0=04tP30000010p0LIAQ* |install|
+|**Managed** | `sf package install --wait 30 --security-type AllUsers --package 04tP30000010lw1IAA` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP30000010lw1IAA)|[Install in Sandbox](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP30000010lw1IAA)|
+|**Unlocked**| `sf package install --wait 30 --security-type AllUsers --package 04tP30000010p0LIAQ` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP30000010p0LIAQ)|[Install in Sandbox](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP30000010p0LIAQ)|
+
+
 
 ## Parse Excel files
 Parsing is done using the `Parse` class in the `xlsx` namespace. We can parse to two different formats: a *multi dimensional array* or a *list of maps*. In the array format the first list represents the worksheet, the child the rows and the grand child the cells.
