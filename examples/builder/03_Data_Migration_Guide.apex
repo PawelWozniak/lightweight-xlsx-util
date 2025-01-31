@@ -7,6 +7,8 @@
  *                 all sObjects that contain data
  * 
  * @note           REQUIRES SortUtil and SortSObjectsWithData classes to be in the org
+ * 
+ * - https://medium.com/@justusvandenberg/programmatically-determine-the-object-loading-order-for-salesforce-data-migrations-using-apex-1f65841531fb
  */
 // Create a new builder
 xlsx.Builder b = new xlsx.Builder();

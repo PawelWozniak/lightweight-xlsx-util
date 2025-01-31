@@ -1,4 +1,4 @@
-REM --------------- REQUIRED FOR EXAMPLES --------------------
+REM --------------- REQUIRED FOR EXAMPLES ONLY --------------------
 rem Lightweight - Debug Util 0.1
 sf package install --package 04t4K000002WF5uQAG -w 30
 

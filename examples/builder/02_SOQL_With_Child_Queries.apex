@@ -7,6 +7,10 @@
  *                 For each sOBject
  * 
  * @note           REQUIRES SoqlParser and SoqlBuilder classes to be in the org
+ * 
+ * - https://medium.com/@justusvandenberg/dynamically-handle-salesforce-soql-subquery-response-data-using-apex-8130bd0622aa
+ * - https://www.thiscodeworks.com/apex-soqltableparser-soql-subqueries-to-a-single-flat-table/66ba81bc2e62a20014b9150c
+ * - https://www.thiscodeworks.com/apex-soqlmultitableparser-soql-subqueries-to-multiple-individual-tables/66ba816f2e62a20014b913aa
  */
 // Create a new builder
 xlsx.Builder b = new xlsx.Builder();

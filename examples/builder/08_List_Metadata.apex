@@ -6,6 +6,8 @@
  * @description    Example of you can export your org's metadata details to an Excel sheet
  * @requires       Lightweight - SOAP Util v0.2 (/packaging/installPackage.apexp?p0=04tP3000000uNzdIAE)
  * @note           This is a bad implementation, but should give you an idea of how to use the builder
+ * 
+ * - https://medium.com/@justusvandenberg/a-lightweight-salesforce-metadata-api-apex-library-47c0b4c34131
  */
 // Create a new builder
 xlsx.Builder b = new xlsx.Builder();

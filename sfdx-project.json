@@ -15,22 +15,6 @@
       "default": false,
       "package": "Lightweight - XLSX Util (Unlocked)",
       "versionDescription": "A lightweight library to build and parse Excel(XLSX) files"
-    },
-    {
-      "versionName": "v63.0 - 0.1",
-      "versionNumber": "0.1.0.NEXT",
-      "path": "examples",
-      "default": false,
-      "package": "Lightweight - XLSX Util Example Support Classes",
-      "versionDescription": "A path for easy deployment of the example support classes"
-    },
-    {
-      "versionName": "v63.0 - 0.1",
-      "versionNumber": "0.1.0.NEXT",
-      "path": "performance_tests/remove_from_path_to_deploy",
-      "default": false,
-      "package": "Lightweight - XLSX Util Performance Test Support Classes",
-      "versionDescription": "A path for easy deployment of the performance test classes"
     }
   ],
   "name": "lightweight-xlsx-util",
