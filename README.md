@@ -12,6 +12,7 @@ The library comes with the most common functionalities like freezing rows, mergi
 - Coming soon
 
 ## Package Info
+**!! Please note that your org needs to be on the Spring '25 release (v63.0)  for the package to be availible !!**
 | Info | Value | ||
 |---|---|---|---|
 |Name|Lightweight - XLSX Builder||
