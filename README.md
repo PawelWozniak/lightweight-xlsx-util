@@ -9,7 +9,8 @@ The library comes with the most common functionalities like freezing rows, mergi
 
 
 ## Blog
-- Coming soon
+- [Salesforce developer Blog: Reading Excel Files Using the Apex Zip Functionality](https://developer.salesforce.com/blogs/2025/02/reading-excel-files-using-the-apex-zip-functionality)
+- [Medium Article: Creating Excel (XLSX) Files Using The New Apex Zip Functionality](https://medium.com/@justusvandenberg/creating-excel-xlsx-files-using-the-new-apex-zip-functionality-8372c6689a10)
 
 ## Package Info
 **!! Please note that your org needs to be on the Spring '25 release (v63.0)  for the package to be availible !!**
