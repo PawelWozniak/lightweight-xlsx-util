@@ -8,7 +8,7 @@
 // Create a new builder
 xlsx.Builder b = new xlsx.Builder();
 
-// This option createss the default set of "table" styles
+// This option creates the default set of "table" styles
 // Can be used to use a default styling for all sheets, (will take a small performance hit)
 b.setIncludeDefaultStyles(true);
  

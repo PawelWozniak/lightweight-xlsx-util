@@ -37,7 +37,7 @@ SoqlBuilder.includeMetadata();
 SoqlBuilder.applyDefaultStyles(b);
 
 // Add the records to the SOQL Builder
-// This method should only run once to prevent strange behaviour
+// This method should only run once to prevent strange behavior
 SoqlBuilder.addRecords(b, getObjectList());
 
 // Build the workbook as a document, insert it and get the link
@@ -62,7 +62,7 @@ private static String insertDocumentAndGetDownloadLink(Document d){
 }
 
 /**
- * Method to get recrods from a Query as an example
+ * Method to get records from a Query as an example
  */
 private Object[] getObjectList(){
     return (Object[])JSON.deserializeUntyped(JSON.serialize([

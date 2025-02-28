@@ -11,7 +11,7 @@ xlsx.Builder b = new xlsx.Builder();
 // Configure the builder to use the shared strings index instead of inline strings
 b.setUseSharedStrings(true);
 
-// This option createss the default set of "table" styles
+// This option creates the default set of "table" styles
 // Can be used to use a default styling for all sheets, (will take a small performance hit)
 b.setIncludeDefaultStyles(true);
 
@@ -51,7 +51,7 @@ b.addTextCell(wi, 6, 0, 'Deletable',      StylesBuilder.getHeaderStyleIndex(6, 0
 b.addTextCell(wi, 7, 0, 'Custom Setting', StylesBuilder.getHeaderStyleIndex(7, 0, lastColumnIndex));
 
 
-// Create the service Object that queries the record useage
+// Create the service Object that queries the record usage
 StorageUsageService sus = new StorageUsageService();
 
 // Add data rows and cells
@@ -143,7 +143,7 @@ public class StorageUsageService{
 
         }else{
             // I cannot be bothered with error handling for this, so simply put the response to read here
-            System.debug('Reponse code NOT OK: ' + response.getStatusCode());
+            System.debug('Response code NOT OK: ' + response.getStatusCode());
             System.debug('Response Body: ' + response.getBody());
         }
     }
@@ -173,7 +173,7 @@ public class StorageUsage implements Comparable{
         this.name  = (String) objMap.get('name');
         this.count = (Integer)objMap.get('count');
         
-        // Get describe for the sObject and extract the child relationships and assing to the object
+        // Get describe for the sObject and extract the child relationships and assign to the object
         Schema.DescribeSObjectResult dsr = 	gd.get(this.name).getDescribe(SObjectDescribeOptions.DEFERRED);
 
         // Set values

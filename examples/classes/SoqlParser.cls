@@ -315,7 +315,7 @@ public with sharing class SoqlParser {
         // Extract method for performance so it's not looped
         String relationshipName = fieldPath.substringAfterLast('.');
 
-        // Iterate all the child relationships until the rihgt one is found
+        // Iterate all the child relationships until the right one is found
         for(Schema.ChildRelationship cr : sObjectDescribeMap.get(node.currentSObject).childrelationships  ){
             if(cr.relationshipname == relationshipName){
                 node.currentSObject = String.valueOf(cr.childsobject);

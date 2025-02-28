@@ -63,11 +63,11 @@ try{
         // It needs to be a list so we can simply reference it by index for performance reasons
         String[] fieldNames = new String[]{};
 
-        // Create alist of field names so we can reference the display type based on an index
+        // Create a list of field names so we can reference the display type based on an index
         Schema.DisplayType[] fieldTypes = new Schema.DisplayType[]{};
 
         // Create a check list where we can use an index to determine if a fields needs to be skipped
-        // This allows for a single check. Same performance trick as above. An index reference is the fastests
+        // This allows for a single check. Same performance trick as above. An index reference is the fastest
         Boolean[] skipFields =  new Boolean[]{};
 
         // Place to store the field describes for the current sObject

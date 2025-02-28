@@ -306,7 +306,7 @@ private with sharing class ParseTest {
 
 
     /**
-     * @description method to validate cell values for multiple workheets
+     * @description method to validate cell values for multiple worksheets
      * @param worksheet The rows and cells array for a specific worksheet
      */
     private static void validateCellValuesInArray(Object[][] worksheet){
@@ -329,7 +329,7 @@ private with sharing class ParseTest {
 
 
     /**
-     * @description method to validate cell values for multiple workheets
+     * @description method to validate cell values for multiple worksheets
      * @param worksheet The rows and cells array for a specific worksheet
      */
     private static void validateCellValuesInMap(Map<String,Object> worksheet){

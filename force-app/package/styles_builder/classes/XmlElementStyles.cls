@@ -6,7 +6,7 @@
  * @description    Class that holds all the classes that represent XML elements
  * @false-positive OneDeclarationPerLine    Only occurs in for loops for optimization purposes
  * @false-positive CognitiveComplexity      Way over the threshold, but this is because of the nature
- *                                          of lots of small XML writing statements with null chels.
+ *                                          of lots of small XML writing statements with null cells.
  *                                          Unless you split into many different files, the complexity
  *                                          will be very high, but it's not difficult to read.
  * @false-positive CyclomaticComplexity     Caused by the many if statements and null checks for many
@@ -14,7 +14,7 @@
  * @false-positive StdCyclomaticComplexity  Just 1 over the threshold, I can live with that
  * @false-positive NcssMethodCount          Just 4 over the threshold, I can live with that
  * @false-positive ExcessiveParameterList   I need to find a nicer way for the massive amount of parameters.
- *                                          Unfortunatly there are many of them and this is the easiest for now.
+ *                                          Unfortunately there are many of them and this is the easiest for now.
  */
 @SuppressWarnings('PMD.OneDeclarationPerLine, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.StdCyclomaticComplexity, PMD.NcssMethodCount, PMD.ExcessiveParameterList')
 public with sharing class XmlElementStyles {
@@ -381,14 +381,14 @@ public with sharing class XmlElementStyles {
 
 
     /**
-     * @description Custom data structure to accomodate multiple attributes efficiently
+     * @description Custom data structure to accommodate multiple attributes efficiently
      * @file        styles.xml
      * @path        na
      * @docs        na
      */
     public class FontAttribute implements IXmlElement{
 
-        // Child attrivutes
+        // Child attributes
         public String attributeName;
         public String val;
 

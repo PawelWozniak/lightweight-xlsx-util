@@ -28,7 +28,7 @@ global with sharing class Parse{
     /**
      * @description Method that creates a map with the sheet name as key and the
      *              sheet index as the value
-     *              This is to be used if you dont know the sheet order but do know the name
+     *              This is to be used if you don't know the sheet order but do know the name
      * @param  entries A map of path/zip entries from the unzipped XLSX file
      * @return         A map with the sheet name as key and the index as value
      */
@@ -91,7 +91,7 @@ global with sharing class Parse{
      ** **************************************************************************************************** **/
     /**
      * @description Method that takes an unzipped xlsx archive as parameter and
-     *              returns the sheet data in a multi dimentional array in the form of
+     *              returns the sheet data in a multi dimensional array in the form of
      *              data[WorksheetIndex][ColumnIndex][RowIndex]
      * @param  entries A map of path/zip entries from the unzipped XLSX file
      * @return      A list of sheets with a list of rows with a list of cell
@@ -104,7 +104,7 @@ global with sharing class Parse{
 
     /**
      * @description Method that takes an unzipped xlsx archive as parameter and
-     *              returns the sheet data in a multi dimentional array in the form of
+     *              returns the sheet data in a multi dimensional array in the form of
      *              data[WorksheetIndex][ColumnIndex][RowIndex]
      * @param  entries        A map of path/zip entries from the unzipped XLSX file
      * @param  selectedSheets A set of integers representing the sheet indexes
@@ -113,7 +113,7 @@ global with sharing class Parse{
      */
     global static Object[][][] toArray(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets){
 
-        // Create a multi-dimentional array for the output
+        // Create a multi-dimensional array for the output
         // Worksheet - Column - Row
         Object[][][] output = new Object[][][]{};
 
@@ -125,7 +125,7 @@ global with sharing class Parse{
 
         // Keep track of the largest number of columns. If one sheet is larger than the other
         // we do not do have a duplicate translation for overlapping column names
-        // i.e. If sheet 1 has 10 colums and sheet 2 has 20 columns, make sure to only
+        // i.e. If sheet 1 has 10 columns and sheet 2 has 20 columns, make sure to only
         // translate the column names from 11 to 20 to save some CPU time
         Integer maxColDimension = 0;
 
@@ -166,7 +166,7 @@ global with sharing class Parse{
                 if (xsr.getEventType() == XmlTag.START_ELEMENT) {
                     switch on xsr.getLocalName() {
 
-                        // First we need the dimention of the worksheet to find out the max size of our rows
+                        // First we need the dimension of the worksheet to find out the max size of our rows
                         // The order in the XML is mandatory, so this value should exist, if not the sheet is invalid
                         when 'dimension'{
 
@@ -176,7 +176,7 @@ global with sharing class Parse{
                             // Get the ref element from the token and calculate the value
                             String colName = ParseUtil.columnNameFromCellName(cName);
 
-                            // Get the number of columsn and rows that are in this worksheet
+                            // Get the number of columns and rows that are in this worksheet
                             Integer numCols = CommonUtil.columnNumberFromColumnName(colName);
                             Integer numRows = Integer.valueOf(cName.removeStart(colName));
 
@@ -184,7 +184,7 @@ global with sharing class Parse{
                             // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
                             if(numCols > maxColDimension){
 
-                                // Popualte the colum index (startnumber and the total number of columns)
+                                // Populate the column index (startnumber and the total number of columns)
                                 ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
 
                                 // Update to the new max column dimension
@@ -239,14 +239,14 @@ global with sharing class Parse{
             }
         }
 
-        // Return the sheets data as a multi dimentional array
+        // Return the sheets data as a multi dimensional array
         return output;
     }
 
 
     /**
      * @description Method that takes an unzipped xlsx archive as parameter and
-     *              returns the sheet data in a multi dimentional array in the form of
+     *              returns the sheet data in a multi dimensional array in the form of
      *              data[WorksheetIndex][ColumnIndex][RowIndex]
      * @param  entries A map of path/zip entries from the unzipped XLSX file
      * @return      A list of sheets with a list of rows with a list of cells
@@ -264,14 +264,14 @@ global with sharing class Parse{
      * @param entries        A map of path/zip entries from the unzipped XLSX file
      * @param selectedSheets A set of sheet indexes that are to be parsed
      * @return      A list of sheets with a list of rows with a list of cells
-     * @note        I have optimised this method to being able to handle as much data as possible
+     * @note        I have optimized this method to being able to handle as much data as possible
      *              this meant that some data is in variable to achieve this. With magical results.
      * @note        Faster CPU time, but does not scale very well past 50k cells
      *              Use this method when you work with small sheets only
      */
     global static Object[][][] toArrayDomDoc(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets){
 
-        // Create a multi-dimentional array for the output
+        // Create a multi-dimensional array for the output
         // Worksheet - Column - Row
         Object[][][] output = new Object[][][]{};
 
@@ -283,7 +283,7 @@ global with sharing class Parse{
 
         // Keep track of the largest number of columns. If one sheet is larger than the other
         // we do not do have a duplicate translation for overlapping column names
-        // i.e. If sheet 1 has 10 colums and sheet 2 has 20 columns, make sure to only
+        // i.e. If sheet 1 has 10 columns and sheet 2 has 20 columns, make sure to only
         // translate the column names from 11 to 20 to save some CPU time
         Integer maxColDimension = 0;
 
@@ -323,7 +323,7 @@ global with sharing class Parse{
             // Get the ref element from the token and calculate the value
             String colName = ParseUtil.columnNameFromCellName(cName);
 
-            // Get the number of columsn and rows that are in this worksheet
+            // Get the number of columns and rows that are in this worksheet
             Integer numCols = CommonUtil.columnNumberFromColumnName(colName);
             Integer numRows = Integer.valueOf(cName.removeStart(colName));
 
@@ -331,7 +331,7 @@ global with sharing class Parse{
             // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
             if(numCols > maxColDimension){
 
-                // Popualte the colum index (startnumber and the total number of columns)
+                // Populate the column index (startnumber and the total number of columns)
                 ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
 
                 // Update to the new max column dimension
@@ -356,7 +356,7 @@ global with sharing class Parse{
             // Iterate the rows
             for(Integer ri=0;ri<numberOfRows; ri++){
 
-                // Extracting the row reduces the CPU time by 50%, abnd for some weird reason improves the max heap size
+                // Extracting the row reduces the CPU time by 50%, and for some weird reason improves the max heap size
                 Dom.XmlNode row = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements()[ri];
 
                 // Calculate the row index
@@ -368,7 +368,7 @@ global with sharing class Parse{
                 // Iterate the cells
                 for(Integer ci=0;ci<numberOfCells; ci++){
 
-                    // Extracting the cell reducues the CPU time by another 50% !!
+                    // Extracting the cell reduces the CPU time by another 50% !!
                     Dom.XmlNode cell = row.getChildElements()[ci];
 
                     String columnName = ParseUtil.columnNameFromCellName(cell.getAttributeValue('r', null));
@@ -386,14 +386,14 @@ global with sharing class Parse{
             }
         }
 
-        // Return the sheets data as a multi dimentional array
+        // Return the sheets data as a multi dimensional array
         return output;
     }
 
 
     /**
      * @description Method that takes an unzipped xlsx archive as parameter and
-     *              returns the sheet data in a multi dimentional array in the form of
+     *              returns the sheet data in a multi dimensional array in the form of
      *              data[WorksheetIndex][ColumnIndex][RowIndex]
      * @param  entries A map of path/zip entries from the unzipped XLSX file
      * @return      A list of sheets with a list of rows with a list of cell
@@ -406,7 +406,7 @@ global with sharing class Parse{
 
     /**
      * @description Method that takes an unzipped xlsx archive as parameter and
-     *              returns the sheet data in a multi dimentional array in the form of
+     *              returns the sheet data in a multi dimensional array in the form of
      *              data[WorksheetIndex][ColumnIndex][RowIndex]
      * @param  entries        A map of path/zip entries from the unzipped XLSX file
      * @param  selectedSheets A set of integers representing the sheet indexes
@@ -415,7 +415,7 @@ global with sharing class Parse{
      */
     global static Object[][][] toArrayInverted(Map<String, Compression.ZipEntry> entries, Set<Integer> selectedSheets){
 
-        // Create a multi-dimentional array for the output
+        // Create a multi-dimensional array for the output
         // Worksheet - Column - Row
         Object[][][] output = new Object[][][]{};
 
@@ -427,7 +427,7 @@ global with sharing class Parse{
 
         // Keep track of the largest number of columns. If one sheet is larger than the other
         // we do not do have a duplicate translation for overlapping column names
-        // i.e. If sheet 1 has 10 colums and sheet 2 has 20 columns, make sure to only
+        // i.e. If sheet 1 has 10 columns and sheet 2 has 20 columns, make sure to only
         // translate the column names from 11 to 20 to save some CPU time
         Integer maxColDimension = 0;
 
@@ -468,7 +468,7 @@ global with sharing class Parse{
                 if (xsr.getEventType() == XmlTag.START_ELEMENT) {
                     switch on xsr.getLocalName() {
 
-                        // First we need the dimention of the worksheet to find out the max size of our rows
+                        // First we need the dimension of the worksheet to find out the max size of our rows
                         // The order in the XML is mandatory, so this value should exist, if not the sheet is invalid
                         when 'dimension'{
 
@@ -478,7 +478,7 @@ global with sharing class Parse{
                             // Get the ref element from the token and calculate the value
                             String colName = ParseUtil.columnNameFromCellName(cName);
 
-                            // Get the number of columsn and rows that are in this worksheet
+                            // Get the number of columns and rows that are in this worksheet
                             Integer numCols = CommonUtil.columnNumberFromColumnName(colName);
                             Integer numRows = Integer.valueOf(cName.removeStart(colName));
 
@@ -486,7 +486,7 @@ global with sharing class Parse{
                             // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
                             if(numCols > maxColDimension){
 
-                                // Popualte the colum index (startnumber and the total number of columns)
+                                // Populate the column index (startnumber and the total number of columns)
                                 ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
 
                                 // Update to the new max column dimension
@@ -541,14 +541,14 @@ global with sharing class Parse{
             }
         }
 
-        // Return the sheets data as a multi dimentional array
+        // Return the sheets data as a multi dimensional array
         return output;
     }
 
 
     /**
      * @description Method that takes an unzipped xlsx archive as parameter and
-     *              returns the sheet data in a multi dimentional array in the form of
+     *              returns the sheet data in a multi dimensional array in the form of
      *              data[WorksheetIndex][ColumnIndex][RowIndex]
      * @param  entries A map of path/zip entries from the unzipped XLSX file
      * @return      A list of sheets with a list of rows with a list of cells
@@ -566,14 +566,14 @@ global with sharing class Parse{
      * @param entries        A map of path/zip entries from the unzipped XLSX file
      * @param selectedSheets A set of sheet indexes that are to be parsed
      * @return      A list of sheets with a list of rows with a list of cells
-     * @note        I have optimised this method to being able to handle as much data as possible
+     * @note        I have optimized this method to being able to handle as much data as possible
      *              this meant that some data is in variable to achieve this. With magical results.
      * @note        Faster CPU time, but does not scale very well past 50k cells
      *              Use this method when you work with small sheets only
      */
     global static Object[][][] toArrayInvertedDomDoc(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets){
 
-        // Create a multi-dimentional array for the output
+        // Create a multi-dimensional array for the output
         // Worksheet - Column - Row
         Object[][][] output = new Object[][][]{};
 
@@ -585,7 +585,7 @@ global with sharing class Parse{
 
         // Keep track of the largest number of columns. If one sheet is larger than the other
         // we do not do have a duplicate translation for overlapping column names
-        // i.e. If sheet 1 has 10 colums and sheet 2 has 20 columns, make sure to only
+        // i.e. If sheet 1 has 10 columns and sheet 2 has 20 columns, make sure to only
         // translate the column names from 11 to 20 to save some CPU time
         Integer maxColDimension = 0;
 
@@ -625,7 +625,7 @@ global with sharing class Parse{
             // Get the ref element from the token and calculate the value
             String colName = ParseUtil.columnNameFromCellName(cName);
 
-            // Get the number of columsn and rows that are in this worksheet
+            // Get the number of columns and rows that are in this worksheet
             Integer numCols = CommonUtil.columnNumberFromColumnName(colName);
             Integer numRows = Integer.valueOf(cName.removeStart(colName));
 
@@ -633,7 +633,7 @@ global with sharing class Parse{
             // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
             if(numCols > maxColDimension){
 
-                // Popualte the colum index (startnumber and the total number of columns)
+                // Populate the column index (startnumber and the total number of columns)
                 ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
 
                 // Update to the new max column dimension
@@ -658,7 +658,7 @@ global with sharing class Parse{
             // Iterate the rows
             for(Integer ri=0;ri<numberOfRows; ri++){
 
-                // Extracting the row reduces the CPU time by 50%, abnd for some weird reason improves the max heap size
+                // Extracting the row reduces the CPU time by 50%, and for some weird reason improves the max heap size
                 Dom.XmlNode row = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements()[ri];
 
                 // Calculate the row index
@@ -670,7 +670,7 @@ global with sharing class Parse{
                 // Iterate the cells
                 for(Integer ci=0;ci<numberOfCells; ci++){
 
-                    // Extracting the cell reducues the CPU time by another 50% !!
+                    // Extracting the cell reduces the CPU time by another 50% !!
                     Dom.XmlNode cell = row.getChildElements()[ci];
 
                     String columnName = ParseUtil.columnNameFromCellName(cell.getAttributeValue('r', null));
@@ -688,7 +688,7 @@ global with sharing class Parse{
             }
         }
 
-        // Return the sheets data as a multi dimentional array
+        // Return the sheets data as a multi dimensional array
         return output;
     }
 
@@ -702,7 +702,7 @@ global with sharing class Parse{
      *              used as the map key
      *              data[WorksheetIndex].get(cellName)
      * @param  entries        A map of path/zip entries from the unzipped XLSX file
-     * @return      A list of Maps where each map represents a worksheet, each key the cellname
+     * @return      A list of Maps where each map represents a worksheet, each key the cellName
      *              and the map value the cell value
      */
     global static List<Map<String,Object>> toMap(Map<String,Compression.ZipEntry> entries){
@@ -717,7 +717,7 @@ global with sharing class Parse{
      *              data[WorksheetIndex].get(cellName)
      * @param entries        A map of path/zip entries from the unzipped XLSX file
      * @param selectedSheets A set of sheet indexes that are to be parsed
-     * @return      A list of Maps where each map represents a worksheet, each key the cellname
+     * @return      A list of Maps where each map represents a worksheet, each key the cellName
      *              and the map value the cell value
      */
     global static List<Map<String,Object>> toMap(Map<String,Compression.ZipEntry> entries, Set<Integer> selectedSheets){
@@ -807,7 +807,7 @@ global with sharing class Parse{
      *              data[WorksheetIndex].get(cellName)
      * @param  entries        A map of path/zip entries from the unzipped XLSX file
      * @param  selectedSheets A set of integers representing the sheet indexes
-     * @return      A list of Maps where each map represents a worksheet, each key the cellname
+     * @return      A list of Maps where each map represents a worksheet, each key the cellName
      *              and the map value the cell value
      * @note        Faster CPU time, but does not scale very well past 50k cells
      *              Use this method when you work with small sheets only
@@ -824,7 +824,7 @@ global with sharing class Parse{
      *              data[WorksheetIndex].get(cellName)
      * @param entries        A map of path/zip entries from the unzipped XLSX file
      * @param selectedSheets A set of sheet indexes that are to be parsed
-     * @return      A list of Maps where each map represents a worksheet, each key the cellname
+     * @return      A list of Maps where each map represents a worksheet, each key the cellName
      *              and the map value the cell value
      * @note        Faster CPU time, but does not scale very well past 50k cells
      *              Use this method when you work with small sheets only
@@ -870,7 +870,7 @@ global with sharing class Parse{
             // Iterate the rows
             for(Integer ri=0;ri<numberOfRows; ri++){
 
-                // Extracting the row reduces the CPU time by 50%, abnd for some weird reason improves the max heap size
+                // Extracting the row reduces the CPU time by 50%, and for some weird reason improves the max heap size
                 Dom.XmlNode row = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements()[ri];
 
                 // Get the number of cells in the row
@@ -879,7 +879,7 @@ global with sharing class Parse{
                 // Iterate the cells
                 for(Integer ci=0;ci<numberOfCells; ci++){
 
-                    // Extracting the cell reducues the CPU time by another 50% !!
+                    // Extracting the cell reduces the CPU time by another 50% !!
                     Dom.XmlNode cell = row.getChildElements()[ci];
 
                     // Get the cell name and the cell type

@@ -19,7 +19,7 @@
         // Creating the column array once saves a lot of CPU Time
         // Creating a constant is even faster, but not dynamic. I choose the trade-off to make it dynamic
         // to have the best of both worlds.
-        // The same applies for rows, really intersting, apperently a adding 1 to a number and
+        // The same applies for rows, really interesting, apparently a adding 1 to a number and
         // concatenate a string takes more cpu time than doing it once and referencing the String value from
         // a list ever after i.e. [0] = '1', [1] = '2' etc. Saves a lot of time when repeated
         //

@@ -10,7 +10,7 @@
  *                                          utility for global use.
  * @false-positive OneDeclarationPerLine    Only occurs in for loops for optimization purposes
  * @false-positive CognitiveComplexity      Way over the threshold, but this is because of the nature
- *                                          of lots of small XML writing statements with null chels. 
+ *                                          of lots of small XML writing statements with null cells. 
  *                                          Unless you split into many different files, the complexity 
  *                                          will be very high, but it's not difficult to read.
  * @false-positive CyclomaticComplexity     Caused by the many if statements and null checks for many
@@ -31,7 +31,7 @@ global with sharing class SoqlBuilder{
     
 
     /**
-     * @description Method to enable labels insstead of API names in the header
+     * @description Method to enable labels instead of API names in the header
      */
     global static void useLabels(){
         useLabels = true;
@@ -182,7 +182,7 @@ global with sharing class SoqlBuilder{
         b.addTextCell( wi, 1, ri, 'Relationship Path', applyDefaultStyles ? xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 1) : null);                
         b.addTextCell( wi, 2, ri, 'Relationship Depth',applyDefaultStyles ? xlsx.StylesBuilder.getHeaderStyleIndex(0, 0, 1) : null);
 
-        // Calculate the row index fror the last row so we can draw our style
+        // Calculate the row index for the last row so we can draw our style
         Integer endRelRi = (soqlWorksheet.relationships.size()-1) + ri;
 
         // Add the relationships row
@@ -191,7 +191,7 @@ global with sharing class SoqlBuilder{
             // Up the row counter
             ri++;
 
-            // Popualte relationship cells
+            // Populate relationship cells
             b.addTextCell(   wi, 0, ri, relationshipName,                                       applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 2, endRelRi) : null);
             b.addTextCell(   wi, 1, ri, soqlWorksheet.relationships.get(relationshipName).field,applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 2, endRelRi) : null);
             b.addNumberCell( wi, 2, ri, soqlWorksheet.relationships.get(relationshipName).depth,applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(2, ri, 0, 2, endRelRi) : null);
@@ -219,7 +219,7 @@ global with sharing class SoqlBuilder{
             // Up the row counter
             ri++;
 
-            // Popualte field cells
+            // Populate field cells
             b.addTextCell(      wi, 0, ri, fieldName,applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 6, endFieldRi) : null);
             b.addTextCell(      wi, 1, ri, soqlWorksheet.fields.get(fieldName).label,                   applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 6, endFieldRi) : null);
             b.addTextCell(      wi, 2, ri, soqlWorksheet.fields.get(fieldName).type,                    applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(2, ri, 0, 6, endFieldRi) : null);

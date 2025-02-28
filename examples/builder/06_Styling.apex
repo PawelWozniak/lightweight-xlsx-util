@@ -24,8 +24,8 @@ b.addKeyword('Styles');
 /**
  * Every cell style is composed of a number of individual, reusable components.
  * Each of these components have an index. You create styles by mixing and matching
- * the diffrent components to create unique combinations.
- * This can be a lot of code unfortunatly, but I could not find an easy way to do this.
+ * the different components to create unique combinations.
+ * This can be a lot of code unfortunately, but I could not find an easy way to do this.
  */
 // Create number format (Id, Format Code), Not that the
 Integer numberFormatId = xlsx.StylesBuilder.addNumberFormat(b, 166, '"$"#,##0.00');

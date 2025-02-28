@@ -3,7 +3,7 @@
  * @date        May 2022
  * @copyright   (c) 2024 Justus van den Berg
  * @license     MIT (See LICENSE file in the project root)
- * @description Class contains a basic topological (graph) sort alogrithm for Apex
+ * @description Class contains a basic topological (graph) sort algorithm for Apex
  *              It's not 100% perfect, but does the job for most simple graph sorts.
  *              It has two additional methods, one for creating an ordered list of all
  *              nodes in the graph sorted by dependency and a second one to create
@@ -67,7 +67,7 @@ public with sharing class SortUtil {
                         })
                     );
                     
-                    // If the dependend node does not exists in the data map there is no point to check for self or circular dependencies
+                    // If the depended node does not exists in the data map there is no point to check for self or circular dependencies
                     // so continue to the next dependency
                     continue;
                 }
@@ -82,7 +82,7 @@ public with sharing class SortUtil {
                         )
                     );
  
-                    // If the dependend node is self referencing, there is no need to look for a duo dependency as
+                    // If the depended node is self referencing, there is no need to look for a duo dependency as
                     // technically it already is a duo reference
                     continue;
                 }
@@ -110,7 +110,7 @@ public with sharing class SortUtil {
      */
     private static void addWarning(Object node, String warning){
         
-        // Create new map entry if it doesnt exist
+        // Create new map entry if it doesn't exist
         if(!warningMap.containsKey(node)){
            warningMap.put(node,new String[]{});
         }
@@ -137,7 +137,7 @@ public with sharing class SortUtil {
  
         /**
          * @description Constructor that that the map with nodes and their dependencies
-         * @param nodeDependenciesMap The main input node / depencencies map
+         * @param nodeDependenciesMap The main input node / dependencies map
          * @param warningsMap         The map containing the warning messages
          */
         private TopologicalSort(Map<Object, Set<Object>> nodeDependenciesMap, Map<Object, String[]> warningsMap){
@@ -208,7 +208,7 @@ public with sharing class SortUtil {
                         pending.remove(node);
                     }
  
-                    // Indicade that this node has been visited
+                    // Indicate that this node has been visited
                     dead.add(node);
  
                     // Increment the order, it starts at -1, so the first node will be 0

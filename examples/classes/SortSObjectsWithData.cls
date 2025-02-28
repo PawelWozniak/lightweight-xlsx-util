@@ -7,7 +7,7 @@
  *              sort against all sObjects that have data in the org and their
  *              lookup fields. Sorted based on the required loading order.
  *              Please note this is just a quickly put together example script
- *              that can be optimised and customized.
+ *              that can be optimized and customized.
  *
  * @use case    The main use case is to sort sObjects and their relationships to create
  *              the order of loading during data migrations or data restores
@@ -22,7 +22,7 @@ public with sharing class SortSObjectsWithData{
     // Keep track of all objects that have been described
     private static transient Set<Schema.SObjectType> finishedSObjectTypes = new Set<Schema.SObjectType>{};
     
-    // Map to auto popuplate missing sObjects
+    // Map to auto populate missing sObjects
     private static transient Set<Schema.SObjectType> missingSObjectTypes = new Set<Schema.SObjectType>{};
     
     // The node dependency map
@@ -46,7 +46,7 @@ public with sharing class SortSObjectsWithData{
     
  
     /**
-     * @description Method that calls the limits API and gets all objects and their record cound
+     * @description Method that calls the limits API and gets all objects and their record count
      *              Add the records with a count > 0 to the output list
      * @return      A list of all SObjects that contain at least 1 record
      */
@@ -68,7 +68,7 @@ public with sharing class SortSObjectsWithData{
             throw new StringException(response.getBody());
         }
     
-        // Populate storage list, note fastesd JSON parsing happens when directly going into a constructor instead of creating a variable assignment first
+        // Populate storage list, note fastest JSON parsing happens when directly going into a constructor instead of creating a variable assignment first
         for(Object obj : (Object[]) ((Map<String, Object>) JSON.deserializeUntyped(response.getBody())).get('sObjects')){
             populateSObject((Map<String,Object>) obj, sObjectsWithData);
         }
@@ -91,7 +91,7 @@ public with sharing class SortSObjectsWithData{
     
     
     /**
-     * @description Method to popualate the sObject nodes
+     * @description Method to populate the sObject nodes
      * @param sObjectName A list of sObject API Names
      */
     private static void populateSObjectNodes(String[] sObjectNames){
@@ -117,7 +117,7 @@ public with sharing class SortSObjectsWithData{
     
     
     /**
-     * @description Method to popualate the sObject dependencies recursively
+     * @description Method to populate the sObject dependencies recursively
      */
     private static void populateDependencies(){
         
@@ -143,12 +143,12 @@ public with sharing class SortSObjectsWithData{
                 Schema.DescribeSObjectResult dsor = dfr.referenceto[0].getDescribe();
     
                 // Also for the related describes we only want writable objects
-                // This filteres out things like history objects and RecordTypes
+                // This filters out things like history objects and RecordTypes
                 if(dsor.createable == false || dsor.updateable == false || dsor.keyprefix == null){
                     continue;
                 }
     
-                // Add the lookup field as a depencency
+                // Add the lookup field as a dependency
                 nodeDependenciesMap.get(sot).add(dsor.sobjecttype);
                 
                 // Dependency is missing, so add it that we can add it later
@@ -178,7 +178,7 @@ public with sharing class SortSObjectsWithData{
      * @description Method to convert all Schema.SObjectTypes to Strings
      *              Fixes the "bug" where the self reference should not 
      *              be the first dependency
-     * @return      A node/depencency map (object,Set<Object>)
+     * @return      A node/dependency map (object,Set<Object>)
      */
     private static Map<Object,Set<Object>> convertSchemaMapToObjectMap(){
         

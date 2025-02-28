@@ -10,9 +10,9 @@
  *                                          Implementation, so global is the way to open up this
  *                                          utility for global use.
  * @false-positive ExcessiveParameterList   I need to find a nicer way for the massive amount of parameters.
- *                                          Unfortunatly there are many of them and this is the easiest for now.
+ *                                          Unfortunately there are many of them and this is the easiest for now.
  * @false-positive CognitiveComplexity      Way over the threshold, but this is because of the nature
- *                                          of lots of small XML writing statements with null chels.
+ *                                          of lots of small XML writing statements with null cells.
  *                                          Unless you split into many different files, the complexity
  *                                          will be very high, but it's not difficult to read.
  * @false-positive CyclomaticComplexity     Caused by the many if statements and null checks for many
@@ -55,18 +55,18 @@ global with sharing class StylesBuilder {
 
 
     /**
-     * @description Method to add custom numberformats
+     * @description Method to add custom number formats
      * @param b          xlsx.Builder class instance
      * @param numFmtId   Number format id
      * @param formatCode The format code
-     * @return The acutal format and NOT the index in this case
+     * @return The actual format and NOT the index in this case
      */
     global static Integer addNumberFormat(Builder b, Integer numFmtId, String formatCode){
 
         // Add number format
         b.styleSheet.numFmts.numFmts.add(new XmlElementStyles.NumFmt(numFmtId, formatCode));
 
-        // return the acutal format and NOT the index in this case
+        // return the actual format and NOT the index in this case
         return numFmtId;
     }
 
@@ -331,7 +331,7 @@ global with sharing class StylesBuilder {
     /**
      * @description Method to setup the optional Styles in the Styles.xml document
      *              this can be customized so you always have your company's styles
-     *              A set of 15 table sttyles is created to format styles like below:
+     *              A set of 15 table styles is created to format styles like below:
      *              +======================================+==========================+===========+
      *              | header left            | header middle            | header right            |
      *              +======================================+==========================+===========+

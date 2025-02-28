@@ -99,7 +99,7 @@ for(Integer i=0, iMax=metadataTypes.size(); i<iMax; i++){
                     xsr.next();
                     if(xsr.getEventType()==XmlTag.CHARACTERS && xsr.hasText()){
                         
-                        // We dont know the last row, so in the styling just always add one (ri+1) and accept an ugly last row
+                        // We don't know the last row, so in the styling just always add one (ri+1) and accept an ugly last row
                         b.addTextCell(wi, ci, ri, xsr.getText(), xlsx.StylesBuilder.getMainStyleIndex(ci, ri, 0, 1, ri+1));
                     }
                 }

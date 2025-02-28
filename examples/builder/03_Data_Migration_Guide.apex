@@ -47,7 +47,7 @@ b.addTextCell(wi1, 1, ri1, 'Warning Message',    xlsx.StylesBuilder.getHeaderSty
 // Get all sorted nodes for the sObjects
 Set<SortUtil.Node> nodes = SortSObjectsWithData.getSortedNodes();
 
-// Extract the number of nodes for efficientcy
+// Extract the number of nodes for efficiency
 Integer numberOfNodes    = nodes.size();
 Integer numberOfWarnings = 0;
 
