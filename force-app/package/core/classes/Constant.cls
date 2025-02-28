@@ -28,7 +28,7 @@ public with sharing class Constant {
     // (Error) Messages
     public static final String  MSG_INVALID_WS_NAME     = 'Worksheet name cannot be blank or exceed 31 characters in length';
     public static final String  MSG_DUPLICATE_WORKSHEET = 'A worksheet with the name "{0}" already exists in the builder.';
-    public static final String  MSG_INVALID_CELL_NAME   = 'Invalid cellname: "{0}"';
+    public static final String  MSG_INVALID_CELL_NAME   = 'Invalid cell name: "{0}"';
     public static final String  MSG_INVALID_ZIP_ENTRY   = 'The file name "{0}" does not exist in the zip entries map.';
 
 
@@ -56,7 +56,7 @@ public with sharing class Constant {
     // Regex to get the name of the cell.
     public static final String   CELL_NAME_REGEX    = '^([a-zA-Z]+)';
 
-    // Regex to sanatize worksheet names
+    // Regex to sanitize worksheet names
     public static final String   WS_NAME_REGEX      = '[\\\\\\/?*:\\[\\]]';
 
     // Character Array to calculate column names

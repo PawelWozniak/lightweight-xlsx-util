@@ -16,23 +16,23 @@ global with sharing class Builder {
     /** **************************************************************************************************** **
      **                                          PRIVATE VARIABLES                                           **
      ** **************************************************************************************************** **/
-    // Flag to switch bewteen shared and inline strings
+    // Flag to switch between shared and inline strings
     private Boolean     useSharedStrings = Constant.DEF_SHARED_STRINGS;
 
     // Set for the worksheet names to prevent duplicate names and to create the relationship XML file
     private Set<String> worksheetNames   = new Set<String>{};
 
-    // Integer to track the number of shared strings, to prevent running the .size() unessesarraily
+    // Integer to track the number of shared strings, to prevent running the .size() unnecessarily
     private Integer     numSharedStrings = 0;
 
-    // Store the number of worksheets in a variable to prevent running the .size() unessesarraily
+    // Store the number of worksheets in a variable to prevent running the .size() unnecessarily
     private Integer     numWorksheets    = 0;
 
-    // Maps to track the number of columns and rows, to prevent running the .size() unessesarraily
+    // Maps to track the number of columns and rows, to prevent running the .size() unnecessarily
     private Integer[]   worksheetNumColumnsList  = new Integer[]{};
     private Integer[]   worksheetNumRowsList     = new Integer[]{};
 
-    // Map to track the number of cells in each row per worksheet, saves running the .size() method unessesarraily
+    // Map to track the number of cells in each row per worksheet, saves running the .size() method unnecessarily
     private Integer[][] worksheetRowNumCellsList = new Integer[][]{};
 
     /** **************************************************************************************************** **
@@ -81,7 +81,7 @@ global with sharing class Builder {
      */
     global Builder(){
         // Populate the default required styles for the builder. Excel requires a few basic styles to be present.
-        // As our main if not only usecase is Excel, it's best to just add these so oyu don't have to worry about it
+        // As our main if not only use case is Excel, it's best to just add these so you don't have to worry about it
         StylesBuilder.populateDefaultRequiredStyles(this);
     }
 
@@ -122,7 +122,7 @@ global with sharing class Builder {
         // Prevent out of bounds by padding the worksheet
         padWorksheet(wi, ci, 0);
 
-        // Creata a new column if it doesnt exist yet
+        // Create a new column if it doesn't exist yet
         if(this.worksheets[wi].cols.cols[ci] == null){
             this.worksheets[wi].cols.cols[ci] = new XmlElement.Col(ci);
         }
@@ -146,7 +146,7 @@ global with sharing class Builder {
         // Prevent out of bounds by padding the worksheet
         padWorksheet(wi, ci, ri);
 
-        // Creata a new cell if it doesnt exist yet
+        // Create a new cell if it doesn't exist yet
         if(this.worksheets[wi].sheetData.rows[ri].cells[ci] == null){
             this.addTextCell(wi,ci,ri,'');
         }
@@ -192,10 +192,10 @@ global with sharing class Builder {
         // Assign the worksheet index for the new sheet, (Zero index so we can take the size for a new entry)
         Integer wi = this.worksheets.size();
 
-        // validate the worksheet name is OK and sanatize as much as possible
+        // validate the worksheet name is OK and sanitize as much as possible
         name = String.isBlank(name) ?
             String.format(Constant.DEF_SHEET_TITLE, new String[]{String.valueOf(wi+1)} ) :
-            BuildUtil.sanatizeWorksheetName(name)
+            BuildUtil.sanitizeWorksheetName(name)
         ;
 
         // Validate the sheet does not exist yet

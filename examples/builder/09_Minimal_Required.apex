@@ -8,7 +8,7 @@
 // Create a new builder
 xlsx.Builder b = new xlsx.Builder();
 
-// A single worksheet with a single cell is the absolute minimum, the vlaue can be blank
+// A single worksheet with a single cell is the absolute minimum, the value can be blank
 b.addTextCell(0, 0, 0, null);
 
 

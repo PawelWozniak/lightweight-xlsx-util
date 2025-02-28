@@ -6,13 +6,13 @@
  * @description    Class that contains the classes that represent XML Elements
  * @false-positive OneDeclarationPerLine    Only occurs in for loops for optimization purposes
  * @false-positive CognitiveComplexity      Way over the threshold, but this is because of the nature
- *                                          of lots of small XML writing statements with null chels.
+ *                                          of lots of small XML writing statements with null cells.
  *                                          Unless you split into many different files, the complexity
  *                                          will be very high, but it's not difficult to read.
  * @false-positive ExcessiveParameterList   I need to find a nicer way for the massive amount of parameters.
- *                                          Unfortunatly there are many of them and this is the easiest for now.
+ *                                          Unfortunately there are many of them and this is the easiest for now.
  * @false-positive ExcessiveClassLength     It's a long class, will potentially split it up in the future but
- *                                          at this stage is the easiest for undertanding to keep all elements in
+ *                                          at this stage is the easiest for understanding to keep all elements in
  *                                          the same class
  */
 @SuppressWarnings('PMD.OneDeclarationPerLine, PMD.CognitiveComplexity, PMD.ExcessiveParameterList, PMD.ExcessiveClassLength')
@@ -149,9 +149,9 @@ public with sharing class XmlElement {
      **                                         WORKBOOK XML ELEMENTS                                        **
      ** **************************************************************************************************** **/
     /**
-     * @description Data structure representing the worbook Xml Element
+     * @description Data structure representing the workbook Xml Element
      * @file        workbook.xml
-     * @path        worbook
+     * @path        workbook
      * @docs        https://c-rex.net/samples/ooxml/e1/Part4/OOXML_P4_DOCX_Workbook_topic_ID0E1C63.html
      */
     public with sharing class Workbook implements IXmlElement{
@@ -178,7 +178,7 @@ public with sharing class XmlElement {
     /**
      * @description Data structure representing the sheets Xml Element
      * @file        workbook.xml
-     * @path        worbook > sheets
+     * @path        workbook > sheets
      * @docs        https://c-rex.net/samples/ooxml/e1/Part4/OOXML_P4_DOCX_sheets_topic_ID0EJUG4.html
      */
     public with sharing class Sheets implements IXmlElement{
@@ -199,7 +199,7 @@ public with sharing class XmlElement {
     /**
      * @description Data structure representing the sheet Xml Element
      * @file        workbook.xml
-     * @path        worbook > sheets > sheet
+     * @path        workbook > sheets > sheet
      * @docs        https://c-rex.net/samples/ooxml/e1/Part4/OOXML_P4_DOCX_sheet_topic_ID0EFLG4.html#topic_ID0EFLG4
      */
     public with sharing class Sheet implements IXmlElement{
@@ -552,7 +552,7 @@ public with sharing class XmlElement {
             x.writeStartElement(   null, 'sheetView',      null);
             x.writeAttribute(null, null, 'workbookViewId', '0');
 
-            // Only write the pane element if requiered
+            // Only write the pane element if required
             if(this.pane.ySplit != null || this.pane.xSplit != null){
 
                 // Write the pane element
@@ -608,7 +608,7 @@ public with sharing class XmlElement {
         // Number of columns
         public Integer xSplit;
 
-        // Columns only ySplit,0 - rows only 0,xSplit, both rows and colums xSplit,ySplit
+        // Columns only ySplit,0 - rows only 0,xSplit, both rows and columns xSplit,ySplit
         private String topLeftCell;
 
         // Columns only "topRight", rows only "bottomLeft", both rows and columns "bottomRight"
@@ -651,7 +651,7 @@ public with sharing class XmlElement {
          * @param x     The XmlStreamWriter class instance to write to
          */
         public void writeXml(XmlStreamWriter x){
-            // Only write the pane element if requiered
+            // Only write the pane element if required
             if(ySplit != null || xSplit != null){
 
                 // Calculate the values for the top left cell and the active pane
@@ -692,7 +692,7 @@ public with sharing class XmlElement {
         Integer ri;
 
         /**
-         * @description DEfautl constructor
+         * @description Default constructor
          * @param pane  The name of the pane
          * @param ci    The Column index
          * @param ri    The Row index
@@ -731,7 +731,7 @@ public with sharing class XmlElement {
         // Default column width in points
         Decimal defaultColWidth  = 8.11;
 
-        // Default row hieght in points
+        // Default row height in points
         Decimal defaultRowHeight = 14.4;
 
         /**
@@ -837,7 +837,7 @@ public with sharing class XmlElement {
     public with sharing class SheetData implements IXmlElement{
 
         // List of rows in this worksheet, always have at least 1 row
-        // There don't have to be cells, but at lesast one row to be valid
+        // There don't have to be cells, but at least one row to be valid
         public Row[] rows = new Row[]{};
 
         /**
@@ -924,7 +924,7 @@ public with sharing class XmlElement {
      * @file        sheet{0}.xml
      * @path        worksheet > sheetData > row > c
      * @docs        https://c-rex.net/samples/ooxml/e1/Part4/OOXML_P4_DOCX_c_topic_ID0E1XM4.html#topic_ID0E1XM4
-     * @false-positive ApexDoc There are too many simmilar child methods in this class
+     * @false-positive ApexDoc There are too many similar child methods in this class
      */
     @SuppressWarnings('PMD.ApexDoc')
     public with sharing class Cell implements IXmlElement{
@@ -1082,7 +1082,7 @@ public with sharing class XmlElement {
                 }
 
                 // When a number write the number value
-                // Number values dont have to be escaped
+                // Number values don't have to be escaped
                 when 'n','b' {
                     x.writeStartElement(null, 'v', null);
                     x.writeCharacters(String.valueOf(this.v));
@@ -1398,8 +1398,8 @@ public with sharing class XmlElement {
 
         /**
          * @description The workbook relationships constructor. No default relationships are created
-         *              The relationships for workboosk are created when a worksheet is added
-         * @param isWorkbook Inidicator if it is a workbook relationship
+         *              The relationships for workbooks are created when a worksheet is added
+         * @param isWorkbook Indicator if it is a workbook relationship
          */
         public Relationships(Boolean isWorkbook){
             if(isWorkbook){

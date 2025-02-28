@@ -177,25 +177,25 @@ private class BuildUtilTest {
 
 
     @IsTest
-    static void testgetSanatizedFileName(){
+    static void testGetSanitizedFileName(){
 
         // Assert test data
-        Assert.areEqual('removeExtension' + Constant.FULL_FILE_EXTENSION, BuildUtil.getSanatizedFileName('removeExtension'), 'Unexpected file name');
-        Assert.areEqual('removeExtension' + Constant.FULL_FILE_EXTENSION, BuildUtil.getSanatizedFileName('removeExtension.invalid'), 'Unexpected file name');
-        Assert.areEqual('removeExtension' + Constant.FULL_FILE_EXTENSION, BuildUtil.getSanatizedFileName('removeExtension' + Constant.FULL_FILE_EXTENSION), 'Unexpected file name');
+        Assert.areEqual('removeExtension' + Constant.FULL_FILE_EXTENSION, BuildUtil.getSanitizedFileName('removeExtension'), 'Unexpected file name');
+        Assert.areEqual('removeExtension' + Constant.FULL_FILE_EXTENSION, BuildUtil.getSanitizedFileName('removeExtension.invalid'), 'Unexpected file name');
+        Assert.areEqual('removeExtension' + Constant.FULL_FILE_EXTENSION, BuildUtil.getSanitizedFileName('removeExtension' + Constant.FULL_FILE_EXTENSION), 'Unexpected file name');
     }
 
 
     @IsTest
-    static void testSanatizeWorksheetName() {
+    static void testSanitizeWorksheetName() {
         
         // Test Assertions
-        Assert.areEqual( 'SHEETNAME', BuildUtil.sanatizeWorksheetName('SHEET\\/?*[]NAME'),'Unexpected sanatized name');
-        Assert.areEqual( true, String.isNotEmpty(BuildUtil.sanatizeWorksheetName('\\/?*[]')), 'Unexpected sanatized name');
+        Assert.areEqual( 'SHEETNAME', BuildUtil.sanitizeWorksheetName('SHEET\\/?*[]NAME'),'Unexpected sanitized name');
+        Assert.areEqual( true, String.isNotEmpty(BuildUtil.sanitizeWorksheetName('\\/?*[]')), 'Unexpected sanitized name');
 
         // Test Exception
         try {
-            BuildUtil.sanatizeWorksheetName('');
+            BuildUtil.sanitizeWorksheetName('');
             throw new TestException(TestUtil.EXCEPTION_SAFEGUARD_MESSAGE);
         } catch (BuildException e) {
             Assert.areEqual(
@@ -207,7 +207,7 @@ private class BuildUtilTest {
 
         // Test Exception
         try {
-            BuildUtil.sanatizeWorksheetName('12345678901234567890123456789012');
+            BuildUtil.sanitizeWorksheetName('12345678901234567890123456789012');
             throw new TestException(TestUtil.EXCEPTION_SAFEGUARD_MESSAGE);
         } catch (BuildException e) {
             Assert.areEqual(

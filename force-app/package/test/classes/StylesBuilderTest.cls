@@ -43,7 +43,7 @@ private with sharing class StylesBuilderTest {
         // Create alignment
         Integer alignmentIndex = StylesBuilder.addAlignment(b, 'center', 'center', 0 , true);
 
-        // Add the cellstyle
+        // Add the cell style
         StylesBuilder.addCellStyle(b, null, 0, 0, 0, alignmentIndex);
 
         // Build the document

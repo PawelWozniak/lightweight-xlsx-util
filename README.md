@@ -3,7 +3,7 @@ A Lightweight Salesforce Apex utility to read and write basic XLSX files based o
 
 The application is based on the `ZipWriter` and `ZipReader` classes from the compression namespace. Due to this the library requires API version 63.0 (Spring '25)+
 
-We are limited to the Apex govenor limits, but nonetheless it can write pretty large worksheets synchronously and even larger asynchronously. If you need extremly large or complex files, you're probably better off using Salesforce Document Builder or a 3rd party application like Conga Composer.
+We are limited to the Apex governor limits, but nonetheless it can write pretty large worksheets synchronously and even larger asynchronously. If you need extremely large or complex files, you're probably better off using Salesforce Document Builder or a 3rd party application like Conga Composer.
 
 The library comes with the most common functionalities like freezing rows, merging cells, create hyperlinks and the majority of the styling options. There is no support for table styles, charts or images at this time.
 
@@ -190,7 +190,7 @@ The [`examples folder`](examples) contains a number of example implementation fo
 ### Build Examples
 |File| Description | Additional Info|
 |---|---|---|
-|[00_Twelf_Days_Of_Christmas.apex](examples/builder/00_Twelf_Days_Of_Christmas.apex)| Calculate how many gifts you get on the N day of Christmas.   ||
+|[00_Twelve_Days_Of_Christmas.apex](examples/builder/00_Twelve_Days_Of_Christmas.apex)| Calculate how many gifts you get on the N day of Christmas.   ||
 |[01_sObject_Documentation.apex](examples/builder/01_sObject_Documentation.apex)    | Export your data model to Excel                               ||
 |[02_SOQL_With_Child_Queries.apex](examples/builder/02_SOQL_With_Child_Queries.apex)| Export a query with sub queries and metadata relationship information to Excel. Ideal for Archiving purposes                          |[Blog](https://medium.com/@justusvandenberg/dynamically-handle-salesforce-soql-subquery-response-data-using-apex-8130bd0622aa)|
 |[03_Data_Migration_Guide.apex](examples/builder/03_Data_Migration_Guide.apex)      | Creates a document with all sObjects in your org that contain data and puts in the in the correct loading order with metadata analysis|[Blog](https://medium.com/@justusvandenberg/programmatically-determine-the-object-loading-order-for-salesforce-data-migrations-using-apex-1f65841531fb)|
@@ -204,7 +204,7 @@ The [`examples folder`](examples) contains a number of example implementation fo
 # Roadmap
 There is not really a roadmap as of now, but a few things I am planning to add are:
 -   Native support to parse files directly to CSV for better performance than the example in the examples folder (i.e. `xlsx.Parse.toCSV()`)
-    The main purpose for this is to accomodate the loading of data to Data Cloud.
+    The main purpose for this is to accommodate the loading of data to Data Cloud.
 -   Native support to parse files directly to sObjects for better performance than the example in the examples folder (i.e. `xlsx.Parse.toSObject()`)
     Generic SObject Parsing is quite tricky and it would require to check the metadata to see if objects / fields exist. Adding support for this comes with a lot of potential issues as so much can go wrong with crappy data in the wrong field types for example. But it would be useful and the boiler plate code has bene written in the examples.
 
@@ -237,7 +237,7 @@ xlsx.Builder b = new xlsx.Builder();
 // Defaults to true, so not required
 b.setUseSharedStrings(true);
 
-// This option createss the default set of "table" styles
+// This option creates the default set of "table" styles
 // Can be used to use a default styling for all sheets, (will take a small performance hit)
 // Defaults to false
 b.setIncludeDefaultStyles(true);
@@ -254,7 +254,7 @@ b.addKeyword('Additional Example');
 ```
 
 ## Setup worksheets
-Data is managed by using a multi-dimentional array with zero based index for all worksheets. Each worksheet has a worksheet index (`wi`), column index (`ci`) and row index (`ri`).
+Data is managed by using a multi-dimensional array with zero based index for all worksheets. Each worksheet has a worksheet index (`wi`), column index (`ci`) and row index (`ri`).
 This means that for example in Apex a cell located at [0][0][0] is located at "A1" in the first worksheet and [1][1][1] is located at "B2" in the second worksheet etc. This makes coding and array looping a whole lot easier. But it is something to keep in mind when adding data to the grid.
 I tried to match it to Excel number at first, but the +1/-1 drove me completely insane, so I reverted back to "good old starting at 0".
 

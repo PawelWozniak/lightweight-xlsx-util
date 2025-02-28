@@ -12,7 +12,7 @@
 public with sharing class ParseUtil {
 
     // Map that holds the column name as a key and it's matching index as a value
-    // This is for optimising performance by caching instead of repeat calculation
+    // This is for optimizing performance by caching instead of repeat calculation
     public static Map<String,Integer> columnIndexMap = new Map<String,Integer>();
 
     /**
@@ -28,7 +28,7 @@ public with sharing class ParseUtil {
 
 
     /**
-     * @description Method to get the letter part of an input cellname i.e. ALL100 returns ALL
+     * @description Method to get the letter part of an input cellName i.e. ALL100 returns ALL
      * @param  cellName The cell name to extract the column letter from
      * @return          The column letter in the form of a string
      */

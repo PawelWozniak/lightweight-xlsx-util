@@ -4,7 +4,7 @@
  * @copyright      (c) 2025 Justus van den Berg
  * @license        MIT (See LICENSE file in the project root)
  * @description    Example to answer the age old questions... How many gifts did my true love gave to me
- *                 after twelf days of Christmas... or 30 or 60 or N days of Christmas...
+ *                 after twelve days of Christmas... or 30 or 60 or N days of Christmas...
  */
 // Create a new builder
 xlsx.Builder b = new xlsx.Builder();
@@ -13,10 +13,10 @@ xlsx.Builder b = new xlsx.Builder();
 b.setUseSharedStrings(true);
 
 // Set the destination folder and the name of the xlsx file
-b.setFileName(xlsx.CommonUtil.getTimestampString() + '_twelf_days_of_christmas.xlsx' );
+b.setFileName(xlsx.CommonUtil.getTimestampString() + '_twelve_days_of_christmas.xlsx' );
 
 // Set file properties
-b.setTitle('Twelf Days of Christmas (' +xlsx.CommonUtil.getTimestampString()+ ')');
+b.setTitle('Twelve Days of Christmas (' +xlsx.CommonUtil.getTimestampString()+ ')');
 b.setSubject('Christmas quiz');
 b.setDescription('Let\'s find out how many presents we get...');
 b.addKeyword('Christmas');
@@ -75,7 +75,7 @@ Integer fullTotalStyleIndex      = xlsx.StylesBuilder.addCellStyle(b, 0, headerT
 buildNdaysOfChristmasWorksheet(
     b,
     new String[]{
-        'Partridge','Tortle Dove','French Hen','Colly Bird','Golden Ring','Geese','Swan','Maid','Lady','Lord','Piper','Drummer'
+        'Partridge','Turtle Dove','French Hen','Colly Bird','Golden Ring','Geese','Swan','Maid','Lady','Lord','Piper','Drummer'
     }
 );
 
@@ -83,8 +83,8 @@ buildNdaysOfChristmasWorksheet(
 buildNdaysOfChristmasWorksheet(
     b,
     new String[]{
-        'Partridge','Tortle Dove','French Hen','Colly Bird','Golden Ring','Geese','Swan','Maid','Lady','Lord','Piper','Drummer',
-        'Plant','Tree','Fridge','Pillow','Sweater','Neon Sign','Wallet','Multitool','Airtag','Puzzle','Jacket','Mittens','Shoes','Socks','Toys','Necklace','Alexa', 'Lego'
+        'Partridge','Turtle Dove','French Hen','Colly Bird','Golden Ring','Geese','Swan','Maid','Lady','Lord','Piper','Drummer',
+        'Plant','Tree','Fridge','Pillow','Sweater','Neon Sign','Wallet','Multitool','Airtag','Puzzle','Jacket','Mittens','Shoes','Socks','Toys','Necklace','Alexa','Lego'
     }
 );
 
@@ -92,10 +92,10 @@ buildNdaysOfChristmasWorksheet(
 buildNdaysOfChristmasWorksheet(
     b,
     new String[]{
-        'Partridge','Tortle Dove','French Hen','Colly Bird','Golden Ring','Geese','Swan','Maid','Lady','Lord','Piper','Drummer',
-        'Plant','Tree','Fridge','Pillow','Sweater','Neon Sign','Wallet','Multitool','Airtag','Puzzle','Jacket','Mittens','Shoes','Socks','Toys','Necklace','Alexa', 'Lego',
-        'Partridge','Tortle Dove','French Hen','Colly Bird','Golden Ring','Geese','Swan','Maid','Lady','Lord','Piper','Drummer',
-        'Plant','Tree','Fridge','Pillow','Sweater','Neon Sign','Wallet','Multitool','Airtag','Puzzle','Jacket','Mittens','Shoes','Socks','Toys','Necklace','Alexa', 'Lego'
+        'Partridge','Turtle Dove','French Hen','Colly Bird','Golden Ring','Geese','Swan','Maid','Lady','Lord','Piper','Drummer',
+        'Plant','Tree','Fridge','Pillow','Sweater','Neon Sign','Wallet','Multitool','Airtag','Puzzle','Jacket','Mittens','Shoes','Socks','Toys','Necklace','Alexa','Lego',
+        'Partridge','Turtle Dove','French Hen','Colly Bird','Golden Ring','Geese','Swan','Maid','Lady','Lord','Piper','Drummer',
+        'Plant','Tree','Fridge','Pillow','Sweater','Neon Sign','Wallet','Multitool','Airtag','Puzzle','Jacket','Mittens','Shoes','Socks','Toys','Necklace','Alexa','Lego'
     }
 );
 
@@ -139,7 +139,7 @@ private static void buildNdaysOfChristmasWorksheet(xlsx.Builder b, String[] gift
     // Give our tab a festive color (random color)
     b.setTabColor(wi, xlsx.CommonUtil.randomHtmlHexColorCode());
 
-    // Freeze the header row and headercolumn
+    // Freeze the header row and header column
     b.setFreezeRows(   wi, 1);
     b.setFreezeColumns(wi, 1);
 
@@ -169,7 +169,7 @@ private static void buildNdaysOfChristmasWorksheet(xlsx.Builder b, String[] gift
         // Add the day to the cell
         b.addTextCell(wi, 0, i, i + postFix,colHeaderStyleIndex);
         
-        // Update the postfix accordingly untill after 3, than do nothing
+        // Update the postfix accordingly until after 3, than do nothing
         if(i>3){}
         else if(i==1){postFix = 'nd';}
         else if(i==2){postFix = 'rd';}
@@ -202,7 +202,7 @@ private static void buildNdaysOfChristmasWorksheet(xlsx.Builder b, String[] gift
         String columnStart = xlsx.CommonUtil.cellName(columnIndex, 1);
         String columnEnd   = xlsx.CommonUtil.cellName(columnIndex, numberOfGifts);
         
-        // Calcualte the total
+        // Calculate the total
         Integer typeTotal = (numberOfGifts+1 - columnIndex) * columnIndex;
         
         // Add the formula cell 

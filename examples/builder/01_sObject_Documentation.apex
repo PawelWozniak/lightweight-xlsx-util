@@ -13,7 +13,7 @@ xlsx.Builder b = new xlsx.Builder();
 // use shared strings instead of inline strings for a better overall performance
 b.setUseSharedStrings(true);
 
-// This option createss the default set of "table" styles
+// This option creates the default set of "table" styles
 // Can be used to use a default styling for all sheets, (will take a small performance hit)
 b.setIncludeDefaultStyles(true);
  
@@ -51,7 +51,7 @@ b.setCellStyle(0, 5, 0, xlsx.StylesBuilder.getHeaderStyleIndex(5, 0, 7));
 b.setCellStyle(0, 6, 0, xlsx.StylesBuilder.getHeaderStyleIndex(6, 0, 7));
 b.setCellStyle(0, 7, 0, xlsx.StylesBuilder.getHeaderStyleIndex(7, 0, 7));
 
-// Update the colum width for the number column
+// Update the column width for the number column
 b.setColWidth(0,0,4);
 
 // Create a list of sObjects we want to add as worksheets

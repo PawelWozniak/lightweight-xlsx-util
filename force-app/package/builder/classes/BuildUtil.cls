@@ -3,10 +3,10 @@
  * @date           January 2025
  * @copyright      (c) 2025 Justus van den Berg
  * @license        MIT (See LICENSE file in the project root)
- * @description    Class containng support methods for the build process
+ * @description    Class containing support methods for the build process
  * @false-positive OneDeclarationPerLine    Only occurs in for loops for optimization purposes
  * @false-positive ExcessiveParameterList   I need to find a nicer way for the massive amount of parameters.
- *                                          Unfortunatly there are many of them and this is the easiest for now.
+ *                                          Unfortunately there are many of them and this is the easiest for now.
  */
 
 @SuppressWarnings('PMD.OneDeclarationPerLine, PMD.ExcessiveParameterList')
@@ -20,7 +20,7 @@ public with sharing class BuildUtil {
 
     /**
      * @description Method to populate the array with column and row names
-     *              Using a list reference is faster than repeatetly calculating the row names
+     *              Using a list reference is faster than repeatedly calculating the row names
      *              This gains performance when having lots of worksheets
      * @param numberOfColumns Number of columns to pre-populate
      * @param numberOfRows    Number of rows to pre-populate
@@ -66,7 +66,7 @@ public with sharing class BuildUtil {
 
 
     /**
-     * @description Method to make writing single XML elements with charcters a bit easier
+     * @description Method to make writing single XML elements with characters a bit easier
      * @param x         The XmlStreamWriter
      * @param ns        The namespace
      * @param element   The element name
@@ -80,7 +80,7 @@ public with sharing class BuildUtil {
 
 
     /**
-     * @description Method to make writing a single XML element with a single child list a bist easier
+     * @description Method to make writing a single XML element with a single child list a bit easier
      * @param x             The XmlStreamWriter
      * @param ns            The namespace
      * @param element       The element name
@@ -106,7 +106,7 @@ public with sharing class BuildUtil {
         }
 
         // Only write the parent element and child elements if there is one that is not null
-        // Make the namespace url an empty string when the namepace is not blank
+        // Make the namespace url an empty string when the namespace is not blank
         if(hasNonNullChildElements){
             x.writeStartElement(ns, element, ns == null ? null : '');
             for(Integer i=0,max=childElements.size(); i<max;i++){
@@ -120,7 +120,7 @@ public with sharing class BuildUtil {
 
 
     /**
-     * @description Method to make writing a single XML element with a single child list a bist easier
+     * @description Method to make writing a single XML element with a single child list a bit easier
      * @param x             The XmlStreamWriter
      * @param ns            The namespace
      * @param element       The element name
@@ -135,7 +135,7 @@ public with sharing class BuildUtil {
         }
 
         // Write the element and child elements
-        // Make the namespace url an empty string when the namepace is not blank
+        // Make the namespace url an empty string when the namespace is not blank
         x.writeStartElement(ns, element, ns == null ? null : '');
 
         // Write the default namespace
@@ -152,10 +152,10 @@ public with sharing class BuildUtil {
     /**
      * @description Method to remove any extension from the file name that is not Constant.FULL_FILE_EXTENSION
      *              and adds the extension if it is not present
-     * @param fileName The file name to sanatize
-     * @return      The sanatized file name
+     * @param fileName The file name to sanitize
+     * @return      The sanitized file name
      */
-    public static String getSanatizedFileName(String fileName){
+    public static String getSanitizedFileName(String fileName){
         if(fileName.contains('.') && !fileName.endsWith(Constant.FULL_FILE_EXTENSION)){
             return fileName.substringBefore('.') + Constant.FULL_FILE_EXTENSION;
         }else if(!fileName.endsWith(Constant.FULL_FILE_EXTENSION)){
@@ -166,11 +166,11 @@ public with sharing class BuildUtil {
 
 
     /**
-     * @description Method to sanatize the worksheet name
-     * @param name  The worksheet name to sanatize
-     * @return      The sanatized worksheet name
+     * @description Method to sanitize the worksheet name
+     * @param name  The worksheet name to sanitize
+     * @return      The sanitized worksheet name
      */
-    public static String sanatizeWorksheetName(String name){
+    public static String sanitizeWorksheetName(String name){
 
         // Validate length and emptiness
         if(String.isBlank(name) || (String.isNotBlank(name) && name.length() > 31)){

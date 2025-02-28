@@ -71,7 +71,7 @@ global with sharing class CommonUtil {
         // Start the result counter
         Integer result = 0;
 
-        // Iterate each letter of the column name and multiply accordinglt
+        // Iterate each letter of the column name and multiply accordingly
         for (Integer i = 0, max = columnNameIndex.size(); i < max; i++){
             result *= 26;
             result += Constant.NUMS.get(columnNameIndex[i]);

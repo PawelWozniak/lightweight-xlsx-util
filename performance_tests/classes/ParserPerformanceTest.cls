@@ -16,7 +16,7 @@
 public with sharing class ParserPerformanceTest {
 
     /**
-     * @descrption Method to test the performance of the XLSX parser to Array Asynchronously
+     * @description Method to test the performance of the XLSX parser to Array Asynchronously
      * @param numberOfWorksheets The number of worksheets to create
      * @param numberOfColumns    The number of columns to create
      * @param numberOfRows       The number of rows to create
@@ -29,7 +29,7 @@ public with sharing class ParserPerformanceTest {
 
 
     /**
-     * @descrption Method to test the performance of the XLSX parser to Array Synchronously
+     * @description Method to test the performance of the XLSX parser to Array Synchronously
      * @param numberOfWorksheets The number of worksheets to create
      * @param numberOfColumns    The number of columns to create
      * @param numberOfRows       The number of rows to create
@@ -78,7 +78,7 @@ public with sharing class ParserPerformanceTest {
 
 
     /**
-     * @descrption Method to test the performance of the XLSX parser to Map Asynchronously
+     * @description Method to test the performance of the XLSX parser to Map Asynchronously
      * @param numberOfWorksheets The number of worksheets to create
      * @param numberOfColumns    The number of columns to create
      * @param numberOfRows       The number of rows to create
@@ -91,7 +91,7 @@ public with sharing class ParserPerformanceTest {
 
 
     /**
-     * @descrption Method to test the performance of the XLSX parser to Map Synchronously
+     * @description Method to test the performance of the XLSX parser to Map Synchronously
      * @param numberOfWorksheets The number of worksheets to create
      * @param numberOfColumns    The number of columns to create
      * @param numberOfRows       The number of rows to create

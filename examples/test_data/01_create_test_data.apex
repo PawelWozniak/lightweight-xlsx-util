@@ -4,7 +4,7 @@
  * @copyright   (c) 2024 Justus van den Berg
  * @license     MIT (See LICENSE file in the project root)
  * @description Test Data generator for SoqlTableParser & SoqlMultiTableParser
- * @note        Create the test data, ideally run 1 by 1 to prevent govenor limits
+ * @note        Create the test data, ideally run 1 by 1 to prevent governor limits
  *              Run accounts and contacts first. Cases and opportunities require both
  *
  * - https://medium.com/@justusvandenberg/dynamically-handle-salesforce-soql-subquery-response-data-using-apex-8130bd0622aa
@@ -15,7 +15,7 @@ insertAccounts(0,10);
 insertContacts(0,10,0,10);
 insertCases(0,10,0,10);
 insertOpportunities(0,10,0,10);
-insertOpportunitContactRoles(0,10,0,10);
+insertOpportunityContactRoles(0,10,0,10);
  
 /**
  * @description Method to create Basic Test Contacts
@@ -154,7 +154,7 @@ public void insertOpportunities(Integer offset, Integer numberOfAccounts, Intege
 /**
  * @description Method to create Basic Test Opportunities
  */
-public void insertOpportunitContactRoles(Integer offset, Integer numberOfAccounts, Integer contactOffset, Integer numberOfContacts){
+public void insertOpportunityContactRoles(Integer offset, Integer numberOfAccounts, Integer contactOffset, Integer numberOfContacts){
     
    // Get the account and contact data
     Account[]     accounts      = [SELECT Id FROM Account     WHERE Name LIKE 'LWT - Test - %' ORDER BY Name ASC LIMIT :numberOfAccounts];

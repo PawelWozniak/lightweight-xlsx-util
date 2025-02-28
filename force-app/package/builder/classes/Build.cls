@@ -19,8 +19,8 @@ global with sharing class Build {
      */
     global static Document asDocument(Builder b){
 
-       // Sanatize the developer name and add X in case the number begins with a number
-       String developerName = 'x_' + BuildUtil.getSanatizedFileName(b.fileName)
+       // Sanitize the developer name and add X in case the number begins with a number
+       String developerName = 'x_' + BuildUtil.getSanitizedFileName(b.fileName)
             ?.removeEnd(Constant.FULL_FILE_EXTENSION)
             ?.toLowerCase()
             ?.replaceAll(' ','_')
@@ -45,7 +45,7 @@ global with sharing class Build {
             String.join(b.coreProperties.keywords,', ')
         ;
 
-        // Return the fully aconfigured document
+        // Return the fully configured document
         // You can update the folder if you want later on
         return d;
     }
@@ -63,7 +63,7 @@ global with sharing class Build {
         // Create a new content version
         cv.Title        = b.coreProperties.title;
         cv.description  = b.coreProperties.description;
-        cv.PathOnClient = BuildUtil.getSanatizedFileName(b.fileName);
+        cv.PathOnClient = BuildUtil.getSanitizedFileName(b.fileName);
 
         // Create the file body using the package builder
         cv.VersionData  = XmlPackageBuilder.getPackage(b);
