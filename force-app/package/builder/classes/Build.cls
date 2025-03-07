@@ -69,4 +69,19 @@ global with sharing class Build {
         cv.VersionData  = XmlPackageBuilder.getPackage(b);
         return cv;
     }
+
+    /**
+     * @description Method to build the XLSX builder as a EmailFileAttachment
+     * @param b The builder class instance
+     * @return      The XLSX as a EmailFileAttachment object
+     */
+    global static Messaging.EmailFileAttachment asEmailFileAttachment (Builder b) {
+
+        Messaging.EmailFileAttachment emailFileAttachment = new Messaging.EmailFileAttachment();
+        emailFileAttachment.setFileName(BuildUtil.getSanitizedFileName(b.fileName));
+        emailFileAttachment.setBody(XmlPackageBuilder.getPackage(b));
+        emailFileAttachment.setContentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        return emailFileAttachment;
+    }
 }
