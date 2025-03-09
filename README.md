@@ -17,8 +17,8 @@ The library comes with the most common functionalities like freezing rows, mergi
 |---|---|---|---|
 |Name|Lightweight - XLSX Util||
 |Version|0.1.0||
-|**Managed** | `sf package install --wait 30 --security-type AllUsers --package 04tP30000010lw1IAA` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP30000010lw1IAA) | [Install in Sandbox](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP30000010lw1IAA)|
-|**Unlocked**| `sf package install --wait 30 --security-type AllUsers --package 04tP30000010p0LIAQ` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP30000010p0LIAQ)          | [Install in Sandbox](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP30000010p0LIAQ)|
+|**Managed** | `sf package install --wait 30 --security-type AllUsers --package 04tP30000010lw1IAA` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP30000010lw1IAA) | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP30000010lw1IAA)|
+|**Unlocked**| `sf package install --wait 30 --security-type AllUsers --package 04tP30000010p0LIAQ` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP30000010p0LIAQ)          | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tP30000010p0LIAQ)|
 
 
 ## Parse Excel files
