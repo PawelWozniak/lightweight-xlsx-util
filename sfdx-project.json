@@ -1,16 +1,17 @@
 {
   "packageDirectories": [
     {
-      "versionName": "v63.0 - 0.1",
-      "versionNumber": "0.1.0.NEXT",
+      "versionName": "v63.0 - 0.2",
+      "versionNumber": "0.2.0.NEXT",
+      "ancestorVersion": "0.1.0",
       "path": "force-app/package",
       "default": true,
       "package": "Lightweight - XLSX Util",
       "versionDescription": "A lightweight library to build and parse Excel(XLSX) files"
     },
     {
-      "versionName": "v63.0 - 0.1",
-      "versionNumber": "0.1.0.NEXT",
+      "versionName": "v63.0 - 0.2",
+      "versionNumber": "0.2.0.NEXT",
       "path": "force-app/package",
       "default": false,
       "package": "Lightweight - XLSX Util (Unlocked)",
@@ -24,7 +25,9 @@
   "packageAliases": {
     "Lightweight - XLSX Util": "0HoP300000000jBKAQ",
     "Lightweight - XLSX Util@0.1.0-1": "04tP30000010lw1IAA",
+    "Lightweight - XLSX Util@0.2.0-1": "04tP300000164pxIAA",
     "Lightweight - XLSX Util (Unlocked)": "0HoP300000000srKAA",
-    "Lightweight - XLSX Util (Unlocked)@0.1.0-2": "04tP30000010p0LIAQ"
+    "Lightweight - XLSX Util (Unlocked)@0.1.0-2": "04tP30000010p0LIAQ",
+    "Lightweight - XLSX Util (Unlocked)@0.2.0-1": "04tP300000164rZIAQ"
   }
 }

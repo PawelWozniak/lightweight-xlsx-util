@@ -1,7 +1,6 @@
 {
     "orgName": "Lightweight - XLSX - Util - Scratch Org (v63.0)",
     "edition" : "Developer",
-    "release" : "Preview",
     "features": [
         "EnableSetPasswordInApi"
     ],

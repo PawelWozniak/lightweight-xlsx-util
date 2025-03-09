@@ -287,13 +287,14 @@ private with sharing class BuilderTest {
 
 
     @IsTest
-    static void testSetters(){
+    static void testSettersAndBuildAs(){
 
         // Create a new builder file
         Builder b = new Builder();
 
         // Create a new worksheet
         b.addWorksheet('Setters');
+        b.addKeyword('Build Test');
 
         // Add text cell
         b.addTextCell(0, 0, 0, 'A1');
@@ -312,14 +313,34 @@ private with sharing class BuilderTest {
         b.setRowStyle(  0, 0, 0);
 
         // Build the document
-        Document xlsx = Build.asDocument(b);
+        Blob                          xlsxBlob                = Build.asBlob(b);
+        Document                      xlsxDocument            = Build.asDocument(b);
+        ContentVersion                xlsxContentVersion      = Build.asContentVersion(b);
+        Messaging.EmailFileAttachment xlsxEmailFileAttachment = Build.asEmailFileAttachment(b);
 
         // Test the sheet0.xml is OK
         Assert.areEqual(
             '<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetPr><tabColor auto="true"/></sheetPr><dimension ref="A1:A1"/><sheetViews><sheetView workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews><sheetFormatPr defaultColWidth="8.11" defaultRowHeight="14.40"/><cols><col min="1" max="1" width="45.00" customWidth="1" style="0" hidden="true"/></cols><sheetData><row r="1" s="0" customFormat="1" ht="45.00" customHeight="1" hidden="true"><c r="A1" t="s" s="0"><v>0</v></c></row></sheetData><pageMargins left="0.75" right="0.75" top="0.75" bottom="0.75" header="0.25" footer="0.25"/></worksheet>',
-            new Compression.ZipReader(xlsx.body).getEntry(String.format(Constant.ZP_PATH_SHEET, new String[]{'0'})).getContent().toString(),
+            new Compression.ZipReader(xlsxBlob).getEntry(String.format(Constant.ZP_PATH_SHEET, new String[]{'0'})).getContent().toString(),
             'Unexpected XML Body'
         );
-
+        
+        Assert.areEqual(
+            '<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetPr><tabColor auto="true"/></sheetPr><dimension ref="A1:A1"/><sheetViews><sheetView workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews><sheetFormatPr defaultColWidth="8.11" defaultRowHeight="14.40"/><cols><col min="1" max="1" width="45.00" customWidth="1" style="0" hidden="true"/></cols><sheetData><row r="1" s="0" customFormat="1" ht="45.00" customHeight="1" hidden="true"><c r="A1" t="s" s="0"><v>0</v></c></row></sheetData><pageMargins left="0.75" right="0.75" top="0.75" bottom="0.75" header="0.25" footer="0.25"/></worksheet>',
+            new Compression.ZipReader(xlsxContentVersion.VersionData).getEntry(String.format(Constant.ZP_PATH_SHEET, new String[]{'0'})).getContent().toString(),
+            'Unexpected XML Body'
+        );
+        
+        Assert.areEqual(
+            '<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetPr><tabColor auto="true"/></sheetPr><dimension ref="A1:A1"/><sheetViews><sheetView workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews><sheetFormatPr defaultColWidth="8.11" defaultRowHeight="14.40"/><cols><col min="1" max="1" width="45.00" customWidth="1" style="0" hidden="true"/></cols><sheetData><row r="1" s="0" customFormat="1" ht="45.00" customHeight="1" hidden="true"><c r="A1" t="s" s="0"><v>0</v></c></row></sheetData><pageMargins left="0.75" right="0.75" top="0.75" bottom="0.75" header="0.25" footer="0.25"/></worksheet>',
+            new Compression.ZipReader(xlsxDocument.body).getEntry(String.format(Constant.ZP_PATH_SHEET, new String[]{'0'})).getContent().toString(),
+            'Unexpected XML Body'
+        );
+        
+        Assert.areEqual(
+            '<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetPr><tabColor auto="true"/></sheetPr><dimension ref="A1:A1"/><sheetViews><sheetView workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews><sheetFormatPr defaultColWidth="8.11" defaultRowHeight="14.40"/><cols><col min="1" max="1" width="45.00" customWidth="1" style="0" hidden="true"/></cols><sheetData><row r="1" s="0" customFormat="1" ht="45.00" customHeight="1" hidden="true"><c r="A1" t="s" s="0"><v>0</v></c></row></sheetData><pageMargins left="0.75" right="0.75" top="0.75" bottom="0.75" header="0.25" footer="0.25"/></worksheet>',
+            new Compression.ZipReader(xlsxEmailFileAttachment.getBody()).getEntry(String.format(Constant.ZP_PATH_SHEET, new String[]{'0'})).getContent().toString(),
+            'Unexpected XML Body'
+        );
     }
 }

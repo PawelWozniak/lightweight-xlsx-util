@@ -13,6 +13,18 @@
 global with sharing class Build {
 
     /**
+     * @description Method to build the XLSX builder as a Blob
+     *              Use this to have th full freedom of how you 
+     *              want to handle the file
+     * @param b The builder class instance
+     * @return      The XLSX as a EmailFileAttachment object
+     */
+    global static Blob asBlob(Builder b){
+        return  XmlPackageBuilder.getPackage(b);
+    }
+
+
+    /**
      * @description Method to build the XLSX builder as a Document
      * @param b The builder class instance
      * @return      The XLSX as a Document object
@@ -70,8 +82,10 @@ global with sharing class Build {
         return cv;
     }
 
+
     /**
      * @description Method to build the XLSX builder as a EmailFileAttachment
+     * @author      PawelWozniak (pawelw6@gmail.com)
      * @param b The builder class instance
      * @return      The XLSX as a EmailFileAttachment object
      */
@@ -80,7 +94,7 @@ global with sharing class Build {
         Messaging.EmailFileAttachment emailFileAttachment = new Messaging.EmailFileAttachment();
         emailFileAttachment.setFileName(BuildUtil.getSanitizedFileName(b.fileName));
         emailFileAttachment.setBody(XmlPackageBuilder.getPackage(b));
-        emailFileAttachment.setContentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        emailFileAttachment.setContentType(Constant.CT_SHEET);
 
         return emailFileAttachment;
     }

@@ -16,9 +16,9 @@ The library comes with the most common functionalities like freezing rows, mergi
 | Info | Value | ||
 |---|---|---|---|
 |Name|Lightweight - XLSX Util||
-|Version|0.1.0||
-|**Managed** | `sf package install --wait 30 --security-type AllUsers --package 04tP30000010lw1IAA` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP30000010lw1IAA) | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP30000010lw1IAA)|
-|**Unlocked**| `sf package install --wait 30 --security-type AllUsers --package 04tP30000010p0LIAQ` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP30000010p0LIAQ)          | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tP30000010p0LIAQ)|
+|Version|0.2.0||
+|**Managed** | `sf package install --wait 30 --security-type AllUsers --package 04tP300000164pxIAA` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP300000164pxIAA) | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP300000164pxIAA)|
+|**Unlocked**| `sf package install --wait 30 --security-type AllUsers --package 04tP300000164rZIAQ` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP300000164rZIAQ)          | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tP300000164rZIAQ)|
 
 
 ## Parse Excel files
@@ -95,8 +95,10 @@ The `xlsx.Parse` class is used to parse an XLSX file body from an unzipped file 
 The `xlsx.Build` class is used to create an XLSX file from a `xlsx.Builder` class instance.
 |Return type| Method signature| Use for |
 |---|---|---|
-|`Document`         |`xlsx.Build.asDocument(Builder b)`      | Building your XLSX file as a `Document` Object|
-|`ContentVersion`   |`xlsx.Build.asContentVersion(Builder b)`| Building your XLSX file as a `ContentVersion` Object|
+|`Blob`                          |`xlsx.Build.asBlob(Builder b)`               | Building your XLSX file as a `Blob` Object|
+|`Document`                      |`xlsx.Build.asDocument(Builder b)`           | Building your XLSX file as a `Document` Object|
+|`ContentVersion`                |`xlsx.Build.asContentVersion(Builder b)`     | Building your XLSX file as a `ContentVersion` Object|
+|`Messaging.EmailFileAttachment` |`xlsx.Build.asEmailFileAttachment(Builder b)`| Building your XLSX file as a `Messaging.EmailFileAttachment` Object|
 
 
 ## Builder Methods

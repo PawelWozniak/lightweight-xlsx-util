@@ -334,7 +334,7 @@ public with sharing class XmlElement {
             ).writeXml(x);
 
             // Write the sheet views
-           this.sheetViews.writeXml(x);
+            this.sheetViews.writeXml(x);
 
             // Write the sheet formatting properties
             this.sheetFormatPr.writeXml(x);
@@ -580,7 +580,8 @@ public with sharing class XmlElement {
 
             // Nothing select so add the default selection
             }else{
-                this.selections.add(new Selection(null, 0, 0));
+                // Return a new list
+                this.selections = new Selection[]{new Selection(null, 0, 0)};
             }
 
             // Write the selection elements
