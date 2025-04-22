@@ -30,6 +30,7 @@ public with sharing class Constant {
     public static final String  MSG_DUPLICATE_WORKSHEET = 'A worksheet with the name "{0}" already exists in the builder.';
     public static final String  MSG_INVALID_CELL_NAME   = 'Invalid cell name: "{0}"';
     public static final String  MSG_INVALID_ZIP_ENTRY   = 'The file name "{0}" does not exist in the zip entries map.';
+    public static final String  MSG_NO_DIMENSION_ATTR   = 'The worksheet does not contain the "dimension" attribute. To use the "toArray()" methods, this attribute is required. Please use the "toMap()" methods. This often happens with sheets created in Google Sheets. A solution is on the roadmap.';
 
 
     /** **************************************************************************************************** **
@@ -53,11 +54,14 @@ public with sharing class Constant {
     // The worksheet relationship Id (RID) offset (Because 2 relationships exist by default)
     public static final Integer  WS_RID_OFFSET      = 2;
 
+    // Regex to sanitize worksheet names
+    public static final String   WS_NAME_REGEX      = '[\\\\\\/?*:\\[\\]]';
+
     // Regex to get the name of the cell.
     public static final String   CELL_NAME_REGEX    = '^([a-zA-Z]+)';
 
-    // Regex to sanitize worksheet names
-    public static final String   WS_NAME_REGEX      = '[\\\\\\/?*:\\[\\]]';
+    // Patern generated from the cell name so the pattern compilation only has to be executed once
+    public static final Pattern  CELL_NAME_PATTERN  = Pattern.compile(CELL_NAME_REGEX);
 
     // Character Array to calculate column names
     public static final String[] CHARS              = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -92,6 +96,9 @@ public with sharing class Constant {
     public static final String FILE_CONTENT_TYPES   = '[Content_Types].xml';
     public static final String FILE_RELS            = '.rels';
     public static final String FILE_WORKBOOK_RELS   = 'workbook.xml.rels';
+    
+    // Regex pattern for the worksheet path inside the zip archive
+    public static final String WORKSHEET_PATH_REGEX = '^xl/worksheets/sheet\\d+\\.xml$';
 
     // Relationship paths (!! Not the same as the folder path in the package !!)
     public static final String REL_PATH_SHRD_STRS   = FOLDER_BLANK     + FILE_SHRD_STRS;

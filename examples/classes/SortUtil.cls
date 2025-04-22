@@ -62,8 +62,8 @@ public with sharing class SortUtil {
                     addWarning(
                         node, 
                         String.format(MISSING_DEPENDENCY_WARNING, new String[]{
-                            String.valueOf(node),
-                            String.valueOf(dependency)
+                            node.toString(),
+                            dependency.toString()
                         })
                     );
                     
@@ -78,7 +78,7 @@ public with sharing class SortUtil {
                         node,
                         String.format(
                             SELF_DEPENDENCY_WARNING,
-                            new String[]{String.valueOf(node)}
+                            new String[]{node.toString()}
                         )
                     );
  
@@ -93,7 +93,7 @@ public with sharing class SortUtil {
                         node,
                         String.format(
                             DUO_DEPENDENCY_WARNING,
-                            new String[]{String.valueOf(node),String.valueOf(dependency)}
+                            new String[]{node.toString(),dependency.toString()}
                         )
                     );
                 }
@@ -194,7 +194,7 @@ public with sharing class SortUtil {
                             node,
                             String.format(
                                 CYL_DEPENDENCY_WARNING,
-                                new String[]{String.valueOf(node),childNodePath}
+                                new String[]{node.toString(),childNodePath}
                             )
                         );
                         return;

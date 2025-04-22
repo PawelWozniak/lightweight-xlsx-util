@@ -127,7 +127,7 @@ global with sharing class Parse{
         // we do not do have a duplicate translation for overlapping column names
         // i.e. If sheet 1 has 10 columns and sheet 2 has 20 columns, make sure to only
         // translate the column names from 11 to 20 to save some CPU time
-        Integer maxColDimension = 0;
+        Integer maxNumberOfColumnsInAllWorksheets = 0;
 
         // Keep track of skipped worksheets
         Integer worksheetSkipCount = 0;
@@ -157,6 +157,10 @@ global with sharing class Parse{
             String cellType;
             String columnName;
 
+            // Google sheets does not include the dimension attribute, so we need to 
+            // figure out the dimensions in a different less efficient way
+            Boolean hasDimensionAttribute = false;
+
             // Traverse the XML elements in the worksheet
             // I am not using while(xsr.hasNext()) to save a method call at the end of each item
             // For some reason it's about 30% faster to put an if statement at the end. No idea why.
@@ -169,6 +173,9 @@ global with sharing class Parse{
                         // First we need the dimension of the worksheet to find out the max size of our rows
                         // The order in the XML is mandatory, so this value should exist, if not the sheet is invalid
                         when 'dimension'{
+                            
+                            // Indicate we have a dimensions attribute
+                            hasDimensionAttribute = true;
 
                             // Get the cell name from the range, this tag is mandatory so should be there
                             String cName   = xsr.getAttributeValueAt(0).split(':')[1];
@@ -182,13 +189,13 @@ global with sharing class Parse{
 
                             // Pre-populate a map with the column name related to the column index i.e. AA => 27, AB =>28 etc
                             // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
-                            if(numCols > maxColDimension){
+                            if(numCols > maxNumberOfColumnsInAllWorksheets){
 
                                 // Populate the column index (startnumber and the total number of columns)
-                                ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
+                                ParseUtil.populateColumnIndexMap(maxNumberOfColumnsInAllWorksheets, numCols);
 
                                 // Update to the new max column dimension
-                                maxColDimension = numCols;
+                                maxNumberOfColumnsInAllWorksheets = numCols;
                             }
 
                             // Add empty values for each (potential cell)
@@ -201,6 +208,22 @@ global with sharing class Parse{
                                 for(Integer ri=0; ri<numRows; ri++){
                                     output[currentWi][ci].add(null);
                                 }
+                            }
+                        }
+
+                        // The first element after dimension where we can check
+                        // only once that there is a dimension attribute
+                        when 'sheetData'{
+                            
+                            // If we have no dimension attribute we'll have to figure out
+                            // the last column and rows based on iterating the entire sheet
+                            if(!hasDimensionAttribute){
+                                ParseUtil.populateColumnIndexMapWithoutDimensionAttribute(
+                                    new XmlStreamReader(entries.get(worksheetPaths[wi]).getContent().toString()),
+                                    currentWi,
+                                    output,
+                                    false // Inverted
+                                );
                             }
                         }
 
@@ -285,13 +308,13 @@ global with sharing class Parse{
         // we do not do have a duplicate translation for overlapping column names
         // i.e. If sheet 1 has 10 columns and sheet 2 has 20 columns, make sure to only
         // translate the column names from 11 to 20 to save some CPU time
-        Integer maxColDimension = 0;
+        Integer maxNumberOfColumnsInAllWorksheets = 0;
 
         // Keep track of skipped worksheets
         Integer worksheetSkipCount = 0;
 
         // Parse each worksheet in it's own array
-        for(Integer wi =0, wiMax=worksheetPaths.size(); wi<wiMax; wi++){
+        for(Integer wi=0, wiMax=worksheetPaths.size(); wi<wiMax; wi++){
 
             // Skip sheets that are not included in the selectedSheets
             if(selectedSheets != null && !selectedSheets.contains(wi)){
@@ -301,9 +324,6 @@ global with sharing class Parse{
 
             // Calculate the current worksheet index in case we select specific worksheets only
             Integer currentWi = wi-worksheetSkipCount;
-
-            // Not every row has to be populated, so keep track for the actual row we are in
-            Integer currentRi;
 
             // Add array for the sheet to hold the columns and rows
             output.add(new Object[][]{});
@@ -317,50 +337,78 @@ global with sharing class Parse{
             // Extract the dimension
             Dom.XmlNode dimension = doc.getRootElement().getChildElement('dimension', Constant.NS_SPREADSHEET_ML);
 
-            // Get the cell name from the range, this tag is mandatory so should be there
-            String cName   = dimension.getAttributeValue('ref', null).split(':')[1];
+            // Get the number of columns / rows for this sheet
+            Integer numberOfColumnsInCurrentWorksheet = 0;
+            Integer numberOfRowsInCurrentWorksheet    = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements().size();
 
-            // Get the ref element from the token and calculate the value
-            String colName = ParseUtil.columnNameFromCellName(cName);
+            // We know the number of rows, if there is no dimension element we need to figure out the largest
+            // cell in any of the rows. To do this we read the last cell in each row and get the column number
+            if(dimension == null){
+                for(Integer ri=0;ri<numberOfRowsInCurrentWorksheet; ri++){
 
-            // Get the number of columns and rows that are in this worksheet
-            Integer numCols = CommonUtil.columnNumberFromColumnName(colName);
-            Integer numRows = Integer.valueOf(cName.removeStart(colName));
+                    // Extracting the row/cell reduces the CPU time by 50%, and for some weird reason improves the max heap size
+                    Dom.XmlNode row  = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements()[ri];
+                    Dom.XmlNode cell = row.getChildElements()[row.getChildElements().size()-1];
 
-            // Pre-populate a map with the column name related to the column index i.e. AA => 27, AB =>28 etc
-            // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
-            if(numCols > maxColDimension){
+                    // Get the last column number
+                    Integer lastColumnNumberInCurrentRow = CommonUtil.columnNumberFromColumnName(
+                        ParseUtil.columnNameFromCellName(
+                            cell.getAttributeValue('r', null)
+                        )
+                    );
+
+                    // Update the largest column number in the worksheet if the one in the current row is the highest
+                    if(numberOfColumnsInCurrentWorksheet < lastColumnNumberInCurrentRow){
+                        numberOfColumnsInCurrentWorksheet = lastColumnNumberInCurrentRow;
+                    }
+                }
 
                 // Populate the column index (startnumber and the total number of columns)
-                ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
+                // Keep track of the largest column number over all the worksheets
+                if(numberOfColumnsInCurrentWorksheet > maxNumberOfColumnsInAllWorksheets){
+                    ParseUtil.populateColumnIndexMap(maxNumberOfColumnsInAllWorksheets, numberOfColumnsInCurrentWorksheet);
+                    maxNumberOfColumnsInAllWorksheets = numberOfColumnsInCurrentWorksheet;
+                }
+            }else{
+                
+                // Get the cell name from the range, this tag is mandatory so should be there
+                String cName   = dimension.getAttributeValue('ref', null).split(':')[1];
 
-                // Update to the new max column dimension
-                maxColDimension = numCols;
+                // Get the ref element from the token and calculate the value
+                String colName = ParseUtil.columnNameFromCellName(cName);
+
+                // Get the number of columns and rows that are in this worksheet
+                numberOfColumnsInCurrentWorksheet = CommonUtil.columnNumberFromColumnName(colName);
+                
+                // Pre-populate a map with the column name related to the column index i.e. AA => 27, AB =>28 etc
+                // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
+                if(numberOfColumnsInCurrentWorksheet > maxNumberOfColumnsInAllWorksheets){
+
+                    // Populate the column index (startnumber and the total number of columns)
+                    ParseUtil.populateColumnIndexMap(maxNumberOfColumnsInAllWorksheets, numberOfColumnsInCurrentWorksheet);
+
+                    // Update to the new max column dimension
+                    maxNumberOfColumnsInAllWorksheets = numberOfColumnsInCurrentWorksheet;
+                }
             }
 
             // Add empty values for each (potential cell)
-            for(Integer ci=0; ci<numCols; ci++){
+            for(Integer ci=0; ci<numberOfColumnsInCurrentWorksheet; ci++){
 
                 // Pre-populate the entire "grid" with empty lists and null values
                 output[currentWi].add(new Object[]{});
 
                 // Create a new entry for the row
-                for(Integer ri=0; ri<numRows; ri++){
+                for(Integer ri=0; ri<numberOfRowsInCurrentWorksheet; ri++){
                     output[currentWi][ci].add(null);
                 }
             }
-
-            // Get the number of rows for this sheet
-            Integer numberOfRows = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements().size();
-
+            
             // Iterate the rows
-            for(Integer ri=0;ri<numberOfRows; ri++){
+            for(Integer ri=0;ri<numberOfRowsInCurrentWorksheet; ri++){
 
                 // Extracting the row reduces the CPU time by 50%, and for some weird reason improves the max heap size
                 Dom.XmlNode row = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements()[ri];
-
-                // Calculate the row index
-                currentRi = Integer.valueOf(row.getAttribute('r', null)) -1;
 
                 // Get the number of cells in the row
                 Integer numberOfCells = row.getChildElements().size();
@@ -376,12 +424,12 @@ global with sharing class Parse{
 
                     // Define the value in case of an inline string or a shared string
                     Object value = (cellType == 'inlineStr') ?
-                                    cell.getChildElement('is',Constant.NS_SPREADSHEET_ML).getChildElement('t', Constant.NS_SPREADSHEET_ML).getText() :
-                                    cell.getChildElement('v', Constant.NS_SPREADSHEET_ML).getText()
+                                    cell.getChildElement('is',Constant.NS_SPREADSHEET_ML)?.getChildElement('t', Constant.NS_SPREADSHEET_ML)?.getText() :
+                                    cell.getChildElement('v', Constant.NS_SPREADSHEET_ML)?.getText()
                     ;
 
                     // Put the value inside
-                    output[currentWi][ParseUtil.columnIndexMap.get(columnName)][currentRi] = (cellType == 's') ? sharedStrings[Integer.valueOf(value)] : value;
+                    output[currentWi][ParseUtil.columnIndexMap.get(columnName)][ri] = (cellType == 's') ? sharedStrings[Integer.valueOf(value)] : value;   
                 }
             }
         }
@@ -429,7 +477,7 @@ global with sharing class Parse{
         // we do not do have a duplicate translation for overlapping column names
         // i.e. If sheet 1 has 10 columns and sheet 2 has 20 columns, make sure to only
         // translate the column names from 11 to 20 to save some CPU time
-        Integer maxColDimension = 0;
+        Integer maxNumberOfColumnsInAllWorksheets = 0;
 
         // Keep track of skipped worksheets
         Integer worksheetSkipCount = 0;
@@ -459,6 +507,10 @@ global with sharing class Parse{
             String cellType;
             String columnName;
 
+            // Google sheets does not include the dimension attribute, so we need to 
+            // figure out the dimensions in a different less efficient way
+            Boolean hasDimensionAttribute = false;
+
             // Traverse the XML elements in the worksheet
             // I am not using while(xsr.hasNext()) to save a method call at the end of each item
             // For some reason it's about 30% faster to put an if statement at the end. No idea why.
@@ -471,6 +523,9 @@ global with sharing class Parse{
                         // First we need the dimension of the worksheet to find out the max size of our rows
                         // The order in the XML is mandatory, so this value should exist, if not the sheet is invalid
                         when 'dimension'{
+                            
+                            // Indicate we have a dimensions attribute
+                            hasDimensionAttribute = true;
 
                             // Get the cell name from the range, this tag is mandatory so should be there
                             String cName   = xsr.getAttributeValueAt(0).split(':')[1];
@@ -484,13 +539,13 @@ global with sharing class Parse{
 
                             // Pre-populate a map with the column name related to the column index i.e. AA => 27, AB =>28 etc
                             // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
-                            if(numCols > maxColDimension){
+                            if(numCols > maxNumberOfColumnsInAllWorksheets){
 
                                 // Populate the column index (startnumber and the total number of columns)
-                                ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
+                                ParseUtil.populateColumnIndexMap(maxNumberOfColumnsInAllWorksheets, numCols);
 
                                 // Update to the new max column dimension
-                                maxColDimension = numCols;
+                                maxNumberOfColumnsInAllWorksheets = numCols;
                             }
 
                             // Add empty values for each (potential cell)
@@ -503,6 +558,22 @@ global with sharing class Parse{
                                 for(Integer ci=0; ci<numCols; ci++){
                                     output[currentWi][ri].add(null);
                                 }
+                            }
+                        }
+
+                        // The first element after dimension where we can check
+                        // only once that there is a dimension attribute
+                        when 'sheetData'{
+                            
+                            // If we have no dimension attribute we'll have to figure out
+                            // the last column. Until that fix just throw an exception
+                            if(!hasDimensionAttribute){
+                                ParseUtil.populateColumnIndexMapWithoutDimensionAttribute(
+                                    new XmlStreamReader(entries.get(worksheetPaths[wi]).getContent().toString()),
+                                    currentWi,
+                                    output,
+                                    true // Inverted
+                                );
                             }
                         }
 
@@ -587,13 +658,13 @@ global with sharing class Parse{
         // we do not do have a duplicate translation for overlapping column names
         // i.e. If sheet 1 has 10 columns and sheet 2 has 20 columns, make sure to only
         // translate the column names from 11 to 20 to save some CPU time
-        Integer maxColDimension = 0;
+        Integer maxNumberOfColumnsInAllWorksheets = 0;
 
         // Keep track of skipped worksheets
         Integer worksheetSkipCount = 0;
 
         // Parse each worksheet in it's own array
-        for(Integer wi =0, wiMax=worksheetPaths.size(); wi<wiMax; wi++){
+        for(Integer wi=0, wiMax=worksheetPaths.size(); wi<wiMax; wi++){
 
             // Skip sheets that are not included in the selectedSheets
             if(selectedSheets != null && !selectedSheets.contains(wi)){
@@ -603,10 +674,7 @@ global with sharing class Parse{
 
             // Calculate the current worksheet index in case we select specific worksheets only
             Integer currentWi = wi-worksheetSkipCount;
-
-            // Not every row has to be populated, so keep track for the actual row we are in
-            Integer currentRi;
-
+   
             // Add array for the sheet to hold the columns and rows
             output.add(new Object[][]{});
 
@@ -619,50 +687,78 @@ global with sharing class Parse{
             // Extract the dimension
             Dom.XmlNode dimension = doc.getRootElement().getChildElement('dimension', Constant.NS_SPREADSHEET_ML);
 
-            // Get the cell name from the range, this tag is mandatory so should be there
-            String cName   = dimension.getAttributeValue('ref', null).split(':')[1];
+            // Get the number of columns / rows for this sheet
+            Integer numberOfColumnsInCurrentWorksheet = 0;
+            Integer numberOfRowsInCurrentWorksheet    = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements().size();
 
-            // Get the ref element from the token and calculate the value
-            String colName = ParseUtil.columnNameFromCellName(cName);
+            // We know the number of rows, if there is no dimension element we need to figure out the largest
+            // cell in any of the rows. To do this we read the last cell in each row and get the column number
+            if(dimension == null){
+                for(Integer ri=0;ri<numberOfRowsInCurrentWorksheet; ri++){
 
-            // Get the number of columns and rows that are in this worksheet
-            Integer numCols = CommonUtil.columnNumberFromColumnName(colName);
-            Integer numRows = Integer.valueOf(cName.removeStart(colName));
+                    // Extracting the row/cell reduces the CPU time by 50%, and for some weird reason improves the max heap size
+                    Dom.XmlNode row  = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements()[ri];
+                    Dom.XmlNode cell = row.getChildElements()[row.getChildElements().size()-1];
 
-            // Pre-populate a map with the column name related to the column index i.e. AA => 27, AB =>28 etc
-            // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
-            if(numCols > maxColDimension){
+                    // Get the last column number
+                    Integer lastColumnNumberInCurrentRow = CommonUtil.columnNumberFromColumnName(
+                        ParseUtil.columnNameFromCellName(
+                            cell.getAttributeValue('r', null)
+                        )
+                    );
+
+                    // Update the largest column number in the worksheet if the one in the current row is the highest
+                    if(numberOfColumnsInCurrentWorksheet < lastColumnNumberInCurrentRow){
+                        numberOfColumnsInCurrentWorksheet = lastColumnNumberInCurrentRow;
+                    }
+                }
 
                 // Populate the column index (startnumber and the total number of columns)
-                ParseUtil.populateColumnIndexMap(maxColDimension, numCols);
+                // Keep track of the largest column number over all the worksheets
+                if(numberOfColumnsInCurrentWorksheet > maxNumberOfColumnsInAllWorksheets){
+                    ParseUtil.populateColumnIndexMap(maxNumberOfColumnsInAllWorksheets, numberOfColumnsInCurrentWorksheet);
+                    maxNumberOfColumnsInAllWorksheets = numberOfColumnsInCurrentWorksheet;
+                }
+            }else{
+                
+                // Get the cell name from the range, this tag is mandatory so should be there
+                String cName   = dimension.getAttributeValue('ref', null).split(':')[1];
 
-                // Update to the new max column dimension
-                maxColDimension = numCols;
+                // Get the ref element from the token and calculate the value
+                String colName = ParseUtil.columnNameFromCellName(cName);
+
+                // Get the number of columns and rows that are in this worksheet
+                numberOfColumnsInCurrentWorksheet = CommonUtil.columnNumberFromColumnName(colName);
+                
+                // Pre-populate a map with the column name related to the column index i.e. AA => 27, AB =>28 etc
+                // Prepopulating makes the parsing go a lot faster as we only have to calculate it once
+                if(numberOfColumnsInCurrentWorksheet > maxNumberOfColumnsInAllWorksheets){
+
+                    // Populate the column index (startnumber and the total number of columns)
+                    ParseUtil.populateColumnIndexMap(maxNumberOfColumnsInAllWorksheets, numberOfColumnsInCurrentWorksheet);
+
+                    // Update to the new max column dimension
+                    maxNumberOfColumnsInAllWorksheets = numberOfColumnsInCurrentWorksheet;
+                }
             }
 
             // Add empty values for each (potential cell)
-            for(Integer ri=0; ri<numRows; ri++){
+            for(Integer ri=0; ri<numberOfRowsInCurrentWorksheet; ri++){
 
                 // Pre-populate the entire "grid" with empty lists and null values
                 output[currentWi].add(new Object[]{});
 
                 // Create a new entry for the row
-                for(Integer ci=0; ci<numCols; ci++){
+                for(Integer ci=0; ci<numberOfColumnsInCurrentWorksheet; ci++){
                     output[currentWi][ri].add(null);
                 }
             }
-
-            // Get the number of rows for this sheet
-            Integer numberOfRows = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements().size();
-
+            
             // Iterate the rows
-            for(Integer ri=0;ri<numberOfRows; ri++){
+            for(Integer ri=0;ri<numberOfRowsInCurrentWorksheet; ri++){
 
                 // Extracting the row reduces the CPU time by 50%, and for some weird reason improves the max heap size
                 Dom.XmlNode row = doc.getRootElement().getChildElement('sheetData',Constant.NS_SPREADSHEET_ML).getChildElements()[ri];
-
-                // Calculate the row index
-                currentRi = Integer.valueOf(row.getAttribute('r', null)) -1;
 
                 // Get the number of cells in the row
                 Integer numberOfCells = row.getChildElements().size();
@@ -678,12 +774,12 @@ global with sharing class Parse{
 
                     // Define the value in case of an inline string or a shared string
                     Object value = (cellType == 'inlineStr') ?
-                                    cell.getChildElement('is',Constant.NS_SPREADSHEET_ML).getChildElement('t', Constant.NS_SPREADSHEET_ML).getText() :
-                                    cell.getChildElement('v', Constant.NS_SPREADSHEET_ML).getText()
+                                    cell.getChildElement('is',Constant.NS_SPREADSHEET_ML)?.getChildElement('t', Constant.NS_SPREADSHEET_ML)?.getText() :
+                                    cell.getChildElement('v', Constant.NS_SPREADSHEET_ML)?.getText()
                     ;
 
                     // Put the value inside
-                    output[currentWi][currentRi][ParseUtil.columnIndexMap.get(columnName)] = (cellType == 's') ? sharedStrings[Integer.valueOf(value)] : value;
+                    output[currentWi][ri][ParseUtil.columnIndexMap.get(columnName)] = (cellType == 's') ? sharedStrings[Integer.valueOf(value)] : value;
                 }
             }
         }
@@ -957,9 +1053,12 @@ global with sharing class Parse{
         // List to hold the worksheet paths
         String[] worksheetPaths = new String[]{};
 
+        // Compile the pattern into a Regex object
+        Pattern regex = Pattern.compile(Constant.WORKSHEET_PATH_REGEX);
+
         // Iterate through all the files in the workbook folder
         for(String path : entries.keySet()){
-            if(path.startsWith(Constant.FOLDER_XL_WORKSHEET)){
+            if(regex.matcher(path).find()){
                 worksheetPaths.add(path);
             }
         }

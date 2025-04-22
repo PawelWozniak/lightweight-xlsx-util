@@ -169,8 +169,8 @@ global with sharing class SoqlBuilder{
 
         // Add all sObject details
         for(String sObjectAttribute : sObjectMetadata.keySet()){
-            b.addTextCell(wi, 0, ri, sObjectAttribute,                                      applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 1, endRi) : null);
-            b.addTextCell(wi, 1, ri, String.valueOf(sObjectMetadata.get(sObjectAttribute)), applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 1, endRi) : null);
+            b.addTextCell(wi, 0, ri, sObjectAttribute,                                 applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(0, ri, 0, 1, endRi) : null);
+            b.addTextCell(wi, 1, ri, sObjectMetadata.get(sObjectAttribute).toString(), applyDefaultStyles ? xlsx.StylesBuilder.getMainStyleIndex(1, ri, 0, 1, endRi) : null);
             ri++;
         }
 

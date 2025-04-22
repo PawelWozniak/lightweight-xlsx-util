@@ -44,9 +44,10 @@ public with sharing class ParserPerformanceTest {
         Object[][][] xlsxDataArray = xlsx.Parse.toArray(
             new Compression.ZipReader(
                 [SELECT body FROM Document WHERE Id = :documentId LIMIT 1].Body
-            ).getEntriesMap(),
-            new Set<Integer>{0}
+            ).getEntriesMap()
         );
+
+        System.debug(JSON.serializePretty(xlsxDataArray));
 
         // Register end time
         Decimal pt = Limits.getCpuTime();
@@ -54,12 +55,29 @@ public with sharing class ParserPerformanceTest {
         // Example action
         Object cellData;
 
+        // Counters
+        Integer wiCount   = 0;
+        Integer rowCount  = 0;
+        Integer colCount  = 0;
+        Integer cellCount = 0;
+
         // Loop through the results and do something
         for(Integer wi=0, wiMax=xlsxDataArray.size(); wi<wiMax; wi++){
+            
+            if(wi == 0){wiCount+=wiMax;}
+            
             for(Integer ci=0, ciMax=xlsxDataArray[wi].size(); ci<ciMax; ci++){
+                
+                // Add accurate count
+                if(ci == 0){
+                    colCount+=ciMax;
+                    rowCount+=xlsxDataArray[wi][ci].size();
+                }
+                
                 for(Integer ri=0, riMax=xlsxDataArray[wi][ci].size(); ri<riMax; ri++){
                     cellData = xlsxDataArray[wi][ci][ri];
-                }
+                    cellCount++;
+                }      
             }
         }
 
@@ -71,6 +89,10 @@ public with sharing class ParserPerformanceTest {
         lwt.Dbg.al('numberOfColumns'    + ': ' + numberOfColumns    );
         lwt.Dbg.al('numberOfRows'       + ': ' + numberOfRows       );
         lwt.Dbg.al('documentId'         + ': ' + documentId         );
+        lwt.Dbg.al('wiCount'            + ': ' + wiCount            );
+        lwt.Dbg.al('rowCount'           + ': ' + rowCount           );
+        lwt.Dbg.al('colCount'           + ': ' + colCount           );
+        lwt.Dbg.al('cellCount'          + ': ' + cellCount          );
         lwt.Dbg.al('PARSE Time'         + ': ' + (pt-st)            );
         lwt.Dbg.al('HANDLING Time'      + ': ' + (et-pt)            );
         lwt.Dbg.pub();
@@ -106,8 +128,7 @@ public with sharing class ParserPerformanceTest {
         List<Map<String,Object>> xlsxDataMapList = xlsx.Parse.toMap(
             new Compression.ZipReader(
                 [SELECT body FROM Document WHERE Id = :documentId LIMIT 1].Body
-            ).getEntriesMap(),
-            new Set<Integer>{0}
+            ).getEntriesMap()
         );
 
         // Register end time

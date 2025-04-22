@@ -9,12 +9,14 @@
 // -            PARSE TO ARRAY SYNC RESULTS             -
 // -------------------------------------------------------
 // Sheets   Cols    Rows      Cells    Parse Tm  Handle Tm
-//      1     25   7250    181,250    11,412ms        195
-//      2     25    4062    203,100    6,795ms        221
-//      3     25    2625    196,875     4,524ms        78
-//      4     25    2000    200,000     3,587ms        51
-//      5     25    1650    206,250     2,740ms        40
-xlsx.ParserPerformanceTest.parseToArray(5, 25, 3300, '015Qz000004lyckIAA');
+//      1     25    7250    181,250    11,412ms        195
+//      2     25    4062    203,100     6,795ms        221
+//      3     25    2625    196,875     4,524ms         78
+//      4     25    2000    200,000     3,587ms         51
+//      5     25    1650    206,250     2,740ms         40
+xlsx.ParserPerformanceTest.parseToArray(1, 1, 1, '015Q1000004kygQ');
+
+
 
 // -------------------------------------------------------
 // -            PARSE TO ARRAY ASYNC RESULTS             -
@@ -25,7 +27,7 @@ xlsx.ParserPerformanceTest.parseToArray(5, 25, 3300, '015Qz000004lyckIAA');
 //      3     25    5250    393,750     8,371ms        138
 //      4     25    4000    400,000     6,516ms        101
 //      5     25    3300    412,500     5,734ms         90
-xlsx.ParserPerformanceTest.parseToArrayAsync(5, 25, 3300, '015Qz000004lyckIAA');
+xlsx.ParserPerformanceTest.parseToArrayAsync(2, 25, 3500, '015Q1000004kO0DIAU');
 
 
 // -------------------------------------------------------

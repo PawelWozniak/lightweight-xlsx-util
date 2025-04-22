@@ -32,7 +32,7 @@ public with sharing class BuildUtil {
         }
 
         for(Integer i=0;i<=numberOfRows;i++){
-            BuildUtil.rowNames.add(String.valueOf(i+1));
+            BuildUtil.rowNames.add((i+1).toString());
         }
     }
 

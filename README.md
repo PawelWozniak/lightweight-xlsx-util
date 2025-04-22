@@ -16,9 +16,9 @@ The library comes with the most common functionalities like freezing rows, mergi
 | Info | Value | ||
 |---|---|---|---|
 |Name|Lightweight - XLSX Util||
-|Version|0.2.0||
-|**Managed** | `sf package install --wait 30 --security-type AllUsers --package 04tP300000164pxIAA` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP300000164pxIAA) | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP300000164pxIAA)|
-|**Unlocked**| `sf package install --wait 30 --security-type AllUsers --package 04tP300000164rZIAQ` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP300000164rZIAQ)          | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tP300000164rZIAQ)|
+|Version|0.3.0||
+|**Managed** | `sf package install --wait 30 --security-type AllUsers --package 04tP3000001Az9hIAC` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP3000001Az9hIAC) | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tP3000001Az9hIAC)|
+|**Unlocked**| `sf package install --wait 30 --security-type AllUsers --package 04tP3000001Az85IAC` | [Install in production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tP3000001Az85IAC)          | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tP3000001Az85IAC)|
 
 
 ## Parse Excel files
@@ -106,15 +106,16 @@ The `xlsx.Builder` class is used to setup/configure the entire XLSX document. Us
 Making changes to anything in the sheets uses the worksheet index (`wi`), column index (`ci`) and row index (`ri`) parameters. These are the zero indexes so cell A1 on Sheet1 is set as [0][0][0].
 |Return type| Method signature| Use for |
 |---|---|---|
-|`void`     |`setUseSharedStrings(Boolean value)`                    | Enable or disable shared strings. Shared strings is recommended and enabled by default.|
-|`void`     |`setIncludeDefaultStyles(Boolean value)`                | Enable the Lightweight - XLSX Util standard styles |
-|`void`     |`setFileName(String value)`                             | Setting a custom name for the output file, does not have to end in .xlsx|
-|`void`     |`setTitle(String value)`                                | Setting a document title|
-|`void`     |`setSubject(String value)`                              | Setting a document subject|
-|`void`     |`setDescription(String value)`                          | Setting a document description|
-|`void`     |`addKeyword(String value)`                              | Adding a document keyword, A max of 255 characters for all keywords is in place|
-|`Integer`  |`addWorksheet(String name)`                             | Adds a new worksheet with a name (max 31 characters). Set the name param to NULL for an auto generated name like in Excel (i.e. sheet1, sheet2 etc.) |
-|`void`     |`prePadWorksheet(Integer wi, Integer ci, Integer ri)`   | If you know the max number of rows and columns you can use this method for performance optimization|
+|`void`     |`setUseSharedStrings(Boolean value)`                       | Enable or disable shared strings. Shared strings is recommended and enabled by default.|
+|`void`     |`setIncludeDefaultStyles(Boolean value)`                   | Enable the Lightweight - XLSX Util standard styles |
+|`void`     |`setFileName(String value)`                                | Setting a custom name for the output file, does not have to end in .xlsx|
+|`void`     |`setTitle(String value)`                                   | Setting a document title|
+|`void`     |`setSubject(String value)`                                 | Setting a document subject|
+|`void`     |`setDescription(String value)`                             | Setting a document description|
+|`void`     |`addKeyword(String value)`                                 | Adding a document keyword, A max of 255 characters for all keywords is in place|
+|`Integer`  |`addWorksheet(String name)`                                | Adds a new worksheet with a name (max 31 characters). Set the name param to NULL for an auto generated name like in Excel (i.e. sheet1, sheet2 etc.) |
+|`Integer`  |`addWorksheet(String name, BooleanwriteDimensionElement)`  | Same as `addWorksheet(name) but with the boolean option to disable the writing of the "dimension" element on worksheets. Intended for testing purposes.|
+|`void`     |`prePadWorksheet(Integer wi, Integer ci, Integer ri)`      | If you know the max number of rows and columns you can use this method for performance optimization|
 |`void`     |`setVisible(Integer wi, Boolean state)`                        | Set a worksheet visible or invisible|
 |`void`     |`setTabColor(Integer wi, String colorCode)`                    | Set a custom tab color (6 digit HEX code)|
 |`void`     |`setAutoFilter(Integer wi, Boolean value)`                     | Enable an auto filter on the columns|

@@ -107,7 +107,7 @@ public with sharing class XmlFileBuilder {
             Constant.FOLDER_XL_WORKSHEET,
             String.format(
                 Constant.FILE_SHEET,
-                new String[]{String.valueOf(wi)}
+                new String[]{wi.toString()}
             ),
             Blob.valueof(writeTopLevelXmlElementXmlString(
                 b.worksheets[wi]

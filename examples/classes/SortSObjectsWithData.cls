@@ -206,18 +206,18 @@ public with sharing class SortSObjectsWithData{
                     continue;
                 }
                 
-                dependencies.add(String.valueOf(dependency));
+                dependencies.add(dependency.toString());
                 i++;
             }
     
             // Add self to end of dependencies
             if(addSelfToEnd){
-                dependencies.add(String.valueOf(sot));
+                dependencies.add(sot.toString());
                 addSelfToEnd = false;
             }
     
             // Add the object type and dependencies
-            objectMap.put(String.valueOf(sot),dependencies);
+            objectMap.put(sot.toString(),dependencies);
         }
     
         // Return the converted map

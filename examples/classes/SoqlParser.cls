@@ -60,11 +60,12 @@ public with sharing class SoqlParser {
         if(!(input?.isEmpty() == false)){return output;}
 
         // Get the SObject type for the parent table by extracting the attribute from the first record
-        String parentSObjectName = String.valueOf((
+        String parentSObjectName = (
             (Map<String,Object>)(((Map<String,Object>) input[0])
             .get('attributes')))
             .get('type')
-        );
+            .toString()
+        ;
 
         // Populate the data by traversing the input and add the data to the output
         // We set the sObject name as the starting path and sObject
@@ -318,8 +319,8 @@ public with sharing class SoqlParser {
         // Iterate all the child relationships until the right one is found
         for(Schema.ChildRelationship cr : sObjectDescribeMap.get(node.currentSObject).childrelationships  ){
             if(cr.relationshipname == relationshipName){
-                node.currentSObject = String.valueOf(cr.childsobject);
-                node.currentRelationshipField = String.valueOf(cr.field);
+                node.currentSObject           = cr.childsobject.toString();
+                node.currentRelationshipField = cr.field.toString();
                 break;
             }
         }

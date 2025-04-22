@@ -75,9 +75,16 @@ private with sharing class ParseTest {
         
         // Create a new builder
         Builder b = new Builder();
+
+        // Create a builder that does output the dimension element
+        Builder noDimensionBuilder = new Builder();
+        noDimensionBuilder.addWorksheet('Worksheet 01', false);
+        noDimensionBuilder.addWorksheet('Worksheet 02', false);
+        noDimensionBuilder.addWorksheet('Worksheet 03', false);
         
         // Create the test data
         populateWorksheets(b);
+        populateWorksheets(noDimensionBuilder);
         
         // Execute the tests
         Test.startTest();
@@ -116,6 +123,42 @@ private with sharing class ParseTest {
                                                         new Compression.ZipReader(Build.asContentVersion(b).VersionData).getEntriesMap(),
                                                         new Set<Integer>{0,2}
                                                     );
+
+       Object[][][] documentResultNd                = Parse.toArray(
+                                                        new Compression.ZipReader(Build.asDocument(noDimensionBuilder).body).getEntriesMap()
+                                                    );
+
+        Object[][][] contentVersionResultNd         = Parse.toArray(
+                                                        new Compression.ZipReader(Build.asContentVersion(noDimensionBuilder).VersionData).getEntriesMap(),
+                                                        new Set<Integer>{0,2}
+                                                    );
+
+        Object[][][] documentResultDomDocNd         = Parse.toArrayDomDoc(
+                                                        new Compression.ZipReader(Build.asDocument(noDimensionBuilder).body).getEntriesMap()
+                                                    );
+
+        Object[][][] contentVersionResultDomDocNd   = Parse.toArrayDomDoc(
+                                                        new Compression.ZipReader(Build.asContentVersion(noDimensionBuilder).VersionData).getEntriesMap(),
+                                                        new Set<Integer>{0,2}
+                                                    );
+        
+        Object[][][] documentResultIvNd             = Parse.toArrayInverted(
+                                                        new Compression.ZipReader(Build.asDocument(noDimensionBuilder).body).getEntriesMap()
+                                                    );
+
+        Object[][][] contentVersionResultIvNd       = Parse.toArrayInverted(
+                                                        new Compression.ZipReader(Build.asContentVersion(noDimensionBuilder).VersionData).getEntriesMap(),
+                                                        new Set<Integer>{0,2}
+                                                    );
+
+        Object[][][] documentResultDomDocIvNd       = Parse.toArrayInvertedDomDoc(
+                                                        new Compression.ZipReader(Build.asDocument(noDimensionBuilder).body).getEntriesMap()
+                                                    );
+
+        Object[][][] contentVersionResultDomDocIvNd = Parse.toArrayInvertedDomDoc(
+                                                        new Compression.ZipReader(Build.asContentVersion(noDimensionBuilder).VersionData).getEntriesMap(),
+                                                        new Set<Integer>{0,2}
+                                                    );                                                
         Test.stopTest();
 
         // Validate we have the correct number of worksheets
@@ -127,6 +170,17 @@ private with sharing class ParseTest {
         Assert.areEqual(2,contentVersionResultIv.size(),        'Unexpected number of worksheets');
         Assert.areEqual(3,documentResultDomDocIv.size(),        'Unexpected number of worksheets');
         Assert.areEqual(2,contentVersionResultDomDocIv.size(),  'Unexpected number of worksheets');
+
+        // Validate we have the correct number of worksheets for sheets without a dimension
+        Assert.areEqual(3,documentResultNd.size(),              'Unexpected number of worksheets');
+        Assert.areEqual(3,documentResultNd.size(),              'Unexpected number of worksheets');
+        Assert.areEqual(2,contentVersionResultNd.size(),        'Unexpected number of worksheets');
+        Assert.areEqual(3,documentResultDomDocNd.size(),        'Unexpected number of worksheets');
+        Assert.areEqual(2,contentVersionResultDomDocNd.size(),  'Unexpected number of worksheets');
+        Assert.areEqual(3,documentResultIvNd.size(),            'Unexpected number of worksheets');
+        Assert.areEqual(2,contentVersionResultIvNd.size(),      'Unexpected number of worksheets');
+        Assert.areEqual(3,documentResultDomDocIvNd.size(),      'Unexpected number of worksheets');
+        Assert.areEqual(2,contentVersionResultDomDocIvNd.size(),'Unexpected number of worksheets');
 
         // Iterate all worksheets in all results and validate their output
         for (Integer i = 0, max=documentResult.size(); i < max; i++) {
@@ -166,7 +220,47 @@ private with sharing class ParseTest {
         // Iterate all worksheets in all results and validate their output
         for (Integer i = 0, max=contentVersionResultDomDocIv.size(); i < max; i++) {
             validateCellValuesInArray(contentVersionResultDomDocIv[i]);
-        } 
+        }
+        
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=documentResultNd.size(); i < max; i++) {
+            validateCellValuesInArray(documentResultNd[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=contentVersionResultNd.size(); i < max; i++) {
+            validateCellValuesInArray(contentVersionResultNd[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=documentResultDomDocNd.size(); i < max; i++) {
+            validateCellValuesInArray(documentResultDomDocNd[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=contentVersionResultDomDocNd.size(); i < max; i++) {
+            validateCellValuesInArray(contentVersionResultDomDocNd[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=documentResultIvNd.size(); i < max; i++) {
+            validateCellValuesInArray(documentResultIvNd[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=contentVersionResultIvNd.size(); i < max; i++) {
+            validateCellValuesInArray(contentVersionResultIvNd[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=documentResultDomDocIvNd.size(); i < max; i++) {
+            validateCellValuesInArray(documentResultDomDocIvNd[i]);
+        }
+
+        // Iterate all worksheets in all results and validate their output
+        for (Integer i = 0, max=contentVersionResultDomDocIvNd.size(); i < max; i++) {
+            validateCellValuesInArray(contentVersionResultDomDocIvNd[i]);
+        }
     }
 
 
@@ -277,8 +371,8 @@ private with sharing class ParseTest {
         Assert.areEqual(1, mapResult.size(),     'Unexpected number of worksheets');
         
         // Validate cell values
-        Assert.areEqual('Lalalalala',   String.valueOf( arrayResult[0][0][0]),   'Unexpected Cell value');
-        Assert.areEqual('Lalalalala',   String.valueOf( mapResult[0].get('A1')), 'Unexpected Cell value');
+        Assert.areEqual('Lalalalala',   arrayResult[0][0][0].toString(),   'Unexpected Cell value');
+        Assert.areEqual('Lalalalala',   mapResult[0].get('A1').toString(), 'Unexpected Cell value');
     }
 
 

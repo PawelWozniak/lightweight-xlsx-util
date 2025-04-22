@@ -28,7 +28,7 @@ try{
     
     // Unzip the whole xlsx file, make sure the XLSX file only contains existing sObjects
     Map<String,Compression.ZipEntry> entries = new Compression.ZipReader(
-        [SELECT body FROM Document WHERE Id = '015Qz000004poTWIAY' LIMIT 1]?.Body
+        [SELECT body FROM Document WHERE Id = '015Q1000004jD23IAE' LIMIT 1]?.Body
     ).getEntriesMap();
 
     // Get an index for all the worksheets, because we need the worksheet name as sObject API name
@@ -227,16 +227,16 @@ private static void processHeaderRow(String               sObjectName, Object[] 
 public static Object castObjectFieldData(Schema.DisplayType fieldType, Object fieldValue) {
     switch on fieldType {
         when STRING, TEXTAREA, URL, PHONE, EMAIL {
-            return String.valueOf(fieldValue);
+            return fieldValue.toString();
         }
         when DOUBLE, CURRENCY, PERCENT {
             return Double.valueOf(fieldValue);
         }
         when DATE {
-            return Date.valueOf(String.valueOf(fieldValue));
+            return Date.valueOf(fieldValue.toString());
         }
         when DATETIME {
-            return Datetime.valueOf(String.valueOf(fieldValue));
+            return Datetime.valueOf(fieldValue.toString());
         }
         when BOOLEAN {
             return Boolean.valueOf(fieldValue);

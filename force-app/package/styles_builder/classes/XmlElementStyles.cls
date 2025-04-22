@@ -74,7 +74,7 @@ public with sharing class XmlElementStyles {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeStartElement(null, 'borders', null);
-            if(!this.borders.isEmpty()){x.writeAttribute(null, null, 'count', String.valueOf(this.borders.size()));}
+            if(!this.borders.isEmpty()){x.writeAttribute(null, null, 'count', this.borders.size().toString());}
             for(Integer i=0,max=this.borders.size(); i<max;i++){
                 this.borders[i].writeXml(x);
             }
@@ -174,7 +174,7 @@ public with sharing class XmlElementStyles {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeStartElement(null, 'fills', null);
-            if(!this.fills.isEmpty()){x.writeAttribute(null, null, 'count', String.valueOf(this.fills.size()));}
+            if(!this.fills.isEmpty()){x.writeAttribute(null, null, 'count', this.fills.size().toString());}
             for(Integer i=0,max=this.fills.size(); i<max;i++){
                 this.fills[i].writeXml(x);
             }
@@ -330,7 +330,7 @@ public with sharing class XmlElementStyles {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeStartElement(null, 'fonts', null);
-            if(!this.fonts.isEmpty()){x.writeAttribute(null, null, 'count', String.valueOf(this.fonts.size()));}
+            if(!this.fonts.isEmpty()){x.writeAttribute(null, null, 'count', this.fonts.size().toString());}
             for(Integer i=0,max=this.fonts.size(); i<max;i++){
                 this.fonts[i].writeXml(x);
             }
@@ -399,7 +399,7 @@ public with sharing class XmlElementStyles {
          */
         public FontAttribute(String attributeName, Object val){
             this.attributeName = attributeName;
-            this.val           = String.valueOf(val ?? '');
+            this.val           = (val ?? '').toString(); // [DEBUG]
         }
 
         /**
@@ -430,7 +430,7 @@ public with sharing class XmlElementStyles {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeStartElement(null, 'numFmts', null);
-            if(!this.numFmts.isEmpty()){x.writeAttribute(null, null, 'count', String.valueOf(this.numFmts.size()));}
+            if(!this.numFmts.isEmpty()){x.writeAttribute(null, null, 'count', this.numFmts.size().toString());}
             for(Integer i=0,max=this.numFmts.size(); i<max;i++){
                 this.numFmts[i].writeXml(x);
             }
@@ -467,7 +467,7 @@ public with sharing class XmlElementStyles {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeStartElement(null, 'numFmt', null);
-            if(this.numFmtId   != null){x.writeAttribute(null, null, 'numFmtId',   String.valueOf(this.numFmtId)  );}
+            if(this.numFmtId   != null){x.writeAttribute(null, null, 'numFmtId',   this.numFmtId.toString()  );}
             if(this.formatCode != null){x.writeAttribute(null, null, 'formatCode', this.formatCode                );}
             x.writeEndElement();
         }
@@ -491,7 +491,7 @@ public with sharing class XmlElementStyles {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeStartElement(null, 'cellXfs', null);
-            if(!this.cellXfs.isEmpty()){x.writeAttribute(null, null, 'count', String.valueOf(this.cellXfs.size()));}
+            if(!this.cellXfs.isEmpty()){x.writeAttribute(null, null, 'count', this.cellXfs.size().toString());}
             for(Integer i=0,max=this.cellXfs.size(); i<max;i++){
                 this.cellXfs[i].writeXml(x);
             }
@@ -530,19 +530,19 @@ public with sharing class XmlElementStyles {
         public void writeXml(XmlStreamWriter x){
             x.writeStartElement(null, 'xf', null);
 
-            if(this.numFmtId    != null){ x.writeAttribute(null, null, 'numFmtId',          String.valueOf(this.numFmtId) );}
-            if(this.fontId      != null){ x.writeAttribute(null, null, 'fontId',            String.valueOf(this.fontId)   );}
-            if(this.fillId      != null){ x.writeAttribute(null, null, 'fillId',            String.valueOf(this.fillId)   );}
-            if(this.borderId    != null){ x.writeAttribute(null, null, 'borderId',          String.valueOf(this.borderId) );}
-            if(this.xfId        != null){ x.writeAttribute(null, null, 'xfId',              String.valueOf(this.xfId)     );}
+            if(this.numFmtId    != null){ x.writeAttribute(null, null, 'numFmtId',          this.numFmtId.toString() ) ;}
+            if(this.fontId      != null){ x.writeAttribute(null, null, 'fontId',            this.fontId.toString()   ) ;}
+            if(this.fillId      != null){ x.writeAttribute(null, null, 'fillId',            this.fillId.toString()   ) ;}
+            if(this.borderId    != null){ x.writeAttribute(null, null, 'borderId',          this.borderId.toString() ) ;}
+            if(this.xfId        != null){ x.writeAttribute(null, null, 'xfId',              this.xfId.toString()     ) ;}
 
-            if(this.applyAlignment     ){ x.writeAttribute(null, null, 'applyAlignment',    '1'                           );}
-            if(this.applyBorder        ){ x.writeAttribute(null, null, 'applyBorder',       '1'                           );}
-            if(this.applyFill          ){ x.writeAttribute(null, null, 'applyFill',         '1'                           );}
-            if(this.applyFont          ){ x.writeAttribute(null, null, 'applyFont',         '1'                           );}
-            if(this.applyNumberFormat  ){ x.writeAttribute(null, null, 'applyNumberFormat', '1'                           );}
+            if(this.applyAlignment     ){ x.writeAttribute(null, null, 'applyAlignment',    '1'                       );}
+            if(this.applyBorder        ){ x.writeAttribute(null, null, 'applyBorder',       '1'                       );}
+            if(this.applyFill          ){ x.writeAttribute(null, null, 'applyFill',         '1'                       );}
+            if(this.applyFont          ){ x.writeAttribute(null, null, 'applyFont',         '1'                       );}
+            if(this.applyNumberFormat  ){ x.writeAttribute(null, null, 'applyNumberFormat', '1'                       );}
 
-            if(this.alignment !=null   ){ alignment.writeXml(x);                                                            }
+            if(this.alignment !=null   ){ alignment.writeXml(x);                                                        }
             x.writeEndElement();
         }
     }
@@ -682,10 +682,10 @@ public with sharing class XmlElementStyles {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeEmptyElement(null, 'alignment', null);
-            if(this.horizontal   != null){x.writeAttribute(null, null, 'horizontal',    horizontal                   );}
-            if(this.vertical     != null){x.writeAttribute(null, null, 'vertical',      vertical                     );}
-            if(this.textRotation != null){x.writeAttribute(null, null, 'textRotation',  String.valueOf(textRotation ));}
-            if(this.wrapText     == true){x.writeAttribute(null, null, 'wrapText',      '1'                          );}
+            if(this.horizontal   != null){x.writeAttribute(null, null, 'horizontal',    horizontal              );}
+            if(this.vertical     != null){x.writeAttribute(null, null, 'vertical',      vertical                );}
+            if(this.textRotation != null){x.writeAttribute(null, null, 'textRotation',  textRotation.toString() );}
+            if(this.wrapText     == true){x.writeAttribute(null, null, 'wrapText',      '1'                     );}
         }
     }
 }

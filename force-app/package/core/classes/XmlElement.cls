@@ -102,7 +102,7 @@ public with sharing class XmlElement {
             BuildUtil.writeSingleXmlElement(x, 'dc', 'creator',     this.creator ?? '');
             BuildUtil.writeSingleXmlElement(x, null, 'keywords',    String.join(this.keywords, ', ') ?? '');
             BuildUtil.writeSingleXmlElement(x, 'dc', 'description', this.description ?? '');
-            BuildUtil.writeSingleXmlElement(x, null, 'revision',    String.valueOf(this.revision));
+            BuildUtil.writeSingleXmlElement(x, null, 'revision',    this.revision.toString());
 
             // End of Properties
             x.writeEndElement();
@@ -259,6 +259,11 @@ public with sharing class XmlElement {
         private Integer lastRowId = 0;
         private Integer lastColId = 0;
 
+        // By default write the dimension element, this element allows for optimization
+        // This is purely added for easy apex unit testing purposes, there is no reason
+        // to not write this element
+        private Boolean writeDimensionElement = true;
+
         /**
          * Sheet configuration variables
          */
@@ -302,11 +307,12 @@ public with sharing class XmlElement {
 
 
         /**
-         * @description Main constructor
+         * @description Constructor for sheets without a dimension element
          * @param name  The name of the worksheet
          */
-        public Worksheet(String name){
+        public Worksheet(String name, Boolean writeDimensionElement){
             this.name = name;
+            this.writeDimensionElement = writeDimensionElement;
         }
 
 
@@ -328,10 +334,12 @@ public with sharing class XmlElement {
             this.sheetPr.writeXml(x);
 
             // Write the sheet dimensions, these should be calculated at the end once all data has been added
-            new Dimension(
-                this.lastColId,
-                this.lastRowId
-            ).writeXml(x);
+            if(this.writeDimensionElement){
+                new Dimension(
+                    this.lastColId,
+                    this.lastRowId
+                ).writeXml(x);
+            }
 
             // Write the sheet views
             this.sheetViews.writeXml(x);
@@ -663,12 +671,12 @@ public with sharing class XmlElement {
 
                 // Write the ySplit (rows)
                 if(ySplit != null){
-                    x.writeAttribute(null, null, 'ySplit', String.valueOf(this.ySplit));
+                    x.writeAttribute(null, null, 'ySplit', this.ySplit.toString());
                 }
 
                 // Write the xSplit (columns)
                 if(xSplit != null){
-                    x.writeAttribute(null, null, 'xSplit', String.valueOf(this.xSplit));
+                    x.writeAttribute(null, null, 'xSplit', this.xSplit.toString());
                 }
 
                 // Write the top left cell and active pane
@@ -741,8 +749,8 @@ public with sharing class XmlElement {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeEmptyElement(null, 'sheetFormatPr', null);
-            x.writeAttribute(null, null, 'defaultColWidth',  String.valueOf(this.defaultColWidth.setScale(2)));
-            x.writeAttribute(null, null, 'defaultRowHeight', String.valueOf(this.defaultRowHeight.setScale(2)));
+            x.writeAttribute(null, null, 'defaultColWidth',  this.defaultColWidth.setScale(2).toString());
+            x.writeAttribute(null, null, 'defaultRowHeight', this.defaultRowHeight.setScale(2).toString());
         }
     }
 
@@ -812,14 +820,14 @@ public with sharing class XmlElement {
             x.writeEmptyElement(null, 'col', null);
             x.writeAttribute(null, null, 'min',         BuildUtil.rowNames[this.ci]);
             x.writeAttribute(null, null, 'max',         BuildUtil.rowNames[this.ci]);
-            x.writeAttribute(null, null, 'width',       String.valueOf((this.width !=null ? this.width.setScale(2) : 8.11)));
+            x.writeAttribute(null, null, 'width',       (this.width !=null ? this.width.setScale(2) : 8.11).toString());
 
             if(this.width != null){
                 x.writeAttribute(null, null, 'customWidth', '1');
             }
 
             if(this.style != null){
-                x.writeAttribute(null, null, 'style', String.valueOf(style));
+                x.writeAttribute(null, null, 'style', style.toString());
             }
 
             if(this.hidden != null){
@@ -895,7 +903,7 @@ public with sharing class XmlElement {
             x.writeAttribute(null, null, 'r',                BuildUtil.rowNames[this.ri]);
 
             if(this.s != null){
-                x.writeAttribute(null, null, 's',            String.valueOf(this.s));
+                x.writeAttribute(null, null, 's',            this.s.toString());
                 x.writeAttribute(null, null, 'customFormat', '1');
             }
 
@@ -966,7 +974,7 @@ public with sharing class XmlElement {
 
         // Constructor: Number value
         public Cell(Integer ci, Integer ri, Integer v){
-            this.v  = String.valueOf(v);
+            this.v  = v.toString();
             this.ci = ci;
             this.ri = ri;
             this.t  = 'n';
@@ -975,7 +983,7 @@ public with sharing class XmlElement {
 
         // Constructor: Number value
         public Cell(Integer ci, Integer ri, Decimal v){
-            this.v  = String.valueOf(v);
+            this.v  = v.toString();
             this.ci = ci;
             this.ri = ri;
             this.t  = 'n';
@@ -984,7 +992,7 @@ public with sharing class XmlElement {
 
         // Constructor: Boolean value
         public Cell(Integer ci, Integer ri, Boolean v){
-            this.v  = String.valueOf(v);
+            this.v  = v.toString();
             this.ci = ci;
             this.ri = ri;
             this.t  = 'b';
@@ -993,7 +1001,7 @@ public with sharing class XmlElement {
 
         // Constructor: Formula value
         public Cell(Integer ci, Integer ri, Object v, String f){
-            this.v  = String.valueOf(v);
+            this.v  = v.toString();
             this.ci = ci;
             this.ri = ri;
             this.t  = 'str';
@@ -1017,7 +1025,7 @@ public with sharing class XmlElement {
 
         // Constructor: Number value
         public Cell(Integer ci, Integer ri, Integer v, Integer s){
-            this.v  = String.valueOf(v);
+            this.v  = v.toString();
             this.ci = ci;
             this.ri = ri;
             this.t  = 'n';
@@ -1027,7 +1035,7 @@ public with sharing class XmlElement {
 
         // Constructor: Number value
         public Cell(Integer ci, Integer ri, Decimal v, Integer s){
-            this.v  = String.valueOf(v);
+            this.v  = v.toString();
             this.ci = ci;
             this.ri = ri;
             this.t  = 'n';
@@ -1037,7 +1045,7 @@ public with sharing class XmlElement {
 
         // Constructor: Boolean value
         public Cell(Integer ci, Integer ri, Boolean v, Integer s){
-            this.v  = String.valueOf(v);
+            this.v  = v.toString();
             this.ci = ci;
             this.ri = ri;
             this.t  = 'b';
@@ -1047,7 +1055,7 @@ public with sharing class XmlElement {
 
         // Constructor: Formula value
         public Cell(Integer ci, Integer ri, Object v, String f, Integer s){
-            this.v  = String.valueOf(v);
+            this.v  = v.toString();
             this.ci = ci;
             this.ri = ri;
             this.t  = 'str';
@@ -1070,7 +1078,7 @@ public with sharing class XmlElement {
             x.writeAttribute(null, null, 'r', BuildUtil.columnNames[this.ci] + BuildUtil.rowNames[this.ri]);
             x.writeAttribute(null, null, 't', this.t);
 
-            if(this.s != null){x.writeAttribute(null, null, 's', String.valueOf(this.s));}
+            if(this.s != null){x.writeAttribute(null, null, 's', this.s.toString());}
 
             // Write cell value based on the type
             switch on this.t {
@@ -1086,7 +1094,7 @@ public with sharing class XmlElement {
                 // Number values don't have to be escaped
                 when 'n','b' {
                     x.writeStartElement(null, 'v', null);
-                    x.writeCharacters(String.valueOf(this.v));
+                    x.writeCharacters(this.v.toString());
                     x.writeEndElement();
                 }
 
@@ -1303,12 +1311,12 @@ public with sharing class XmlElement {
          */
         public void writeXml(XmlStreamWriter x){
             x.writeEmptyElement(   null, 'pageMargins', null);
-            x.writeAttribute(null, null, 'left',   String.valueOf(this.left  .setScale(2)));
-            x.writeAttribute(null, null, 'right',  String.valueOf(this.right .setScale(2)));
-            x.writeAttribute(null, null, 'top',    String.valueOf(this.top   .setScale(2)));
-            x.writeAttribute(null, null, 'bottom', String.valueOf(this.bottom.setScale(2)));
-            x.writeAttribute(null, null, 'header', String.valueOf(this.header.setScale(2)));
-            x.writeAttribute(null, null, 'footer', String.valueOf(this.footer.setScale(2)));
+            x.writeAttribute(null, null, 'left',   this.left  .setScale(2).toString());
+            x.writeAttribute(null, null, 'right',  this.right .setScale(2).toString());
+            x.writeAttribute(null, null, 'top',    this.top   .setScale(2).toString());
+            x.writeAttribute(null, null, 'bottom', this.bottom.setScale(2).toString());
+            x.writeAttribute(null, null, 'header', this.header.setScale(2).toString());
+            x.writeAttribute(null, null, 'footer', this.footer.setScale(2).toString());
 
         }
     }

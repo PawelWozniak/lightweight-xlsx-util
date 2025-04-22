@@ -35,6 +35,9 @@ global with sharing class Builder {
     // Map to track the number of cells in each row per worksheet, saves running the .size() method unnecessarily
     private Integer[][] worksheetRowNumCellsList = new Integer[][]{};
 
+    // Map to track assigned column styles so new cells can take over the default
+    private Integer[][] worksheetColumnStyleList = new Integer[][]{};
+
     /** **************************************************************************************************** **
      **                                          PRIVATE VARIABLES                                           **
      ** **************************************************************************************************** **/
@@ -154,7 +157,6 @@ global with sharing class Builder {
     }
 
 
-
     /** **************************************************************************************************** **
      **                                       PUBLIC GETTER METHODS                                          **
      ** **************************************************************************************************** **/
@@ -175,26 +177,34 @@ global with sharing class Builder {
     }
 
 
-
-
     /** **************************************************************************************************** **
      **                                            SETTER METHODS                                            **
      ** **************************************************************************************************** **/
     /**
      * WORKBOOK SETTERS
      */
-    /**
+     /**
      * @description Method to add a worksheet to the builder
      * @param name The name of the worksheet
      */
     global Integer addWorksheet(String name){
+            return addWorksheet(name, true);
+    }
+
+
+    /**
+     * @description Method to add a worksheet to the builder
+     * @param name                  The name of the worksheet
+     * @param writeDimensionElement The flag to indicate if the write the dimension element
+     */
+    global Integer addWorksheet(String name, Boolean writeDimensionElement){
 
         // Assign the worksheet index for the new sheet, (Zero index so we can take the size for a new entry)
         Integer wi = this.worksheets.size();
 
         // validate the worksheet name is OK and sanitize as much as possible
         name = String.isBlank(name) ?
-            String.format(Constant.DEF_SHEET_TITLE, new String[]{String.valueOf(wi+1)} ) :
+            String.format(Constant.DEF_SHEET_TITLE, new String[]{ (wi+1).toString()} ) :
             BuildUtil.sanitizeWorksheetName(name)
         ;
 
@@ -207,13 +217,14 @@ global with sharing class Builder {
         worksheetNames.add(name);
 
         // Add a worksheet
-        this.Worksheets.add(new XmlElement.Worksheet(name));
+        this.Worksheets.add(new XmlElement.Worksheet(name, writeDimensionElement));
 
         // Add up the counters and add all the index counters
         this.numWorksheets = wi+1;
         this.worksheetNumColumnsList.add(0);
         this.worksheetNumRowsList.add(0);
         this.worksheetRowNumCellsList.add(new Integer[]{});
+        this.worksheetColumnStyleList.add(new Integer[]{});
 
         // Add a Sheet element to the workbook element, this is for the workbook file
         this.workbook.sheets.sheets.add(new XmlElement.Sheet(wi,name));
@@ -223,7 +234,7 @@ global with sharing class Builder {
             new XmlElement.TypeOverride(
                 String.format(
                     Constant.CT_PATH_SHEET,
-                    new String[]{String.valueOf(wi)}
+                    new String[]{wi.toString()}
                 ),
                 Constant.CT_WORKSHEET
             )
@@ -234,10 +245,10 @@ global with sharing class Builder {
         this.workbookRelationships.relationships.add(new XmlElement.Relationship(
             String.format(
                 'rId{0}',
-                new String[]{String.valueOf(this.numWorksheets + Constant.WS_RID_OFFSET)}
+                new String[]{(this.numWorksheets + Constant.WS_RID_OFFSET).toString()}
             ),
             Constant.NS_REL_WORKSHEET,
-            String.format(Constant.REL_PATH_SHEET, new String[]{String.valueOf(wi)})
+            String.format(Constant.REL_PATH_SHEET, new String[]{wi.toString()})
         ));
 
         // return the index so the calling class can use it
@@ -291,17 +302,19 @@ global with sharing class Builder {
         this.worksheets[wi].sheetViews.sheetviews[0].pane.xSplit = numberOfColumns;
     }
 
+
     global void addTextCell(Integer wi, Integer ci, Integer ri, String v){
 
         // Apply padding so the sheet does not go out of bounds
         this.padWorksheet(wi,ci,ri);
 
-        // Create the cell, takes about 900ms for 100k cells
+        // Create the cell data with the default column cell style applied
         this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(
             this.useSharedStrings,
             ci,
             ri,
-            this.useSharedStrings ? this.getSharedStringIndex(v ?? '').toString() : v ?? ''
+            this.useSharedStrings ? this.getSharedStringIndex(v ?? '').toString() : v ?? '',
+            worksheetColumnStyleList[wi][ci]
         );
     }
 
@@ -311,7 +324,13 @@ global with sharing class Builder {
         // Apply padding so the sheet does not go out of bounds
         this.padWorksheet(wi,ci,ri);
 
-        this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(ci,ri,v);
+        // Create the cell data with the default column cell style applied
+        this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(
+            ci,
+            ri,
+            v,
+            worksheetColumnStyleList[wi][ci]
+        );
     }
 
 
@@ -320,7 +339,13 @@ global with sharing class Builder {
         // Apply padding so the sheet does not go out of bounds
         this.padWorksheet(wi,ci,ri);
 
-        this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(ci,ri,v);
+        // Create the cell data with the default column cell style applied
+        this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(
+            ci,
+            ri,
+            v,
+            worksheetColumnStyleList[wi][ci]
+        );
     }
 
 
@@ -329,7 +354,13 @@ global with sharing class Builder {
         // Apply padding so the sheet does not go out of bounds
         this.padWorksheet(wi,ci,ri);
 
-        this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(ci,ri,v);
+        // Create the cell data with the default column cell style applied
+        this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(
+            ci,
+            ri,
+            v,
+            worksheetColumnStyleList[wi][ci]
+        );
     }
 
 
@@ -338,7 +369,14 @@ global with sharing class Builder {
         // Apply padding so the sheet does not go out of bounds
         this.padWorksheet(wi,ci,ri);
 
-        this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(ci,ri,v,f);
+        // Create the cell data with the default column cell style applied
+        this.worksheets[wi].sheetData.rows[ri].cells[ci] = new XmlElement.Cell(
+            ci,
+            ri,
+            v,
+            f,
+            worksheetColumnStyleList[wi][ci]
+        );
     }
 
 
@@ -446,6 +484,9 @@ global with sharing class Builder {
      */
     global void setColStyle(Integer wi, Integer ci, Integer s){
         this.getColumn(wi,ci).style = s;
+
+        // Set the style index for the specified column in the worksheet
+        worksheetColumnStyleList[wi][ci] = s;
     }
 
 
@@ -521,6 +562,9 @@ global with sharing class Builder {
             // Pad the cells with null values
             for(Integer i=numCells; i<=ci;i++){
                 this.worksheets[wi].sheetData.rows[ri].cells.add(null);
+                
+                // Add a null value for each column style so don't have out of bounds later
+                this.worksheetColumnStyleList[wi].add(null);
             }
 
             // Up the cell counter
