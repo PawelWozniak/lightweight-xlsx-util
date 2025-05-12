@@ -11,7 +11,7 @@ todo.md
 .localdevserver/
 deploy-options.json
 change.log
-
+debug/
 # LWC VSCode autocomplete
 **/lwc/jsconfig.json
 

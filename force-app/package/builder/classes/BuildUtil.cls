@@ -8,15 +8,19 @@
  * @false-positive ExcessiveParameterList   I need to find a nicer way for the massive amount of parameters.
  *                                          Unfortunately there are many of them and this is the easiest for now.
  */
-
 @SuppressWarnings('PMD.OneDeclarationPerLine, PMD.ExcessiveParameterList')
 public with sharing class BuildUtil {
 
+    // Add counters to prevent adding the same name multiple times
+    private static Integer columnNamesSize = 0;
+    private static Integer rowNamesSize    = 0;
+    
     // Variables to hold column and row names during file creation
     // Used to create cell names like A1 B2, ADD100 etc.
     // Referencing is quicker than multiple times of adding number and string concatenation
     public static String[] columnNames = new String[]{};
     public static String[] rowNames    = new String[]{};
+    
 
     /**
      * @description Method to populate the array with column and row names
@@ -26,13 +30,17 @@ public with sharing class BuildUtil {
      * @param numberOfRows    Number of rows to pre-populate
      */
     public static void populateColumnAndRowNames(Integer numberOfColumns, Integer numberOfRows){
-        // Populate
-        for(Integer i=0;i<=numberOfColumns;i++){
-            BuildUtil.columnNames.add(CommonUtil.columnNameFromColumnIndex(i));
+        
+        // Populate column names
+        for(Integer i=columnNamesSize; i<=numberOfColumns; i++){
+            columnNames.add(CommonUtil.columnNameFromColumnIndex(i));
+            columnNamesSize++;
         }
 
-        for(Integer i=0;i<=numberOfRows;i++){
-            BuildUtil.rowNames.add((i+1).toString());
+        // Populate row names
+        for(Integer i=rowNamesSize; i<=numberOfRows; i++){
+            rowNames.add((i+1).toString());
+            rowNamesSize++;
         }
     }
 
@@ -89,7 +97,7 @@ public with sharing class BuildUtil {
     public static void writeSingleXmlElementWithChildren(XmlStreamWriter x, String ns, String element, IXmlElement[] childElements){
 
         // Validate the XML element needs to be written
-        if(childElements == null || childElements.isEmpty()){
+        if(childElements?.isEmpty() ?? true){
             return;
         }
 
@@ -130,7 +138,7 @@ public with sharing class BuildUtil {
     public static void writeSingleXmlElementWithChildrenAndDefaultNamespace(XmlStreamWriter x, String ns, String element, IXmlElement[] childElements, String dns){
 
         // Validate the XML element needs to be written
-        if(childElements == null || childElements.isEmpty()){
+        if(childElements?.isEmpty() ?? true){
             return;
         }
 
@@ -193,15 +201,15 @@ public with sharing class BuildUtil {
      */
     public static Integer getMaxIntegerFromList(Integer[] input){
 
-        // If there are no worksheets, the max number of columns will be 0
-        if(input == null || input.size() == 0){
+        // Return 0 if the input list is null or empty
+        if(input?.isEmpty() ?? true){
             return 0;
         }
 
-        // If the array is not 0, it will be at least size 1, so start our first max number is the index 0
+        // If the array is greated than 0, it will be at least size 1, so start our first max number is the index 0
         Integer max = input[0];
 
-        // Check if the next number is larger than our current
+        // Check if the next number is larger than the current
         for(Integer i=1, imax=input.size(); i<imax; i++){
             if(input[i] > max){
                 max = input[i];
