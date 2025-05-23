@@ -177,8 +177,20 @@ global with sharing class Parse{
                             // Indicate we have a dimensions attribute
                             hasDimensionAttribute = true;
 
-                            // Get the cell name from the range, this tag is mandatory so should be there
-                            String cName   = xsr.getAttributeValueAt(0).split(':')[1];
+                            // Get the cell name from the range, the ref attribute is mandatory so should be there
+                            // The ref value can be either in the format "A1:C3"
+                            // or simply the intersecting cell only... i.e. "C3"
+                            String cName = xsr.getAttributeValueAt(0)?.contains(':')     ? 
+                                                xsr.getAttributeValueAt(0).split(':')[1] :
+                                                xsr.getAttributeValueAt(0)
+                            ;
+
+                            // Safeguard: if the ref attribute is empty, ignore the dimension attribute
+                            // and move on to manually calculate the number of rows
+                            if(String.isBlank(cName)){
+                                hasDimensionAttribute = false;
+                                break;
+                            }
 
                             // Get the ref element from the token and calculate the value
                             String colName = ParseUtil.columnNameFromCellName(cName);
@@ -343,7 +355,7 @@ global with sharing class Parse{
 
             // We know the number of rows, if there is no dimension element we need to figure out the largest
             // cell in any of the rows. To do this we read the last cell in each row and get the column number
-            if(dimension == null){
+            if(dimension == null || dimension != null && String.isBlank(dimension.getAttributeValue('ref', null))){
                 for(Integer ri=0;ri<numberOfRowsInCurrentWorksheet; ri++){
 
                     // Extracting the row/cell reduces the CPU time by 50%, and for some weird reason improves the max heap size
@@ -371,8 +383,13 @@ global with sharing class Parse{
                 }
             }else{
                 
-                // Get the cell name from the range, this tag is mandatory so should be there
-                String cName   = dimension.getAttributeValue('ref', null).split(':')[1];
+                // Get the cell name from the range, the ref attribute is mandatory so should be there
+                // The ref value can be either in the format "A1:C3"
+                // or simply the intersecting cell only... i.e. "C3"
+                String cName = dimension.getAttributeValue('ref', null) ?.contains(':')    ? 
+                                    dimension.getAttributeValue('ref', null).split(':')[1] :
+                                    dimension.getAttributeValue('ref', null)
+                ;
 
                 // Get the ref element from the token and calculate the value
                 String colName = ParseUtil.columnNameFromCellName(cName);
@@ -527,8 +544,20 @@ global with sharing class Parse{
                             // Indicate we have a dimensions attribute
                             hasDimensionAttribute = true;
 
-                            // Get the cell name from the range, this tag is mandatory so should be there
-                            String cName   = xsr.getAttributeValueAt(0).split(':')[1];
+                            // Get the cell name from the range, the ref attribute is mandatory so should be there
+                            // The ref value can be either in the format "A1:C3"
+                            // or simply the intersecting cell only... i.e. "C3"
+                            String cName = xsr.getAttributeValueAt(0)?.contains(':')     ? 
+                                                xsr.getAttributeValueAt(0).split(':')[1] :
+                                                xsr.getAttributeValueAt(0)
+                            ;
+
+                            // Safeguard: if the ref attribute is empty, ignore the dimension attribute
+                            // and move on to manually calculate the number of rows
+                            if(String.isBlank(cName)){
+                                hasDimensionAttribute = false;
+                                break;
+                            }
 
                             // Get the ref element from the token and calculate the value
                             String colName = ParseUtil.columnNameFromCellName(cName);
@@ -693,7 +722,7 @@ global with sharing class Parse{
 
             // We know the number of rows, if there is no dimension element we need to figure out the largest
             // cell in any of the rows. To do this we read the last cell in each row and get the column number
-            if(dimension == null){
+            if(dimension == null || dimension != null && String.isBlank(dimension.getAttributeValue('ref', null))){
                 for(Integer ri=0;ri<numberOfRowsInCurrentWorksheet; ri++){
 
                     // Extracting the row/cell reduces the CPU time by 50%, and for some weird reason improves the max heap size
@@ -720,9 +749,14 @@ global with sharing class Parse{
                     maxNumberOfColumnsInAllWorksheets = numberOfColumnsInCurrentWorksheet;
                 }
             }else{
-                
-                // Get the cell name from the range, this tag is mandatory so should be there
-                String cName   = dimension.getAttributeValue('ref', null).split(':')[1];
+
+                // Get the cell name from the range, the ref attribute is mandatory so should be there
+                // The ref value can be either in the format "A1:C3"
+                // or simply the intersecting cell only... i.e. "C3"
+                String cName = dimension.getAttributeValue('ref', null) ?.contains(':')    ? 
+                                    dimension.getAttributeValue('ref', null).split(':')[1] :
+                                    dimension.getAttributeValue('ref', null)
+                ;
 
                 // Get the ref element from the token and calculate the value
                 String colName = ParseUtil.columnNameFromCellName(cName);
