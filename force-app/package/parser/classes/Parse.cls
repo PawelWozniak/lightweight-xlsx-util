@@ -187,9 +187,8 @@ global with sharing class Parse{
 
                             // Safeguard: if the ref attribute is empty, ignore the dimension attribute
                             // and move on to manually calculate the number of rows
-                            if(String.isBlank(cName)){
+                            if(String.isBlank(cName) || cName?.toLowerCase() == Constant.DEF_SNGL_DIMENSION){
                                 hasDimensionAttribute = false;
-                                break;
                             }
 
                             // Get the ref element from the token and calculate the value
@@ -554,9 +553,8 @@ global with sharing class Parse{
 
                             // Safeguard: if the ref attribute is empty, ignore the dimension attribute
                             // and move on to manually calculate the number of rows
-                            if(String.isBlank(cName)){
+                            if(String.isBlank(cName) || cName?.toLowerCase() == Constant.DEF_SNGL_DIMENSION){
                                 hasDimensionAttribute = false;
-                                break;
                             }
 
                             // Get the ref element from the token and calculate the value
@@ -626,7 +624,6 @@ global with sharing class Parse{
 
                             // Validate we're in a text element
                             if(xsr.getEventType() == XmlTag.CHARACTERS){
-
                                 // Put the cell value in array at location wi.ci.ri
                                 // If there is a "sharedStrings index", get the shared strings value at that index
                                 // else the value in the value in the XSR

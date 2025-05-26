@@ -54,6 +54,11 @@ public with sharing class Constant {
     // The worksheet relationship Id (RID) offset (Because 2 relationships exist by default)
     public static final Integer  WS_RID_OFFSET      = 2;
 
+    // Some popular libraries set the default dimension value to A1
+    // this creates some issues when the sheet is actually larger
+    // When the default value is selected, ignore the dimension tag
+    public static final String   DEF_SNGL_DIMENSION = 'a1';
+
     // Regex to sanitize worksheet names
     public static final String   WS_NAME_REGEX      = '[\\\\\\/?*:\\[\\]]';
 
